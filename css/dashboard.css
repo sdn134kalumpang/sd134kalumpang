@@ -1,0 +1,204 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+/* === ✅ STYLE BARU UNTUK LOGO APLIKASI === */
+.header-logo {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.main-logo {
+  max-width: 120px; /* Ukuran ideal untuk laptop/desktop */
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+  display: block;
+  margin: 0 auto;
+}
+
+/* Efek hover halus saat kursor diarahkan ke logo */
+.main-logo:hover {
+  transform: scale(1.05);
+}
+/* ========================================== */
+
+body {
+  background: #f0f2f5;
+  padding: 16px;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* Catatan: Style h1 ini akan otomatis diterapkan pada fallback title jika logo gagal dimuat */
+h1 {
+  text-align: center;
+  margin-bottom: 24px;
+  color: #2c3e50;
+  font-size: 1.8rem;
+}
+
+.user-info {
+  background: #f8f9fa;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  border-left: 4px solid #4CAF50;
+}
+
+.btn-logout {
+  width: 100%;
+  padding: 12px;
+  background: #f44336;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 16px;
+}
+
+.divider {
+  border: 0;
+  border-top: 1px solid #e0e0e0;
+  margin: 24px 0;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #374151;
+}
+
+select {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.action-buttons button {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+#saveLayananBtn {
+  background: #4CAF50;
+  color: white;
+}
+
+#saveLayananBtn:hover {
+  background: #45a049;
+}
+
+#resetBtn {
+  background: #9ca3af;
+  color: white;
+}
+
+#resetBtn:hover {
+  background: #6b7280;
+}
+
+#status {
+  text-align: center;
+  min-height: 24px;
+  font-weight: bold;
+  margin-bottom: 12px;
+  color: #10b981;
+}
+
+.error {
+  color: #ef4444;
+}
+
+/* === AREA KONTEN DINAMIS (SHOW/HIDE) === */
+.feature-content {
+  display: none; /* Tersembunyi secara default */
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.feature-content.active {
+  display: block; /* Ditampilkan hanya jika memiliki class active */
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.feature-content h3 {
+  margin-bottom: 16px;
+  color: #2c3e50;
+  font-size: 1.2rem;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 8px;
+}
+
+/* === GRID KARTU FITUR INTERNAL === */
+.internal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.internal-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  background: #f8fafc;
+  border: 2px dashed #cbd5e1;
+  border-radius: 12px;
+  color: #475569;
+  text-decoration: none;
+  font-weight: 600;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.internal-card:hover {
+  background: #e0f2fe;
+  border-color: #2196F3;
+  color: #0369a1;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 16px;
+  }
+  .main-logo {
+    max-width: 90px; /* ✅ Menyesuaikan ukuran logo di HP agar proporsional */
+  }
+  .internal-grid {
+    grid-template-columns: 1fr;
+  }
+}
