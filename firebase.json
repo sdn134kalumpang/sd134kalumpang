@@ -1,26 +1,10 @@
 {
   "hosting": {
-    "public": ".",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
-    "rewrites": [
+    "redirects": [
       {
         "source": "**",
-        "destination": "/index.html"
-      }
-    ],
-    "headers": [
-      {
-        "source": "**/*.@(js|css)",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "max-age=3600"
-          }
-        ]
+        "destination": "https://sdn134kalumpang.github.io/sd134kalumpang/",
+        "type": 301
       }
     ]
   }
