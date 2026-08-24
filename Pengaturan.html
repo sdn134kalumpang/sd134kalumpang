@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pengaturan - SDN 134 Kalumpang</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="pengaturan.css">
+</head>
+<body class="bg-[#f6f8fb] font-[Inter] text-[#0d3b66]">
+  <div class="flex min-h-screen">
+    <!-- SIDEBAR SAMA SEPERTI DASHBOARD -->
+    <aside class="w-[240px] bg-[#0f172a] text-white p-4 flex flex-col">
+      <div class="flex items-center gap-2 mb-8"><div class="w-9 h-9 rounded-lg bg-[#ffcc00] text-[#0d3b66] flex items-center justify-center font-bold">134</div><div><div class="font-bold text-[13px] leading-none">SDN 134</div><div class="text-[11px] text-white/60">KALUMPANG</div></div></div>
+      <div class="bg-white/10 rounded-xl p-3 mb-6 flex items-center gap-2"><div class="w-8 h-8 rounded-full bg-[#ffcc00] text-[#0d3b66] flex items-center justify-center font-bold text-[12px]">MA</div><div><div id="sidebarUserName" class="text-[12px] font-semibold">Muh Arfah Wahlii P.</div><div class="text-[10px] text-white/50">Super Admin • Operator</div></div></div>
+      <nav class="space-y-1 text-[13px]">
+        <a href="dashboard.html" class="flex gap-2 px-3 py-2 rounded-lg hover:bg-white/10">📊 Dashboard</a>
+        <a href="#" class="flex gap-2 px-3 py-2 rounded-lg hover:bg-white/10">📁 E-Dokumen</a>
+        <a href="#" class="flex gap-2 px-3 py-2 rounded-lg hover:bg-white/10">👩‍🏫 Administrasi Guru</a>
+        <a href="pengaturan.html" class="flex gap-2 px-3 py-2 rounded-lg bg-[#1e3a8a]">⚙️ Pengaturan</a>
+        <a href="#" id="btnLogout" class="flex gap-2 px-3 py-2 rounded-lg hover:bg-white/10 text-red-400">🚪 Keluar</a>
+      </nav>
+      <div class="mt-auto text-[10px] text-white/30">NPSN 40312947<br>Trilino, Bontotiro - Bulukumba</div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="flex-1 p-6">
+      <div class="flex items-center justify-between mb-6">
+        <div class="text-[13px] text-black/50">Admin / <span class="font-bold text-[#0d3b66]">Pengaturan</span></div>
+        <div class="text-[11px] bg-white border px-3 py-1 rounded-full">24 Agu 2026</div>
+      </div>
+
+      <!-- TAB HEADER -->
+      <div class="flex gap-3 mb-6">
+        <button id="tabControlCenter" class="px-5 py-2.5 rounded-full text-[12px] font-bold tracking-wide border tab-active">🛡️ Control Center (Admin)</button>
+        <button id="tabAkunSaya" class="px-5 py-2.5 rounded-full text-[12px] font-bold tracking-wide border tab-inactive">👤 Akun Saya (Guru)</button>
+      </div>
+
+      <div id="adminWarning" class="mb-4 p-3 rounded-xl bg-[#fff9c4] border border-[#ffec99] text-[12px]">⚠️ Kamu login sebagai <b>Super Admin</b>, jadi kamu bisa melihat Control Center. Jika Guru login, tab ini akan otomatis hilang.</div>
+
+      <!-- PANEL 1: CONTROL CENTER -->
+      <div id="panelControlCenter" class="space-y-6">
+        <!-- Sub Fitur: User Management -->
+        <div class="card">
+          <div class="flex justify-between items-center mb-4"><h3 class="font-[Poppins] font-bold text-[16px]">User Management</h3><span class="text-[11px] bg-[#0d3b66] text-white px-2 py-1 rounded-full">Admin Only</span></div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left">
+              <thead class="text-[11px] text-black/40 uppercase"><tr><th class="py-2">User</th><th>Role</th><th>Status</th><th>Aksi</th></tr></thead>
+              <tbody id="userTableBody"></tbody>
+            </table>
+          </div>
+          <form id="formTambahUser" class="mt-6 grid grid-cols-3 gap-3">
+            <input id="newNama" placeholder="Nama Lengkap" class="input-field" required>
+            <select id="newRole" class="input-field"><option value="guru">Guru</option><option value="kepsek">Kepsek</option><option value="siswa">Siswa</option><option value="ortu">Orang Tua</option><option value="admin">Admin</option></select>
+            <input id="newJabatan" placeholder="Jabatan / Kelas" class="input-field" required>
+            <button type="submit" class="col-span-3 h-[44px] rounded-xl bg-[#ffcc00] font-bold text-[12px]">+ Tambah User</button>
+          </form>
+        </div>
+
+        <!-- Sub Fitur: Info Umum -->
+        <div class="card">
+          <h3 class="font-bold mb-4">Info Umum Sekolah</h3>
+          <form id="formInfoSekolah" class="space-y-3 max-w-[500px]">
+            <div><label class="text-[11px] font-semibold">NPSN</label><input id="infoNPSN" class="input-field"></div>
+            <div><label class="text-[11px] font-semibold">Nama Sekolah</label><input id="infoNama" class="input-field"></div>
+            <div><label class="text-[11px] font-semibold">Alamat</label><input id="infoAlamat" class="input-field"></div>
+            <button type="submit" class="h-[44px] px-6 rounded-xl bg-[#0d3b66] text-white font-bold text-[12px]">Simpan Info</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- PANEL 2: AKUN SAYA (GURU) -->
+      <div id="panelAkunSaya" class="hidden space-y-6">
+        <div class="card max-w-[500px]">
+          <h3 class="font-bold mb-4">Pengaturan Akun Saya</h3>
+          <div class="space-y-3">
+            <div><label class="text-[11px] font-semibold">Nama</label><input id="akunNama" class="input-field" disabled></div>
+            <div><label class="text-[11px] font-semibold">Email</label><input id="akunEmail" class="input-field" disabled></div>
+            <div><label class="text-[11px] font-semibold">Role</label><input id="akunRole" class="input-field" disabled></div>
+            <div class="pt-2"><button class="h-[44px] px-6 rounded-xl bg-[#f1f5f9] border font-bold text-[12px]">Ganti Password</button></div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- OTAK SISTEM -->
+  <script src="service-menu.js"></script>
+  <!-- LOGIKA HALAMAN -->
+  <script src="pengaturan.js"></script>
+</body>
+</html>
