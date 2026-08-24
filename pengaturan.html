@@ -7,88 +7,73 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/pengaturan.css">
+  <link rel="stylesheet" href="css/admin-elegant-final.css">
+  <style>
+    @keyframes marquee { 0%{transform:translateX(100%)} 100%{transform:translateX(-100%)} }
+    .marquee-track{ animation: marquee 30s linear infinite; white-space:nowrap; }
+  </style>
 </head>
 <body class="bg-[#f6f8fb] font-[Inter] text-[#0d3b66]">
   <div class="flex min-h-screen">
-    <!-- SIDEBAR SAMA SEPERTI DASHBOARD -->
     <aside class="w-[240px] bg-[#0f172a] text-white p-4 flex flex-col">
       <div class="flex items-center gap-2 mb-8"><div class="w-9 h-9 rounded-lg bg-[#ffcc00] text-[#0d3b66] flex items-center justify-center font-bold">134</div><div><div class="font-bold text-[13px] leading-none">SDN 134</div><div class="text-[11px] text-white/60">KALUMPANG</div></div></div>
       <div class="bg-white/10 rounded-xl p-3 mb-6 flex items-center gap-2"><div class="w-8 h-8 rounded-full bg-[#ffcc00] text-[#0d3b66] flex items-center justify-center font-bold text-[12px]">MA</div><div><div id="sidebarUserName" class="text-[12px] font-semibold">Muh Arfah Wahlii P.</div><div class="text-[10px] text-white/50">Super Admin • Operator</div></div></div>
       <nav class="space-y-1 text-[13px]">
         <a href="dashboard.html" class="flex gap-2 px-3 py-2 rounded-lg hover:bg-white/10">📊 Dashboard</a>
-        <a href="#" class="flex gap-2 px-3 py-2 rounded-lg hover:bg-white/10">📁 E-Dokumen</a>
-        <a href="#" class="flex gap-2 px-3 py-2 rounded-lg hover:bg-white/10">👩‍🏫 Administrasi Guru</a>
         <a href="pengaturan.html" class="flex gap-2 px-3 py-2 rounded-lg bg-[#1e3a8a]">⚙️ Pengaturan</a>
         <a href="#" id="btnLogout" class="flex gap-2 px-3 py-2 rounded-lg hover:bg-white/10 text-red-400">🚪 Keluar</a>
       </nav>
       <div class="mt-auto text-[10px] text-white/30">NPSN 40312947<br>Trilino, Bontotiro - Bulukumba</div>
     </aside>
-
-    <!-- MAIN -->
     <main class="flex-1 p-6">
       <div class="flex items-center justify-between mb-6">
         <div class="text-[13px] text-black/50">Admin / <span class="font-bold text-[#0d3b66]">Pengaturan</span></div>
-        <div class="text-[11px] bg-white border px-3 py-1 rounded-full">24 Agu 2026</div>
+        <div class="text-[11px] bg-white border px-3 py-1 rounded-full">V2 - Control Center Revisi</div>
       </div>
-
-      <!-- TAB HEADER -->
       <div class="flex gap-3 mb-6">
         <button id="tabControlCenter" class="px-5 py-2.5 rounded-full text-[12px] font-bold tracking-wide border tab-active">🛡️ Control Center (Admin)</button>
-        <button id="tabAkunSaya" class="px-5 py-2.5 rounded-full text-[12px] font-bold tracking-wide border tab-inactive">👤 Akun Saya (Guru)</button>
+        <button id="tabAkunSaya" class="px-5 py-2.5 rounded-full text-[12px] font-bold tracking-wide border tab-inactive">👤 Akun Saya</button>
       </div>
+      <div id="adminWarning" class="mb-4 p-3 rounded-xl bg-[#fff9c4] border border-[#ffec99] text-[12px]">⚠️ Mode Super Admin - Kamu bisa mengatur semua: Pengumuman Berjalan, User + Hak Akses, Info Sekolah</div>
 
-      <div id="adminWarning" class="mb-4 p-3 rounded-xl bg-[#fff9c4] border border-[#ffec99] text-[12px]">⚠️ Kamu login sebagai <b>Super Admin</b>, jadi kamu bisa melihat Control Center. Jika Guru login, tab ini akan otomatis hilang.</div>
-
-      <!-- PANEL 1: CONTROL CENTER -->
       <div id="panelControlCenter" class="space-y-6">
-        <!-- Sub Fitur: User Management -->
-        <div class="card">
-          <div class="flex justify-between items-center mb-4"><h3 class="font-[Poppins] font-bold text-[16px]">User Management</h3><span class="text-[11px] bg-[#0d3b66] text-white px-2 py-1 rounded-full">Admin Only</span></div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left">
-              <thead class="text-[11px] text-black/40 uppercase"><tr><th class="py-2">User</th><th>Role</th><th>Status</th><th>Aksi</th></tr></thead>
-              <tbody id="userTableBody"></tbody>
-            </table>
-          </div>
-          <form id="formTambahUser" class="mt-6 grid grid-cols-3 gap-3">
-            <input id="newNama" placeholder="Nama Lengkap" class="input-field" required>
-            <select id="newRole" class="input-field"><option value="guru">Guru</option><option value="kepsek">Kepsek</option><option value="siswa">Siswa</option><option value="ortu">Orang Tua</option><option value="admin">Admin</option></select>
-            <input id="newJabatan" placeholder="Jabatan / Kelas" class="input-field" required>
-            <button type="submit" class="col-span-3 h-[44px] rounded-xl bg-[#ffcc00] font-bold text-[12px]">+ Tambah User</button>
-          </form>
+        <!-- 1. PENGUMUMAN BERJALAN -->
+        <div class="card border-l-4 border-l-[#ffcc00]">
+          <div class="flex justify-between items-center mb-4"><h3 class="font-[Poppins] font-bold text-[16px]">📢 Pengumuman Berjalan (Tampil di Halaman Depan)</h3><span class="text-[11px] bg-[#ffcc00] text-black px-2 py-1 rounded-full font-bold">TAMPIL SEBELUM LOGIN</span></div>
+          <div class="bg-[#0f172a] text-white rounded-xl h-[46px] overflow-hidden flex items-center mb-4 relative"><div class="bg-[#ffcc00] text-[#0d3b66] h-full px-3 flex items-center font-bold text-[11px] z-10">LIVE</div><div class="flex-1 overflow-hidden"><div id="previewMarquee" class="marquee-track text-[13px]">Memuat pengumuman...</div></div></div>
+          <div id="pengumumanList" class="max-h-[200px] overflow-y-auto mb-4"></div>
+          <form id="formPengumuman" class="flex gap-2"><input id="newPengumuman" placeholder="Tulis pengumuman baru, contoh: PPDB 2025/2026 dibuka 1 Juni..." class="input-field flex-1" required><button type="submit" class="h-[46px] px-6 rounded-xl bg-[#0d3b66] text-white font-bold text-[12px] whitespace-nowrap">+ Tambah</button></form>
+          <p class="text-[11px] text-black/50 mt-2">Ceklis untuk mengaktifkan, teks akan berjalan di index.html sebelum login. Bisa lebih dari 1 pengumuman.</p>
         </div>
 
-        <!-- Sub Fitur: Info Umum -->
+        <!-- 2. USER MANAGEMENT V2 -->
         <div class="card">
-          <h3 class="font-bold mb-4">Info Umum Sekolah</h3>
-          <form id="formInfoSekolah" class="space-y-3 max-w-[500px]">
-            <div><label class="text-[11px] font-semibold">NPSN</label><input id="infoNPSN" class="input-field"></div>
-            <div><label class="text-[11px] font-semibold">Nama Sekolah</label><input id="infoNama" class="input-field"></div>
-            <div><label class="text-[11px] font-semibold">Alamat</label><input id="infoAlamat" class="input-field"></div>
-            <button type="submit" class="h-[44px] px-6 rounded-xl bg-[#0d3b66] text-white font-bold text-[12px]">Simpan Info</button>
-          </form>
+          <div class="flex justify-between items-center mb-4"><h3 class="font-[Poppins] font-bold text-[16px]">👥 User Management + Hak Akses Fitur</h3><span class="text-[11px] bg-[#0d3b66] text-white px-2 py-1 rounded-full">Email sebagai Username</span></div>
+          <div class="overflow-x-auto"><table class="w-full text-left"><thead class="text-[11px] text-black/40 uppercase"><tr><th class="py-2">User / Email Login</th><th>Role</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="userTableBody"></tbody></table></div>
+          <div class="mt-6 p-4 rounded-xl bg-[#f7f9fc] border border-[#e8eef6]">
+            <h4 class="font-bold text-[13px] mb-3">+ Tambah User Baru</h4>
+            <form id="formTambahUser" class="space-y-3">
+              <div class="grid grid-cols-2 gap-3"><input id="newNama" placeholder="Nama Lengkap" class="input-field" required><input id="newEmail" type="email" placeholder="Email (untuk login), contoh: guru1@sdn134.sch.id" class="input-field" required></div>
+              <div class="grid grid-cols-2 gap-3"><select id="newRole" class="input-field"><option value="guru">Guru</option><option value="kepsek">Kepsek</option><option value="siswa">Siswa</option><option value="ortu">Orang Tua</option><option value="admin">Admin</option></select><input id="newJabatan" placeholder="Jabatan / Kelas" class="input-field" required></div>
+              <div><label class="text-[11px] font-bold">🔑 Hak Akses Fitur - Ceklis fitur yang boleh diakses user ini:</label><div id="permCheckboxes" class="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2 p-3 bg-white rounded-xl border"></div></div>
+              <button type="submit" class="w-full h-[44px] rounded-xl bg-[#ffcc00] font-bold text-[12px]">+ Buat User dengan Hak Akses</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- 3. INFO UMUM -->
+        <div class="card">
+          <h3 class="font-bold mb-4">🏫 Info Umum Sekolah</h3>
+          <form id="formInfoSekolah" class="space-y-3 max-w-[500px]"><div><label class="text-[11px] font-semibold">NPSN</label><input id="infoNPSN" class="input-field"></div><div><label class="text-[11px] font-semibold">Nama Sekolah</label><input id="infoNama" class="input-field"></div><div><label class="text-[11px] font-semibold">Alamat</label><input id="infoAlamat" class="input-field"></div><button type="submit" class="h-[44px] px-6 rounded-xl bg-[#0d3b66] text-white font-bold text-[12px]">Simpan Info</button></form>
         </div>
       </div>
 
-      <!-- PANEL 2: AKUN SAYA (GURU) -->
       <div id="panelAkunSaya" class="hidden space-y-6">
-        <div class="card max-w-[500px]">
-          <h3 class="font-bold mb-4">Pengaturan Akun Saya</h3>
-          <div class="space-y-3">
-            <div><label class="text-[11px] font-semibold">Nama</label><input id="akunNama" class="input-field" disabled></div>
-            <div><label class="text-[11px] font-semibold">Email</label><input id="akunEmail" class="input-field" disabled></div>
-            <div><label class="text-[11px] font-semibold">Role</label><input id="akunRole" class="input-field" disabled></div>
-            <div class="pt-2"><button class="h-[44px] px-6 rounded-xl bg-[#f1f5f9] border font-bold text-[12px]">Ganti Password</button></div>
-          </div>
-        </div>
+        <div class="card max-w-[500px]"><h3 class="font-bold mb-4">Pengaturan Akun Saya</h3><div class="space-y-3"><div><label class="text-[11px] font-semibold">Nama</label><input id="akunNama" class="input-field" disabled></div><div><label class="text-[11px] font-semibold">Email Login</label><input id="akunEmail" class="input-field" disabled></div><div><label class="text-[11px] font-semibold">Role</label><input id="akunRole" class="input-field" disabled></div></div></div>
       </div>
-
     </main>
   </div>
-
-  <!-- OTAK SISTEM -->
   <script src="js/config/service-menu.js"></script>
-  <!-- LOGIKA HALAMAN -->
   <script src="js/pengaturan.js"></script>
 </body>
 </html>
