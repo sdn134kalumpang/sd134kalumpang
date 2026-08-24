@@ -1,4 +1,3 @@
-
 /* pengaturan.css - Style khusus halaman pengaturan */
 .tab-active {
   background: #0d3b66;
@@ -35,3 +34,46 @@
 .badge-hadir { background: #e8f5e9; color: #1b5e20; }
 .badge-izin { background: #fff9c4; color: #7a6a00; }
 .badge-online { background: #e3f2fd; color: #0d3b66; }
+
+/* === V2 - Tambahan Revisi Control Center === */
+.perm-check {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+}
+.perm-check:checked {
+  accent-color: #0d3b66;
+}
+
+/* Marquee Pengumuman Berjalan */
+@keyframes marquee {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+.marquee-track {
+  animation: marquee 30s linear infinite;
+  white-space: nowrap;
+  display: inline-block;
+}
+
+/* Card khusus pengumuman */
+.card-pengumuman {
+  border-left: 4px solid #ffcc00;
+}
+
+/* Hover untuk checkbox hak akses */
+.perm-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+}
+.perm-label:hover {
+  background: #f7f9fc;
+  border-color: #e8eef6;
+}
+
