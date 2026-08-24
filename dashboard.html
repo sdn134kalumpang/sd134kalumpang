@@ -24,7 +24,7 @@
         <span class="online-dot"></span>
       </div>
       <div class="profile-info">
-        <h4>Muh Arfah Wahlil P.</h4>
+        <h4 id="sidebarUserName">Muh Arfah Wahlil P.</h4>
         <p>Super Admin • Operator</p>
       </div>
       <button class="profile-more">⋯</button>
@@ -97,7 +97,7 @@
       </div>
 
       <div class="nav-divider"></div>
-      <a class="nav-link"><span class="nav-icon">⚙️</span><span class="nav-label">pengaturan</span></a>
+      <a class="nav-link" href="pengaturan.html"><span class="nav-icon">⚙️</span><span class="nav-label">Pengaturan</span></a>
       <a class="nav-link logout" id="logoutBtn"><span class="nav-icon">🚪</span><span class="nav-label">Keluar</span></a>
     </nav>
 
@@ -213,6 +213,22 @@
     </div>
   </main>
 
+  <script src="./js/config/service-menu.js"></script>
   <script src="./js/admin-elegant.js"></script>
+  <script>
+    // Sinkron dengan service-menu.js - otak sistem
+    document.addEventListener('DOMContentLoaded', () => {
+      if(typeof ServiceMenu !== 'undefined'){
+        ServiceMenu.checkAccess();
+        const user = ServiceMenu.getCurrentUser();
+        const el = document.getElementById('sidebarUserName');
+        if(el) el.textContent = user.nama;
+        const badge = document.getElementById('dateBadge');
+        if(badge){ const d=new Date(); badge.textContent = d.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}); }
+      }
+      const logoutBtn = document.getElementById('logoutBtn');
+      if(logoutBtn){ logoutBtn.onclick = () => ServiceMenu.logout(); }
+    });
+  </script>
 </body>
 </html>
