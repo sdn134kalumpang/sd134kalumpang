@@ -1,0 +1,37 @@
+
+/* pengaturan.css - Style khusus halaman pengaturan */
+.tab-active {
+  background: #0d3b66;
+  color: white;
+  border-color: #0d3b66;
+}
+.tab-inactive {
+  background: #f7f9fc;
+  color: #0d3b66;
+  border-color: #e8eef6;
+}
+.card {
+  background: white;
+  border: 1px solid #eef2f7;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+}
+.input-field {
+  width: 100%;
+  height: 46px;
+  padding: 0 14px;
+  border-radius: 12px;
+  background: #f7f9fc;
+  border: 1px solid #e8eef6;
+  font-size: 14px;
+  outline: none;
+}
+.input-field:focus {
+  background: white;
+  border-color: rgba(13,59,102,0.3);
+  box-shadow: 0 0 0 4px rgba(13,59,102,0.1);
+}
+.badge-hadir { background: #e8f5e9; color: #1b5e20; }
+.badge-izin { background: #fff9c4; color: #7a6a00; }
+.badge-online { background: #e3f2fd; color: #0d3b66; }
