@@ -384,11 +384,47 @@ window.init_data_peserta_didik = window.init_data_peserta_didik || function(cont
   };
 
   document.getElementById('btnExportSiswa').onclick = function(){
-    const rows = [['NIS','NISN','Nama','Kelas','JK','TTL','Alamat','Ayah','Ibu','Status','Owner']].concat(siswaList.map(s=>[s.nis,s.nisn,s.nama,s.kelas,s.jk,s.ttl,s.alamat,s.ayah,s.ibu,s.status,s.owner_email||'']));
-    const csv = rows.map(r=>r.map(v=>`"${(v||'').toString().replace(/"/g,'""')}"`).join(',')).join('\n');
-    const blob = new Blob([csv], {type:'text/csv'});
+    // EXPORT RAPI - Excel HTML Table (bukan CSV) - Kolom terpisah otomatis, tanpa Owner
+    const headers = ['NIS','NISN','Nama Lengkap','Kelas','JK','Tempat Tgl Lahir','Alamat','Nama Ayah','Nama Ibu','Status'];
+    const kopText = `${school.nama} - NPSN ${school.npsn} - ${school.alamat} - Kab. Bulukumba - Tahun Ajaran ${school.tahunAjaran}`;
+    const dibuatOleh = `Dibuat oleh: ${auto.nama_guru} - NIP: ${auto.nip_guru} - Tanggal: ${new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'})}`;
+    
+    let html = `<html><head><meta charset="UTF-8"></head><body>`;
+    html += `<table border="0" style="width:100%;font-family:Arial;"><tr><td colspan="10" style="text-align:center;font-weight:bold;font-size:14px;">${school.nama.toUpperCase()}</td></tr>`;
+    html += `<tr><td colspan="10" style="text-align:center;font-size:11px;">${school.alamat} - NPSN ${school.npsn} - Akreditasi ${school.akreditasi}</td></tr>`;
+    html += `<tr><td colspan="10" style="text-align:center;font-size:11px;">${kopText}</td></tr>`;
+    html += `<tr><td colspan="10" style="text-align:center;font-size:11px;">${dibuatOleh}</td></tr>`;
+    html += `<tr><td colspan="10"></td></tr></table>`;
+    
+    html += `<table border="1" style="border-collapse:collapse;width:100%;font-family:Arial;font-size:11px;">`;
+    html += `<tr style="background:#0d3b66;color:white;font-weight:bold;">${headers.map(h=>`<th style="padding:8px;background:#0d3b66;color:white;border:1px solid #000;">${h}</th>`).join('')}</tr>`;
+    
+    siswaList.forEach(s=>{
+      html += `<tr>
+        <td style="padding:6px;border:1px solid #000;">${s.nis||''}</td>
+        <td style="padding:6px;border:1px solid #000;">${s.nisn||''}</td>
+        <td style="padding:6px;border:1px solid #000;">${s.nama||''}</td>
+        <td style="padding:6px;border:1px solid #000;text-align:center;">${s.kelas||''}</td>
+        <td style="padding:6px;border:1px solid #000;text-align:center;">${s.jk||''}</td>
+        <td style="padding:6px;border:1px solid #000;">${s.ttl||''}</td>
+        <td style="padding:6px;border:1px solid #000;">${s.alamat||''}</td>
+        <td style="padding:6px;border:1px solid #000;">${s.ayah||''}</td>
+        <td style="padding:6px;border:1px solid #000;">${s.ibu||''}</td>
+        <td style="padding:6px;border:1px solid #000;text-align:center;">${s.status||'Aktif'}</td>
+      </tr>`;
+    });
+    
+    html += `</table>`;
+    html += `<br><table border="0" style="font-size:11px;"><tr><td>Total Siswa:</td><td><b>${siswaList.length} Siswa</b></td></tr><tr><td>Laki-laki:</td><td>${siswaList.filter(x=>x.jk==='L').length}</td></tr><tr><td>Perempuan:</td><td>${siswaList.filter(x=>x.jk==='P').length}</td></tr></table>`;
+    html += `</body></html>`;
+    
+    const blob = new Blob([html], {type:'application/vnd.ms-excel;charset=utf-8;'});
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.href=url; a.download='data-peserta-didik-sdn134-'+new Date().toISOString().slice(0,10)+'.csv'; a.click();
+    const a = document.createElement('a'); 
+    a.href=url; 
+    a.download=`Data_Peserta_Didik_SDN134_${school.tahunAjaran.replace('/','-')}_${new Date().toISOString().slice(0,10)}.xls`; 
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   document.getElementById('btnTambahSiswa').onclick = ()=>{ document.getElementById('f_nama').focus(); };
