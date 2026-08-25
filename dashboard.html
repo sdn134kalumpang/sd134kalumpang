@@ -3,231 +3,65 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Panel - SDN 134 KALUMPANG</title>
+<title>Admin Panel - SDN 134 KALUMPANG - V3.1 Dynamic</title>
 <link rel="stylesheet" href="./css/admin-elegant-final.css">
+<link rel="stylesheet" href="./css/pengaturan.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-  <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-      <div class="logo">
-        <div class="logo-icon">134</div>
-        <div class="logo-text">SDN 134<span>KALUMPANG</span></div>
-      </div>
-      <button class="sidebar-toggle" id="sidebarToggle">‹</button>
-    </div>
-
-    <div class="profile-card">
-      <div class="profile-avatar">
-        <img src="https://ui-avatars.com/api/?name=Muh+Arfah&background=FFD700&color=1a1a1a&bold=true" alt="Admin">
-        <span class="online-dot"></span>
-      </div>
-      <div class="profile-info">
-        <h4 id="sidebarUserName">Muh Arfah Wahlil P.</h4>
-        <p>Super Admin • Operator</p>
-      </div>
-      <button class="profile-more">⋯</button>
-    </div>
-
-    <nav class="sidebar-nav">
-      <a class="nav-link active" data-page="dashboard">
-        <span class="nav-icon">📊</span><span class="nav-label">Dashboard</span>
-      </a>
-
-      <div class="nav-group">
-        <button class="nav-link has-sub">
-          <span class="nav-icon">📁</span><span class="nav-label">E-Dokumen</span><span class="nav-arrow">›</span>
-        </button>
-        <div class="sub-menu">
-          <a>📥 Surat Masuk <span class="badge">3</span></a>
-          <a>📤 Surat Keluar</a>
-          <a>🗄️ Arsip Digital</a>
-          <a>✍️ E-Sign</a>
-        </div>
-      </div>
-
-      <div class="nav-group">
-        <button class="nav-link has-sub">
-          <span class="nav-icon">👩‍🏫</span><span class="nav-label">Administrasi Guru</span><span class="nav-arrow">›</span>
-        </button>
-        <div class="sub-menu">
-          <a>👥 Data Guru (9 PTK)</a>
-          <a>🕒 Absensi Guru</a>
-          <a>⭐ Penilaian Kinerja</a>
-          <a>📅 Jadwal Mengajar</a>
-        </div>
-      </div>
-
-      <div class="nav-group">
-        <button class="nav-link has-sub">
-          <span class="nav-icon">📈</span><span class="nav-label">Data Statistik</span><span class="nav-arrow">›</span>
-        </button>
-        <div class="sub-menu">
-          <a>👨‍🎓 Statistik Siswa (48)</a>
-          <a>📋 Statistik Kehadiran</a>
-          <a>📝 Statistik Nilai</a>
-          <a>📊 Grafik Tren</a>
-        </div>
-      </div>
-
-      <div class="nav-group">
-        <button class="nav-link has-sub">
-          <span class="nav-icon">🌐</span><span class="nav-label">E-Portal</span><span class="nav-arrow">›</span>
-        </button>
-        <div class="sub-menu">
-          <a>📰 Berita Sekolah</a>
-          <a>📢 Pengumuman PPDB</a>
-          <a>🖼️ Galeri Kegiatan</a>
-          <a>🗓️ Agenda Sekolah</a>
-        </div>
-      </div>
-
-      <div class="nav-group">
-        <button class="nav-link has-sub">
-          <span class="nav-icon">🗃️</span><span class="nav-label">Master Data</span><span class="nav-arrow">›</span>
-        </button>
-        <div class="sub-menu">
-          <a>🎓 Data Siswa</a>
-          <a>🏫 Data Kelas</a>
-          <a>📚 Mata Pelajaran</a>
-          <a>📆 Tahun Ajaran</a>
-          <a>🏛️ Profil Sekolah</a>
-        </div>
-      </div>
-
-      <div class="nav-divider"></div>
-      <a class="nav-link" href="pengaturan.html"><span class="nav-icon">⚙️</span><span class="nav-label">Pengaturan</span></a>
-      <a class="nav-link logout" id="logoutBtn"><span class="nav-icon">🚪</span><span class="nav-label">Keluar</span></a>
+    <div class="sidebar-header"><div class="logo"><div class="logo-icon">134</div><div class="logo-text">SDN 134<span>KALUMPANG</span></div></div><button class="sidebar-toggle" id="sidebarToggle">‹</button></div>
+    <div class="profile-card"><div class="profile-avatar"><img src="https://ui-avatars.com/api/?name=Muh+Arfah&background=FFD700&color=1a1a1a&bold=true" alt="Admin"><span class="online-dot"></span></div><div class="profile-info"><h4 id="sidebarUserName">Muh Arfah Wahlii P.</h4><p id="sidebarUserRole">Super Admin • Operator</p></div></div>
+    <!-- SIDEBAR OTOMATIS DARI service-menu.js -->
+    <nav class="sidebar-nav" id="dynamicSidebar">
+      <div style="padding:20px;color:white/50;font-size:11px;">Memuat menu dari service-menu.js...</div>
     </nav>
-
-    <div class="sidebar-footer">
-      <p>NPSN 40312947<br>Tritiro, Bontotiro - Bulukumba</p>
-    </div>
+    <div class="sidebar-footer"><p>NPSN 40312947<br>Tritiro, Bontotiro - Bulukumba</p><p style="font-size:9px;margin-top:6px;">V3.1 Dynamic - Tambah fitur cukup edit ALL_FEATURES di service-menu.js</p></div>
   </aside>
-
-  <!-- MAIN -->
   <main class="main">
-    <header class="topbar">
-      <div class="topbar-left">
-        <button class="mobile-menu" id="mobileMenu">☰</button>
-        <div class="breadcrumb">
-          <span>Admin</span> / <strong>Dashboard</strong>
-        </div>
-      </div>
-      <div class="topbar-right">
-        <div class="search-box">
-          <span>🔍</span>
-          <input type="text" placeholder="Cari data, siswa, guru...">
-        </div>
-        <button class="icon-btn">🔔<span class="notif-dot"></span></button>
-        <button class="icon-btn">💬</button>
-        <div class="date-badge" id="dateBadge"></div>
-      </div>
-    </header>
-
+    <header class="topbar"><div class="topbar-left"><button class="mobile-menu" id="mobileMenu">☰</button><div class="breadcrumb"><span>Admin</span> / <strong>Dashboard V3.1 Dynamic</strong></div></div><div class="topbar-right"><div class="search-box"><span>🔍</span><input type="text" placeholder="Cari..."></div><div class="date-badge" id="dateBadge"></div></div></header>
     <div class="content">
-      <!-- WELCOME -->
-      <div class="welcome-banner">
-        <div>
-          <h1>Selamat datang kembali, Arfah! 👋</h1>
-          <p>SDN 134 Kalumpang • Akreditasi B • 48 Siswa • 9 Guru • Kab. Bulukumba, Sulsel 92572</p>
-        </div>
-        <div class="welcome-actions">
-          <button class="btn btn-light">📥 Export Dapodik</button>
-          <button class="btn btn-accent">+ Tambah Data</button>
-        </div>
+      <div class="welcome-banner"><div><h1>Selamat datang, <span id="welcomeName">Arfah</span>! 👋</h1><p>V3.1 Dynamic aktif - Fitur ke-6 otomatis tampil jika ada di ALL_FEATURES</p></div></div>
+      <div class="card"><div class="card-head"><h3>✅ Cara Tambah Fitur Utama ke-6, ke-7 dst (Sekarang Cukup 1 Tempat)</h3></div>
+      <div style="font-size:13px;line-height:1.9;background:#f7f9fc;padding:16px;border-radius:12px;border:1px solid #e8eef6;">
+        <div><b>1. Buka file:</b> <code>js/config/service-menu.js</code></div>
+        <div><b>2. Cari:</b> <code>const ALL_FEATURES = [ ... ]</code></div>
+        <div><b>3. Tambah object baru:</b><br><code style="background:white;padding:4px 8px;border-radius:6px;display:block;margin:8px 0;">{ id: 'laporan', label: 'Laporan', icon: '📋', sub: ['Harian','Bulanan'] }</code></div>
+        <div><b>4. Tambah path di PATH_CONFIG.pages:</b><br><code style="background:white;padding:4px 8px;border-radius:6px;display:block;margin:8px 0;">laporan: 'modules/laporan/index.html'</code></div>
+        <div><b>5. Selesai! Sidebar otomatis muncul, ceklis hak akses di Pengaturan otomatis muncul, tidak perlu edit dashboard.html lagi.</b></div>
+        <div style="margin-top:10px;color:#1b5e20;background:#e8f5e9;padding:8px;border-radius:8px;">💡 Jika fitur lama tidak muncul setelah tambah baru, hapus localStorage <code>users_db_v2</code> di browser (F12 > Application > Local Storage > Clear) agar permission baru ter-load.</div>
       </div>
-
-      <!-- KPI -->
-      <div class="kpi-grid">
-        <div class="kpi-card">
-          <div class="kpi-top"><span class="kpi-icon blue">👨‍🎓</span><span class="kpi-trend up">+2 bulan ini</span></div>
-          <h3>48</h3><p>Total Siswa Aktif</p>
-          <div class="kpi-bar"><div style="width:85%"></div></div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-top"><span class="kpi-icon green">👩‍🏫</span><span class="kpi-trend up">100% hadir</span></div>
-          <h3>9</h3><p>PTK / Guru Aktif</p>
-          <div class="kpi-bar green"><div style="width:100%"></div></div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-top"><span class="kpi-icon yellow">📁</span><span class="kpi-trend down">3 pending</span></div>
-          <h3>127</h3><p>Dokumen Digital</p>
-          <div class="kpi-bar yellow"><div style="width:70%"></div></div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-top"><span class="kpi-icon purple">📈</span><span class="kpi-trend up">96.4%</span></div>
-          <h3>Kehadiran</h3><p>Rata-rata Bulan Ini</p>
-          <div class="kpi-bar purple"><div style="width:96%"></div></div>
-        </div>
       </div>
-
-      <!-- CHART + TABLE -->
-      <div class="two-col">
-        <div class="card">
-          <div class="card-head">
-            <h3>Statistik Kehadiran Siswa</h3>
-            <select class="select-sm"><option>Bulan Ini</option><option>Semester</option></select>
-          </div>
-          <div class="chart">
-            <div class="chart-bars">
-              <div><span style="height:75%"><b>Sen</b></span><small>92%</small></div>
-              <div><span style="height:92%"><b>Sel</b></span><small>96%</small></div>
-              <div><span style="height:88%"><b>Rab</b></span><small>94%</small></div>
-              <div><span style="height:96%"><b>Kam</b></span><small>98%</small></div>
-              <div><span style="height:80%"><b>Jum</b></span><small>89%</small></div>
-              <div><span style="height:60%"><b>Sab</b></span><small>85%</small></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-head">
-            <h3>Administrasi Guru Terbaru</h3>
-            <a class="link">Lihat Semua</a>
-          </div>
-          <table class="table">
-            <thead><tr><th>Guru</th><th>Mapel</th><th>Status</th></tr></thead>
-            <tbody>
-              <tr><td><div class="user-cell"><img src="https://ui-avatars.com/api/?name=Satia&background=1e3c72&color=fff"><span>Satia, S.Pd<br><small>Kepsek</small></span></div></td><td>Tematik</td><td><span class="pill green">Hadir</span></td></tr>
-              <tr><td><div class="user-cell"><img src="https://ui-avatars.com/api/?name=Arfah&background=2a5298&color=fff"><span>Muh Arfah<br><small>Operator</small></span></div></td><td>TIK</td><td><span class="pill green">Hadir</span></td></tr>
-              <tr><td><div class="user-cell"><img src="https://ui-avatars.com/api/?name=Guru+1&background=f8fafc&color=1a1a1a"><span>Siti Aminah<br><small>Kelas 1</small></span></div></td><td>Kelas 1</td><td><span class="pill yellow">Izin</span></td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- QUICK ACTIONS -->
-      <div class="card">
-        <div class="card-head"><h3>Aksi Cepat Admin</h3></div>
-        <div class="quick-grid">
-          <button class="quick-btn"><span>📥</span>Input Surat Masuk</button>
-          <button class="quick-btn"><span>👨‍🎓</span>Tambah Siswa Baru</button>
-          <button class="quick-btn"><span>📢</span>Buat Pengumuman</button>
-          <button class="quick-btn"><span>🖼️</span>Upload Galeri</button>
-          <button class="quick-btn"><span>📊</span>Export Laporan</button>
-          <button class="quick-btn"><span>⚙️</span>Kelola Master Data</button>
-        </div>
-      </div>
+      <div class="card"><div class="card-head"><h3>Preview Auto-fill & Master Data</h3></div><div id="autoFillPreview" style="font-size:12px;background:#f7f9fc;padding:12px;border-radius:12px;border:1px solid #e8eef6;"></div></div>
     </div>
   </main>
-
   <script src="./js/config/service-menu.js"></script>
   <script src="./js/admin-elegant.js"></script>
   <script>
-    // Sinkron dengan service-menu.js - otak sistem
     document.addEventListener('DOMContentLoaded', () => {
-      if(typeof ServiceMenu !== 'undefined'){
-        ServiceMenu.checkAccess();
-        const user = ServiceMenu.getCurrentUser();
-        const el = document.getElementById('sidebarUserName');
-        if(el) el.textContent = user.nama;
-        const badge = document.getElementById('dateBadge');
-        if(badge){ const d=new Date(); badge.textContent = d.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}); }
-      }
-      const logoutBtn = document.getElementById('logoutBtn');
-      if(logoutBtn){ logoutBtn.onclick = () => ServiceMenu.logout(); }
+      ServiceMenu.checkAccess();
+      const user = ServiceMenu.getCurrentUser();
+      const auto = ServiceMenu.getAutoFillProfile();
+      document.getElementById('sidebarUserName').textContent = user.nama;
+      document.getElementById('sidebarUserRole').textContent = user.jabatan;
+      document.getElementById('welcomeName').textContent = user.nama.split(' ')[0];
+      document.getElementById('dateBadge').textContent = new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'});
+      document.getElementById('autoFillPreview').innerHTML = `<div><b>Nama:</b> ${auto.nama_guru} | <b>NIP:</b> ${auto.nip_guru}</div><div><b>Kepsek:</b> ${auto.nama_kepsek} | <b>NIP Kepsek:</b> ${auto.nip_kepsek}</div><div><b>Total Fitur Terdaftar:</b> ${ALL_FEATURES.length} - ${ALL_FEATURES.map(f=>f.label).join(', ')}</div>`;
+      // RENDER SIDEBAR OTOMATIS
+      ServiceMenu.renderSidebar('dynamicSidebar');
+      // Toggle submenu & logout
+      setTimeout(()=>{
+        document.querySelectorAll('.has-sub').forEach(btn=>{
+          btn.onclick = () => {
+            const grp = btn.closest('.nav-group');
+            grp.classList.toggle('open');
+            const sub = grp.querySelector('.sub-menu');
+            if(sub) sub.style.display = grp.classList.contains('open') ? 'block' : 'none';
+          };
+        });
+        const lb = document.getElementById('logoutBtn');
+        if(lb) lb.onclick = () => ServiceMenu.logout();
+      }, 300);
     });
   </script>
 </body>
