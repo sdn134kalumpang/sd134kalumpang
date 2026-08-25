@@ -143,6 +143,21 @@ window.init_data_peserta_didik = window.init_data_peserta_didik || function(cont
 
   renderTable(ServiceMenu.isAdmin() ? siswaList : ServiceMenu.filterOwnerOnly(siswaList));
 
+  // Jika Firestore aktif, coba load terbaru dari Firestore
+  if(window.FirebaseService && FirebaseService.isEnabled()){
+    FirebaseService.getPesertaDidik().then(list=>{
+      if(list && list.length){
+        siswaList = list;
+        renderTable(ServiceMenu.isAdmin() ? siswaList : ServiceMenu.filterOwnerOnly(siswaList));
+      }
+    });
+    // Realtime listener
+    FirebaseService.listenPesertaDidik((list)=>{
+      siswaList = list;
+      filterAndRender();
+    });
+  }
+
   function filterAndRender(){
     let filtered = siswaList;
     const k = document.getElementById('filterKelas').value;
@@ -310,6 +325,21 @@ window.init_data_peserta_didik = window.init_data_peserta_didik || function(cont
           ServiceMenu.saveMasterData(md);
           siswaList = md.peserta_didik;
           renderTable(ServiceMenu.isAdmin() ? siswaList : ServiceMenu.filterOwnerOnly(siswaList));
+
+  // Jika Firestore aktif, coba load terbaru dari Firestore
+  if(window.FirebaseService && FirebaseService.isEnabled()){
+    FirebaseService.getPesertaDidik().then(list=>{
+      if(list && list.length){
+        siswaList = list;
+        renderTable(ServiceMenu.isAdmin() ? siswaList : ServiceMenu.filterOwnerOnly(siswaList));
+      }
+    });
+    // Realtime listener
+    FirebaseService.listenPesertaDidik((list)=>{
+      siswaList = list;
+      filterAndRender();
+    });
+  }
           preview.innerHTML = `<div style="padding:10px;background:#dcfce7;border-radius:8px;font-size:12px;">✅ Berhasil import ${withOwner.length} siswa! Data sudah masuk Master Data dan bisa di-load di LCKH, LKPD, Absensi, Penilaian.</div>`;
           setTimeout(()=>{ document.getElementById('importPanel').style.display='none'; }, 2000);
         };
@@ -327,13 +357,34 @@ window.init_data_peserta_didik = window.init_data_peserta_didik || function(cont
     reader.readAsText(file);
   };
 
-  window.hapusSiswa = function(id){
+  window.hapusSiswa = async function(id){
     if(!confirm('Hapus siswa ini?')) return;
-    let md = ServiceMenu.getMasterData();
-    md.peserta_didik = md.peserta_didik.filter(s=>s.id!==id);
-    ServiceMenu.saveMasterData(md);
-    siswaList = md.peserta_didik;
+    const siswa = siswaList.find(s=>s.id===id);
+    if(window.FirebaseService && window.FirebaseService.isEnabled() && siswa && (siswa.firestore_id || siswa.id)){
+      await FirebaseService.deletePesertaDidik(siswa.firestore_id || siswa.id, id);
+      siswaList = ServiceMenu.getMasterData().peserta_didik;
+    } else {
+      let md = ServiceMenu.getMasterData();
+      md.peserta_didik = md.peserta_didik.filter(s=>s.id!==id);
+      ServiceMenu.saveMasterData(md);
+      siswaList = md.peserta_didik;
+    }
     renderTable(ServiceMenu.isAdmin() ? siswaList : ServiceMenu.filterOwnerOnly(siswaList));
+
+  // Jika Firestore aktif, coba load terbaru dari Firestore
+  if(window.FirebaseService && FirebaseService.isEnabled()){
+    FirebaseService.getPesertaDidik().then(list=>{
+      if(list && list.length){
+        siswaList = list;
+        renderTable(ServiceMenu.isAdmin() ? siswaList : ServiceMenu.filterOwnerOnly(siswaList));
+      }
+    });
+    // Realtime listener
+    FirebaseService.listenPesertaDidik((list)=>{
+      siswaList = list;
+      filterAndRender();
+    });
+  }
   };
 
   window.editSiswa = function(id){
@@ -380,6 +431,21 @@ window.init_data_peserta_didik = window.init_data_peserta_didik || function(cont
     ServiceMenu.saveMasterData(md);
     siswaList = md.peserta_didik;
     renderTable(ServiceMenu.isAdmin() ? siswaList : ServiceMenu.filterOwnerOnly(siswaList));
+
+  // Jika Firestore aktif, coba load terbaru dari Firestore
+  if(window.FirebaseService && FirebaseService.isEnabled()){
+    FirebaseService.getPesertaDidik().then(list=>{
+      if(list && list.length){
+        siswaList = list;
+        renderTable(ServiceMenu.isAdmin() ? siswaList : ServiceMenu.filterOwnerOnly(siswaList));
+      }
+    });
+    // Realtime listener
+    FirebaseService.listenPesertaDidik((list)=>{
+      siswaList = list;
+      filterAndRender();
+    });
+  }
     ['f_nis','f_nisn','f_nama','f_ttl','f_alamat','f_ayah','f_ibu'].forEach(id=>document.getElementById(id).value='');
   };
 
@@ -433,4 +499,4 @@ window.init_data_peserta_didik = window.init_data_peserta_didik || function(cont
 window['init_data-peserta-didik'] = window.init_data_peserta_didik;
 window.init_peserta_didik = window.init_data_peserta_didik;
 window['init_peserta-didik'] = window.init_data_peserta_didik;
-window.init_data_peserta_didik_js = window.init_data_peserta_didik;
+window.init_data_peserta_d
