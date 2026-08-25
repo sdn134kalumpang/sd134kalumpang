@@ -140,8 +140,8 @@
     </div>
   </main>
 
-  <script src="./js/config/service-menu.js"></script>
-  <script src="./js/admin-elegant.js"></script>
+  <script src="/sd134kalumpang/js/config/service-menu.js"></script>
+  <script src="/sd134kalumpang/js/admin-elegant.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       try {
@@ -168,9 +168,11 @@
           if(badge){ badge.textContent = new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}); }
 
           const md = ServiceMenu.getMasterData();
+          const schoolInfo = ServiceMenu.getSchoolInfo();
           const kpiSiswa = document.getElementById('kpiSiswa');
           const kpiGuru = document.getElementById('kpiGuru');
-          if(kpiSiswa) kpiSiswa.textContent = md.peserta_didik.length || 48;
+          // Fix kritis: tampilkan total siswa dari schoolInfo.totalSiswa (48) bukan dari filter owner
+          if(kpiSiswa) kpiSiswa.textContent = schoolInfo.totalSiswa || md.peserta_didik.length || 48;
           if(kpiGuru) kpiGuru.textContent = ServiceMenu.getUsers().length;
 
           const adminGuru = ALL_FEATURES.find(f=>f.id==='admin_guru');
