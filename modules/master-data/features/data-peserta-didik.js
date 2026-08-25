@@ -220,3 +220,8 @@ window.init_data_peserta_didik = window.init_data_peserta_didik || function(cont
 
 // Alias for main.js loader compatibility
 window.init_data_peserta_didik_js = window.init_data_peserta_didik;
+
+// FIX: alias untuk hyphen dan underscore agar loader tidak gagal
+window['init_data-peserta-didik'] = window.init_data_peserta_didik;
+window.init_peserta_didik = window.init_data_peserta_didik;
+window['init_peserta-didik'] = window.init_data_peserta_didik;
