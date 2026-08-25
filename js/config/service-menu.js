@@ -13,7 +13,7 @@ const PATH_CONFIG = {
 
 const ALL_FEATURES = [
   { id: 'dashboard', label: 'Dashboard', icon: '📊' },
-  { id: 'e_dokumen', label: 'E-Dokumen', icon: '📁', pages:../edokumen.html},
+  { id: 'e_dokumen', label: 'E-Dokumen', icon: '📁', pages:'edokumen.html'},
   { id: 'admin_guru', label: 'Administrasi Guru', icon: '👩‍🏫' },
   { id: 'data_statistik', label: 'Data Statistik', icon: '📈' },
   { id: 'e_portal', label: 'E-Portal', icon: '🌐' },
