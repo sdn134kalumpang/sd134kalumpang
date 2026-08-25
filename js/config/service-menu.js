@@ -19,6 +19,7 @@ const ALL_FEATURES = [
   { id: 'e_portal', label: 'E-Portal', icon: '🌐' },
   { id: 'master_data', label: 'Master Data', icon: '🗃️' },
   { id: 'pengaturan', label: 'Pengaturan', icon: '⚙️' },
+  { id: 'cooming soon', label: 'Cooming Soon', icon: '⚙️' },
 ];
 
 const ServiceMenu = {
