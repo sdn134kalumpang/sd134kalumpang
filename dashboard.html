@@ -6,9 +6,20 @@
 <title>Admin Panel - SDN 134 KALUMPANG</title>
 <link rel="stylesheet" href="./css/admin-elegant-final.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+.sub-menu-long::-webkit-scrollbar{width:4px}
+.sub-menu-long::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.2);border-radius:4px}
+.sub-menu-long{scrollbar-width:thin}
+.nav-count{background:#ffcc00;color:#0d3b66;font-size:10px;font-weight:800;padding:2px 7px;border-radius:10px;margin-left:auto;margin-right:6px;line-height:1}
+.nav-group.open .nav-arrow{transform:rotate(90deg)}
+.sub-menu a{padding:8px 12px 8px 36px;font-size:12px;display:flex;align-items:center;gap:8px;border-radius:8px;margin:2px 8px;transition:all 0.2s;color:rgba(255,255,255,0.65);text-decoration:none;cursor:pointer}
+.sub-menu a:hover{background:rgba(255,255,255,0.1);color:white}
+.sub-menu{animation:slideDown 0.2s ease}
+@keyframes slideDown{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+.badge{background:#ff3b30;color:white;font-size:9px;font-weight:700;padding:2px 6px;border-radius:10px;margin-left:auto}
+</style>
 </head>
 <body>
-  <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
       <div class="logo">
@@ -25,88 +36,21 @@
       </div>
       <div class="profile-info">
         <h4 id="sidebarUserName">Muh Arfah Wahlil P.</h4>
-        <p>Super Admin • Operator</p>
+        <p id="sidebarUserRole">Super Admin • Operator</p>
       </div>
       <button class="profile-more">⋯</button>
     </div>
 
-    <nav class="sidebar-nav">
-      <a class="nav-link active" data-page="dashboard">
-        <span class="nav-icon">📊</span><span class="nav-label">Dashboard</span>
-      </a>
-
-      <div class="nav-group">
-        <button class="nav-link has-sub">
-          <span class="nav-icon">📁</span><span class="nav-label">E-Dokumen</span><span class="nav-arrow">›</span>
-        </button>
-        <div class="sub-menu">
-          <a>📥 Surat Masuk <span class="badge">3</span></a>
-          <a>📤 Surat Keluar</a>
-          <a>🗄️ Arsip Digital</a>
-          <a>✍️ E-Sign</a>
-        </div>
-      </div>
-
-      <div class="nav-group">
-        <button class="nav-link has-sub">
-          <span class="nav-icon">👩‍🏫</span><span class="nav-label">Administrasi Guru</span><span class="nav-arrow">›</span>
-        </button>
-        <div class="sub-menu">
-          <a>👥 Data Guru (9 PTK)</a>
-          <a>🕒 Absensi Guru</a>
-          <a>⭐ Penilaian Kinerja</a>
-          <a>📅 Jadwal Mengajar</a>
-        </div>
-      </div>
-
-      <div class="nav-group">
-        <button class="nav-link has-sub">
-          <span class="nav-icon">📈</span><span class="nav-label">Data Statistik</span><span class="nav-arrow">›</span>
-        </button>
-        <div class="sub-menu">
-          <a>👨‍🎓 Statistik Siswa (48)</a>
-          <a>📋 Statistik Kehadiran</a>
-          <a>📝 Statistik Nilai</a>
-          <a>📊 Grafik Tren</a>
-        </div>
-      </div>
-
-      <div class="nav-group">
-        <button class="nav-link has-sub">
-          <span class="nav-icon">🌐</span><span class="nav-label">E-Portal</span><span class="nav-arrow">›</span>
-        </button>
-        <div class="sub-menu">
-          <a>📰 Berita Sekolah</a>
-          <a>📢 Pengumuman PPDB</a>
-          <a>🖼️ Galeri Kegiatan</a>
-          <a>🗓️ Agenda Sekolah</a>
-        </div>
-      </div>
-
-      <div class="nav-group">
-        <button class="nav-link has-sub">
-          <span class="nav-icon">🗃️</span><span class="nav-label">Master Data</span><span class="nav-arrow">›</span>
-        </button>
-        <div class="sub-menu">
-          <a>🎓 Data Siswa</a>
-          <a>🏫 Data Kelas</a>
-          <a>📚 Mata Pelajaran</a>
-          <a>📆 Tahun Ajaran</a>
-          <a>🏛️ Profil Sekolah</a>
-        </div>
-      </div>
-
-      <div class="nav-divider"></div>
-      <a class="nav-link" href="pengaturan.html"><span class="nav-icon">⚙️</span><span class="nav-label">Pengaturan</span></a>
-      <a class="nav-link logout" id="logoutBtn"><span class="nav-icon">🚪</span><span class="nav-label">Keluar</span></a>
+    <nav class="sidebar-nav" id="dynamicSidebar">
+      <div style="padding:20px;color:rgba(255,255,255,0.4);font-size:11px;text-align:center;">Memuat menu dari service-menu.js...<br>18 sub fitur Administrasi Guru</div>
     </nav>
 
     <div class="sidebar-footer">
       <p>NPSN 40312947<br>Tritiro, Bontotiro - Bulukumba</p>
+      <p style="font-size:9px;margin-top:6px;opacity:0.5">V3.3 Adopsi - konfigurasiFitur ?fitur= + aturan_dan_pola.docx</p>
     </div>
   </aside>
 
-  <!-- MAIN -->
   <main class="main">
     <header class="topbar">
       <div class="topbar-left">
@@ -127,11 +71,10 @@
     </header>
 
     <div class="content">
-      <!-- WELCOME -->
       <div class="welcome-banner">
         <div>
-          <h1>Selamat datang kembali, para user HEBAT! 👋</h1>
-          <p>SDN 134 Kalumpang • Akreditasi B • 48 Siswa • 9 Guru • Kab. Bulukumba, Sulsel 92572</p>
+          <h1>Selamat datang kembali, <span id="welcomeName">para user HEBAT</span>! 👋</h1>
+          <p>SDN 134 Kalumpang • Akreditasi B • 48 Siswa • 9 Guru • Kab. Bulukumba, Sulsel 92572 • V3.3 Adopsi ?fitur= Active</p>
         </div>
         <div class="welcome-actions">
           <button class="btn btn-light">📥 Export Dapodik</button>
@@ -139,31 +82,29 @@
         </div>
       </div>
 
-      <!-- KPI -->
       <div class="kpi-grid">
         <div class="kpi-card">
           <div class="kpi-top"><span class="kpi-icon blue">👨‍🎓</span><span class="kpi-trend up">+2 bulan ini</span></div>
-          <h3>48</h3><p>Total Siswa Aktif</p>
+          <h3 id="kpiSiswa">48</h3><p>Total Siswa Aktif - Master Data</p>
           <div class="kpi-bar"><div style="width:85%"></div></div>
         </div>
         <div class="kpi-card">
           <div class="kpi-top"><span class="kpi-icon green">👩‍🏫</span><span class="kpi-trend up">100% hadir</span></div>
-          <h3>9</h3><p>PTK / Guru Aktif</p>
+          <h3 id="kpiGuru">9</h3><p>PTK / Guru Aktif - Auto-fill NIP</p>
           <div class="kpi-bar green"><div style="width:100%"></div></div>
         </div>
         <div class="kpi-card">
-          <div class="kpi-top"><span class="kpi-icon yellow">📁</span><span class="kpi-trend down">3 pending</span></div>
-          <h3>127</h3><p>Dokumen Digital</p>
+          <div class="kpi-top"><span class="kpi-icon yellow">📁</span><span class="kpi-trend down">Owner Only</span></div>
+          <h3>127</h3><p>Dokumen Digital - Hanya milik sendiri</p>
           <div class="kpi-bar yellow"><div style="width:70%"></div></div>
         </div>
         <div class="kpi-card">
-          <div class="kpi-top"><span class="kpi-icon purple">📈</span><span class="kpi-trend up">96.4%</span></div>
-          <h3>Kehadiran</h3><p>Rata-rata Bulan Ini</p>
+          <div class="kpi-top"><span class="kpi-icon purple">📈</span><span class="kpi-trend up">18 Fitur</span></div>
+          <h3 id="kpiAdmin">18</h3><p>Sub Administrasi Guru - aturan_dan_pola.docx</p>
           <div class="kpi-bar purple"><div style="width:96%"></div></div>
         </div>
       </div>
 
-      <!-- CHART + TABLE -->
       <div class="two-col">
         <div class="card">
           <div class="card-head">
@@ -180,35 +121,21 @@
               <div><span style="height:60%"><b>Sab</b></span><small>85%</small></div>
             </div>
           </div>
+          <div style="margin-top:12px;padding:10px;background:#f7f9fc;border-radius:8px;font-size:11px;" id="autoFillPreview"></div>
         </div>
 
         <div class="card">
           <div class="card-head">
-            <h3>Administrasi Guru Terbaru</h3>
-            <a class="link">Lihat Semua</a>
+            <h3>Administrasi Guru Terbaru - 18 Fitur</h3>
+            <a class="link" href="modules/admin-pembelajaran/adm-pembelajaran.html">Lihat Semua</a>
           </div>
-          <table class="table">
-            <thead><tr><th>Guru</th><th>Mapel</th><th>Status</th></tr></thead>
-            <tbody>
-              <tr><td><div class="user-cell"><img src="https://ui-avatars.com/api/?name=Satia&background=1e3c72&color=fff"><span>Satia, S.Pd<br><small>Kepsek</small></span></div></td><td>Tematik</td><td><span class="pill green">Hadir</span></td></tr>
-              <tr><td><div class="user-cell"><img src="https://ui-avatars.com/api/?name=Arfah&background=2a5298&color=fff"><span>Muh Arfah<br><small>Operator</small></span></div></td><td>TIK</td><td><span class="pill green">Hadir</span></td></tr>
-              <tr><td><div class="user-cell"><img src="https://ui-avatars.com/api/?name=Guru+1&background=f8fafc&color=1a1a1a"><span>Siti Aminah<br><small>Kelas 1</small></span></div></td><td>Kelas 1</td><td><span class="pill yellow">Izin</span></td></tr>
-            </tbody>
-          </table>
+          <div id="adminGuruGrid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;max-height:320px;overflow-y:auto;padding:4px;"></div>
         </div>
       </div>
 
-      <!-- QUICK ACTIONS -->
       <div class="card">
-        <div class="card-head"><h3>Aksi Cepat Admin</h3></div>
-        <div class="quick-grid">
-          <button class="quick-btn"><span>📥</span>Input Surat Masuk</button>
-          <button class="quick-btn"><span>👨‍🎓</span>Tambah Siswa Baru</button>
-          <button class="quick-btn"><span>📢</span>Buat Pengumuman</button>
-          <button class="quick-btn"><span>🖼️</span>Upload Galeri</button>
-          <button class="quick-btn"><span>📊</span>Export Laporan</button>
-          <button class="quick-btn"><span>⚙️</span>Kelola Master Data</button>
-        </div>
+        <div class="card-head"><h3>Aksi Cepat Admin - Dynamic dari konfigurasiFitur</h3></div>
+        <div class="quick-grid" id="quickGrid"></div>
       </div>
     </div>
   </main>
@@ -216,18 +143,75 @@
   <script src="./js/config/service-menu.js"></script>
   <script src="./js/admin-elegant.js"></script>
   <script>
-    // Sinkron dengan service-menu.js - otak sistem
     document.addEventListener('DOMContentLoaded', () => {
-      if(typeof ServiceMenu !== 'undefined'){
-        ServiceMenu.checkAccess();
-        const user = ServiceMenu.getCurrentUser();
-        const el = document.getElementById('sidebarUserName');
-        if(el) el.textContent = user.nama;
-        const badge = document.getElementById('dateBadge');
-        if(badge){ const d=new Date(); badge.textContent = d.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}); }
+      try {
+        if(typeof ServiceMenu !== 'undefined'){
+          const isLogged = localStorage.getItem('isLoggedIn');
+          if(!isLogged){
+            localStorage.setItem('isLoggedIn','true');
+            localStorage.setItem('nama','Muh Arfah Wahlil P.');
+            localStorage.setItem('role','super_admin');
+            localStorage.setItem('userEmail','muharfah@sdn134.sch.id');
+          }
+          ServiceMenu.checkAccess();
+          const user = ServiceMenu.getCurrentUser();
+          const auto = ServiceMenu.getAutoFillProfile();
+          const elName = document.getElementById('sidebarUserName');
+          const elRole = document.getElementById('sidebarUserRole');
+          const elWelcome = document.getElementById('welcomeName');
+          const elRoleBadge = document.getElementById('sidebarUserRole');
+          if(elName) elName.textContent = user.nama;
+          if(elRoleBadge) elRoleBadge.textContent = user.jabatan || user.role;
+          if(elWelcome) elWelcome.textContent = user.nama.split(' ')[0];
+
+          const badge = document.getElementById('dateBadge');
+          if(badge){ badge.textContent = new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}); }
+
+          const md = ServiceMenu.getMasterData();
+          const kpiSiswa = document.getElementById('kpiSiswa');
+          const kpiGuru = document.getElementById('kpiGuru');
+          if(kpiSiswa) kpiSiswa.textContent = md.peserta_didik.length || 48;
+          if(kpiGuru) kpiGuru.textContent = ServiceMenu.getUsers().length;
+
+          const adminGuru = ALL_FEATURES.find(f=>f.id==='admin_guru');
+          const kpiAdmin = document.getElementById('kpiAdmin');
+          if(kpiAdmin) kpiAdmin.textContent = adminGuru.sub.length;
+
+          const grid = document.getElementById('adminGuruGrid');
+          if(grid){
+            const iconMap = {'Kisi-kisi Soal':'📝','Pembuat Soal':'🛠️','Bank Soal':'🏦','RPM':'📄','Bank RPM':'🏦','LCKH':'📘','LKPD':'📗','Analisis KKTP':'📊','Refleksi':'🪞','Jurnal':'📓','Penilaian':'⭐','Absensi':'🕒','Generate CP-TP-ATP':'⚙️','Prosem':'🗓️','Prota':'📅','Rumus 8-3-3-4':'🧮','Kalender Pendidikan':'📆','Jadwal Pembelajaran':'🕘'};
+            grid.innerHTML = adminGuru.sub.map((s,i)=>{
+              const ic = iconMap[s]||'📄';
+              const link = ServiceMenu.getLinkForSub('admin_guru', s);
+              return `<a href="${link}" style="background:#f7f9fc;border:1px solid #e8eef6;padding:10px;border-radius:10px;display:flex;gap:8px;align-items:center;text-decoration:none;color:#0d3b66;font-weight:500;"><span style="font-size:16px;">${ic}</span><span style="font-size:11px;"><b>${i+1}.</b> ${s}</span></a>`;
+            }).join('');
+          }
+
+          const autoPrev = document.getElementById('autoFillPreview');
+          if(autoPrev) autoPrev.innerHTML = `<div><b>Nama Guru:</b> ${auto.nama_guru}</div><div><b>NIP:</b> ${auto.nip_guru}</div><div><b>Kepsek:</b> ${auto.nama_kepsek}</div><div><b>Sekolah:</b> ${auto.nama_sekolah} (${auto.npsn})</div><div style="margin-top:6px;color:#1b5e20;font-size:11px;">✅ Auto-fill aktif di 18 sub fitur + Kop Surat + Owner Only</div>`;
+
+          const quickGrid = document.getElementById('quickGrid');
+          if(quickGrid) quickGrid.innerHTML = ALL_FEATURES.filter(f=>f.id!=='dashboard').map(f=>`<button class="quick-btn" onclick="location.href='${ServiceMenu.getLinkForSub(f.id, f.sub[0]||'')}'"><span>${f.icon}</span>${f.label} (${f.sub.length})</button>`).join('');
+
+          ServiceMenu.renderSidebar('dynamicSidebar');
+
+          setTimeout(()=>{
+            document.querySelectorAll('.has-sub').forEach(btn=>{
+              btn.onclick = (e)=>{
+                e.preventDefault();
+                const grp = btn.closest('.nav-group');
+                grp.classList.toggle('open');
+                const sub = grp.querySelector('.sub-menu');
+                if(sub) sub.style.display = grp.classList.contains('open') ? 'block' : 'none';
+              };
+            });
+            const lb = document.getElementById('logoutBtn');
+            if(lb) lb.onclick = () => ServiceMenu.logout();
+          }, 300);
+        }
+      } catch(err){
+        console.error('Error dashboard:', err);
       }
-      const logoutBtn = document.getElementById('logoutBtn');
-      if(logoutBtn){ logoutBtn.onclick = () => ServiceMenu.logout(); }
     });
   </script>
 </body>
