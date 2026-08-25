@@ -5,80 +5,80 @@
 const PATH_CONFIG = {
   base: '/sd134kalumpang/',
   pages: {
-    dashboard: 'dashboard.html',
-    pengaturan: 'pengaturan.html',
-    login: 'index.html',
-    e_dokumen: 'modules/e-dokumen/index.html',
-    admin_guru: 'modules/adm-pembelajaran/adm-pembelajaran.html',
-    data_statistik: 'modules/data-statistik/index.html',
-    e_portal: 'modules/e-portal/index.html',
-    master_data: 'modules/master-data/index.html',
-    laporan: 'modules/laporan/index.html',
-    arsip_upload: 'modules/e-dokumen/arsip-upload.html',
-    arsip_katalog: 'modules/e-dokumen/arsip-katalog.html',
-    adm_pembelajaran_main: 'modules/adm-pembelajaran/adm-pembelajaran.html',
-    master_data_main: 'modules/master-data/index.html',
-    kop_administrasi: 'modules/master-data/index.html?fitur=kop'
+    dashboard: '/sd134kalumpang/dashboard.html',
+    pengaturan: '/sd134kalumpang/pengaturan.html',
+    login: '/sd134kalumpang/index.html',
+    e_dokumen: '/sd134kalumpang/modules/e-dokumen/index.html',
+    admin_guru: '/sd134kalumpang/modules/adm-pembelajaran/adm-pembelajaran.html',
+    data_statistik: '/sd134kalumpang/modules/data-statistik/index.html',
+    e_portal: '/sd134kalumpang/modules/e-portal/index.html',
+    master_data: '/sd134kalumpang/modules/master-data/index.html',
+    laporan: '/sd134kalumpang/modules/laporan/index.html',
+    arsip_upload: '/sd134kalumpang/modules/e-dokumen/arsip-upload.html',
+    arsip_katalog: '/sd134kalumpang/modules/e-dokumen/arsip-katalog.html',
+    adm_pembelajaran_main: '/sd134kalumpang/modules/adm-pembelajaran/adm-pembelajaran.html',
+    master_data_main: '/sd134kalumpang/modules/master-data/index.html',
+    kop_administrasi: '/sd134kalumpang//sd134kalumpang/modules/master-data/index.html?fitur=kop'
   }
 };
 
 const konfigurasiFitur = {
   'layanan-portal': [
-    { nama: 'SIAGA Pendis', icon: '🕌', link: 'modules/siaga-pendis.html', isExternal: true },
-    { nama: 'SIMPKB', icon: '👩‍🏫', link: 'modules/simpkb.html', isExternal: true },
+    { nama: 'SIAGA Pendis', icon: '🕌', link: '/sd134kalumpang/modules/siaga-pendis.html', isExternal: true },
+    { nama: 'SIMPKB', icon: '👩‍🏫', link: '/sd134kalumpang/modules/simpkb.html', isExternal: true },
     { nama: 'Data Perpustakaan', icon: '📚', link: 'https://data.perpusnas.go.id/login', isExternal: true },
     { nama: 'SIMACCA', icon: '💼', link: 'https://script.google.com/macros/s/AKfycbzEGn4yvaS19zKiUaU_ymgPsiXeHkxYr4Rxr5HTyAYdwPIrDYQujrnV0t2sEB-wT_3fcw/exec', isExternal: true }
   ],
   'dokumen-arsip': [
-    { nama: 'Arsip', icon: '📁', link: 'modules/e-dokumen/index.html?fitur=arsip' },
-    { nama: 'Upload File', icon: '📤', link: 'modules/e-dokumen/index.html?fitur=upload' },
-    { nama: 'Laporan', icon: '📋', link: 'modules/e-dokumen/index.html?fitur=laporan' },
-    { nama: 'DLL', icon: '📦', link: 'modules/e-dokumen/index.html?fitur=dll' }
+    { nama: 'Arsip', icon: '📁', link: '/sd134kalumpang/modules/e-dokumen/index.html?fitur=arsip' },
+    { nama: 'Upload File', icon: '📤', link: '/sd134kalumpang/modules/e-dokumen/index.html?fitur=upload' },
+    { nama: 'Laporan', icon: '📋', link: '/sd134kalumpang/modules/e-dokumen/index.html?fitur=laporan' },
+    { nama: 'DLL', icon: '📦', link: '/sd134kalumpang/modules/e-dokumen/index.html?fitur=dll' }
   ],
   'data-statistik': [
-    { nama: 'Statistik GTK', icon: '👩‍🏫', link: 'modules/data-statistik/index.html?fitur=gtk' },
-    { nama: 'Monitoring', icon: '📈', link: 'modules/data-statistik/index.html?fitur=monitoring' },
-    { nama: 'Bantuan AI', icon: '🤖', link: 'modules/data-statistik/index.html?fitur=bantuan-ai' },
-    { nama: 'Demografi Sekolah', icon: '🏫', link: 'modules/data-statistik/index.html?fitur=demografi' },
-    { nama: 'Statistik Peserta Didik', icon: '🎓', link: 'modules/data-statistik/index.html?fitur=peserta-didik' }
+    { nama: 'Statistik GTK', icon: '👩‍🏫', link: '/sd134kalumpang/modules/data-statistik/index.html?fitur=gtk' },
+    { nama: 'Monitoring', icon: '📈', link: '/sd134kalumpang/modules/data-statistik/index.html?fitur=monitoring' },
+    { nama: 'Bantuan AI', icon: '🤖', link: '/sd134kalumpang/modules/data-statistik/index.html?fitur=bantuan-ai' },
+    { nama: 'Demografi Sekolah', icon: '🏫', link: '/sd134kalumpang/modules/data-statistik/index.html?fitur=demografi' },
+    { nama: 'Statistik Peserta Didik', icon: '🎓', link: '/sd134kalumpang/modules/data-statistik/index.html?fitur=peserta-didik' }
   ],
   'admin-pembelajaran': [
-    { nama: 'Kisi-kisi Soal', icon: '📝', link: 'modules/adm-pembelajaran/adm-pembelajaran.html?fitur=kisi-kisi' },
-    { nama: 'Pembuat Soal', icon: '🛠️', link: 'modules/adm-pembelajaran/adm-pembelajaran.html?fitur=pembuat-soal' },
-    { nama: 'Bank Soal', icon: '🏦', link: 'modules/adm-pembelajaran/adm-pembelajaran.html?fitur=bank-soal' },
-    { nama: 'RPM', icon: '📄', link: 'modules/adm-pembelajaran/adm-pembelajaran.html?fitur=rpm-spesifik' },
-    { nama: 'Bank RPM', icon: '📚', link: 'modules/adm-pembelajaran/adm-pembelajaran.html?fitur=bank-rpm' },
-    { nama: 'LCKH', icon: '📘', link: 'modules/adm-pembelajaran/adm-pembelajaran.html?fitur=lckh' },
-    { nama: 'LKPD', icon: '📗', link: 'modules/adm-pembelajaran/adm-pembelajaran.html?fitur=lkpd' },
-    { nama: 'Analisis KKTP', icon: '📊', link: 'modules/adm-pembelajaran/adm-pembelajaran.html?fitur=kktp' },
-    { nama: 'Refleksi', icon: '🪞', link: 'modules/adm-pembelajaran/adm-pembelajaran.html?fitur=refleksi' },
-    { nama: 'Jurnal', icon: '📓', link: 'modules/adm-pembelajaran/adm-pembelajaran.html?fitur=jurnal' },
-    { nama: 'Penilaian', icon: '⭐', link: 'modules/adm-pembelajaran/adm-pembelajaran.html?fitur=penilaian' },
-    { nama: 'Absensi', icon: '🕒', link: 'modules/adm-pembelajaran/adm-pembelajaran.html?fitur=presensi' },
-    { nama: 'Generate CP-TP-ATP', icon: '⚙️', link: 'modules/adm-pembelajaran/adm-pembelajaran.html?fitur=cp-tp-atp' },
-    { nama: 'Prosem', icon: '🗓️', link: 'modules/adm-pembelajaran/adm-pembelajaran.html?fitur=promes' },
-    { nama: 'Prota', icon: '📅', link: 'modules/adm-pembelajaran/adm-pembelajaran.html?fitur=prota' },
-    { nama: 'Rumus 8-3-3-4', icon: '🧮', link: 'modules/adm-pembelajaran/adm-pembelajaran.html?fitur=rumus-8-3-3-4' },
-    { nama: 'Kalender Pendidikan', icon: '📆', link: 'modules/adm-pembelajaran/adm-pembelajaran.html?fitur=kalender' },
-    { nama: 'Jadwal Pembelajaran', icon: '⏰', link: 'modules/adm-pembelajaran/adm-pembelajaran.html?fitur=jadwal' }
+    { nama: 'Kisi-kisi Soal', icon: '📝', link: '/sd134kalumpang/modules/adm-pembelajaran/adm-pembelajaran.html?fitur=kisi-kisi' },
+    { nama: 'Pembuat Soal', icon: '🛠️', link: '/sd134kalumpang/modules/adm-pembelajaran/adm-pembelajaran.html?fitur=pembuat-soal' },
+    { nama: 'Bank Soal', icon: '🏦', link: '/sd134kalumpang/modules/adm-pembelajaran/adm-pembelajaran.html?fitur=bank-soal' },
+    { nama: 'RPM', icon: '📄', link: '/sd134kalumpang/modules/adm-pembelajaran/adm-pembelajaran.html?fitur=rpm-spesifik' },
+    { nama: 'Bank RPM', icon: '📚', link: '/sd134kalumpang/modules/adm-pembelajaran/adm-pembelajaran.html?fitur=bank-rpm' },
+    { nama: 'LCKH', icon: '📘', link: '/sd134kalumpang/modules/adm-pembelajaran/adm-pembelajaran.html?fitur=lckh' },
+    { nama: 'LKPD', icon: '📗', link: '/sd134kalumpang/modules/adm-pembelajaran/adm-pembelajaran.html?fitur=lkpd' },
+    { nama: 'Analisis KKTP', icon: '📊', link: '/sd134kalumpang/modules/adm-pembelajaran/adm-pembelajaran.html?fitur=kktp' },
+    { nama: 'Refleksi', icon: '🪞', link: '/sd134kalumpang/modules/adm-pembelajaran/adm-pembelajaran.html?fitur=refleksi' },
+    { nama: 'Jurnal', icon: '📓', link: '/sd134kalumpang/modules/adm-pembelajaran/adm-pembelajaran.html?fitur=jurnal' },
+    { nama: 'Penilaian', icon: '⭐', link: '/sd134kalumpang/modules/adm-pembelajaran/adm-pembelajaran.html?fitur=penilaian' },
+    { nama: 'Absensi', icon: '🕒', link: '/sd134kalumpang/modules/adm-pembelajaran/adm-pembelajaran.html?fitur=presensi' },
+    { nama: 'Generate CP-TP-ATP', icon: '⚙️', link: '/sd134kalumpang/modules/adm-pembelajaran/adm-pembelajaran.html?fitur=cp-tp-atp' },
+    { nama: 'Prosem', icon: '🗓️', link: '/sd134kalumpang/modules/adm-pembelajaran/adm-pembelajaran.html?fitur=promes' },
+    { nama: 'Prota', icon: '📅', link: '/sd134kalumpang/modules/adm-pembelajaran/adm-pembelajaran.html?fitur=prota' },
+    { nama: 'Rumus 8-3-3-4', icon: '🧮', link: '/sd134kalumpang/modules/adm-pembelajaran/adm-pembelajaran.html?fitur=rumus-8-3-3-4' },
+    { nama: 'Kalender Pendidikan', icon: '📆', link: '/sd134kalumpang/modules/adm-pembelajaran/adm-pembelajaran.html?fitur=kalender' },
+    { nama: 'Jadwal Pembelajaran', icon: '⏰', link: '/sd134kalumpang/modules/adm-pembelajaran/adm-pembelajaran.html?fitur=jadwal' }
   ],
   'master-data': [
-    { nama: 'Kop Administrasi', icon: '📄', link: 'modules/master-data/index.html?fitur=kop' },
-    { nama: 'Data Peserta Didik', icon: '🎓', link: 'modules/master-data/index.html?fitur=data-peserta-didik' },
-    { nama: 'Sarana', icon: '🏫', link: 'modules/master-data/index.html?fitur=sarana' },
-    { nama: 'Data TP', icon: '🎯', link: 'modules/master-data/index.html?fitur=data-tp' },
-    { nama: 'Data CP', icon: '📘', link: 'modules/master-data/index.html?fitur=data-cp' },
-    { nama: 'Data ATP', icon: '📗', link: 'modules/master-data/index.html?fitur=data-atp' },
-    { nama: 'Data Mapel', icon: '📚', link: 'modules/master-data/index.html?fitur=data-mapel' },
-    { nama: 'Coming Soon', icon: '🚧', link: 'modules/master-data/index.html?fitur=coming-soon' }
+    { nama: 'Kop Administrasi', icon: '📄', link: '/sd134kalumpang/modules/master-data/index.html?fitur=kop' },
+    { nama: 'Data Peserta Didik', icon: '🎓', link: '/sd134kalumpang/modules/master-data/index.html?fitur=data-peserta-didik' },
+    { nama: 'Sarana', icon: '🏫', link: '/sd134kalumpang/modules/master-data/index.html?fitur=sarana' },
+    { nama: 'Data TP', icon: '🎯', link: '/sd134kalumpang/modules/master-data/index.html?fitur=data-tp' },
+    { nama: 'Data CP', icon: '📘', link: '/sd134kalumpang/modules/master-data/index.html?fitur=data-cp' },
+    { nama: 'Data ATP', icon: '📗', link: '/sd134kalumpang/modules/master-data/index.html?fitur=data-atp' },
+    { nama: 'Data Mapel', icon: '📚', link: '/sd134kalumpang/modules/master-data/index.html?fitur=data-mapel' },
+    { nama: 'Coming Soon', icon: '🚧', link: '/sd134kalumpang/modules/master-data/index.html?fitur=coming-soon' }
   ]
 };
 
 const controlCenterFitur = {
   'control-center': [
-    { nama: 'Manajemen Pengguna', icon: '👥', link: 'modules/control-center/manajemen-pengguna.html' },
-    { nama: 'Pengumuman Berjalan', icon: '📢', link: 'pengaturan.html' },
-    { nama: 'Info Sekolah', icon: '🏫', link: 'pengaturan.html' }
+    { nama: 'Manajemen Pengguna', icon: '👥', link: '/sd134kalumpang/modules/control-center/manajemen-pengguna.html' },
+    { nama: 'Pengumuman Berjalan', icon: '📢', link: '/sd134kalumpang/pengaturan.html' },
+    { nama: 'Info Sekolah', icon: '🏫', link: '/sd134kalumpang/pengaturan.html' }
   ]
 };
 
@@ -117,11 +117,11 @@ const ServiceMenu = {
     return { nama_guru: u.nama, nip_guru: u.nip, email_guru: u.email, jabatan_guru: u.jabatan, nama_kepsek: u.kepsek_nama, nip_kepsek: u.kepsek_nip, nama_sekolah: this.getSchoolInfo().nama, npsn: this.getSchoolInfo().npsn, alamat_sekolah: this.getSchoolInfo().alamat };
   },
   isAdmin: () => ['super_admin','admin'].includes(localStorage.getItem('role') || 'super_admin'),
-  checkAccess: () => { if(localStorage.getItem('isLoggedIn') !== 'true'){ window.location.href = PATH_CONFIG.pages.login; return false; } return true; },
+  checkAccess: () => { if(localStorage.getItem('isLoggedIn') !== 'true'){ window.location.href = '/sd134kalumpang/index.html'; return false; } return true; },
   hasAccess: function(featureId){ const perms = this.getCurrentUser().permissions; if(this.isAdmin()) return true; if(perms.length===0) return true; return perms.includes(featureId); },
   getLinkForSub: function(featureId, subNama){
     const feat = ALL_FEATURES.find(f=>f.id===featureId);
-    if(!feat || !feat.links) return PATH_CONFIG.pages[featureId] || '#';
+    if(!feat || !feat.links) return PATH_CONFIG.pages[featureId] || '/sd134kalumpang/dashboard.html';
     const key = subNama.toLowerCase();
     const found = feat.links.find(l=> l.nama.toLowerCase().includes(key) || key.includes(l.nama.toLowerCase()) );
     if(found) return found.link;
@@ -132,7 +132,7 @@ const ServiceMenu = {
     const container = document.getElementById(containerId);
     if(!container) return;
     container.innerHTML = '';
-    let html = `<a class="nav-link active" data-page="dashboard" href="dashboard.html"><span class="nav-icon">📊</span><span class="nav-label">Dashboard</span></a>`;
+    let html = `<a class="nav-link active" data-page="dashboard" href="${PATH_CONFIG.pages.dashboard}"><span class="nav-icon">📊</span><span class="nav-label">Dashboard</span></a>`;
     const iconMap = {
       'Kisi-kisi Soal':'📝','Pembuat Soal':'🛠️','Bank Soal':'🏦','RPM':'📄','Bank RPM':'🏦','LCKH':'📘','LKPD':'📗','Analisis KKTP':'📊','Refleksi':'🪞','Jurnal':'📓','Penilaian':'⭐','Absensi':'🕒','Generate CP-TP-ATP':'⚙️','Prosem':'🗓️','Prota':'📅','Rumus 8-3-3-4':'🧮','Kalender Pendidikan':'📆','Jadwal Pembelajaran':'🕘','Arsip':'📁','Upload File':'📤','Laporan':'📋','DLL':'📦','Kop Administrasi':'📄','Data Peserta Didik':'🎓','Sarana':'🏫'
     };
@@ -191,7 +191,7 @@ const ServiceMenu = {
   addOwner: function(obj){ obj.owner_email = this.getCurrentUser().email; obj.owner_nama = this.getCurrentUser().nama; obj.created_at = new Date().toISOString(); return obj; },
   getSchoolInfo: () => JSON.parse(localStorage.getItem('school_info') || JSON.stringify({ npsn:'40312947', nama:'SDN 134 Kalumpang', alamat:'Trilino, Bontotiro - Bulukumba', akreditasi:'B', totalSiswa:48, totalGuru:9, kab:'Kab. Bulukumba, Sulsel 92572', tahunAjaran:'2025/2026' })),
   saveSchoolInfo: (info) => localStorage.setItem('school_info', JSON.stringify(info)),
-  logout: () => { localStorage.removeItem('isLoggedIn'); localStorage.removeItem('role'); window.location.href=PATH_CONFIG.pages.login; }
+  logout: () => { localStorage.removeItem('isLoggedIn'); localStorage.removeItem('role'); localStorage.removeItem('userEmail'); localStorage.removeItem('nama'); window.location.href=PATH_CONFIG.pages.login; }
 };
 
 if (typeof window !== 'undefined') {
