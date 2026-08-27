@@ -1,159 +1,184 @@
-// js/firebase-service.js - SERVICE FIRESTORE MODULAR v10 - SDN 134 KALUMPANG
-// Path: /sd134kalumpang/js/firebase-service.js
-// Sudah terhubung ke project: sdn134kalumpang
+// js/config/firebase-service.js - 1 FILE MULTI FUNGSI - SINGLE SOURCE
+// Lokasi resmi: /sd134kalumpang/js/config/firebase-service.js
+// Fungsi: Handle semua Master Data (peserta_didik, kop, sarana, tp, cp, atp, mapel) dalam 1 file
+// Project: sdn134kalumpang - NPSN 40312947
+// Tidak ada file firebase lain di repo
 
-import { db } from "./config/firebase-config.js";
-import { collection, doc, addDoc, setDoc, getDocs, getDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { db } from "./firebase-config.js";
+import { collection, doc, addDoc, setDoc, getDocs, getDoc, updateDoc, deleteDoc, onSnapshot, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const NPSN = '40312947';
 
 const FirebaseService = {
   isEnabled: () => typeof db !== 'undefined' && db !== null,
-  
-  getSchoolDocRef: function(){
-    const npsn = (window.ServiceMenu ? ServiceMenu.getSchoolInfo().npsn : '40312947') || '40312947';
-    return doc(db, 'schools', npsn);
+
+  // ===== GENERIC - 1 FUNGSI UNTUK SEMUA KOLEKSI =====
+  getCollection: (namaKoleksi) => {
+    return collection(db, 'schools', NPSN, namaKoleksi);
   },
 
-  getPesertaDidikCollection: function(){
-    const npsn = (window.ServiceMenu ? ServiceMenu.getSchoolInfo().npsn : '40312947') || '40312947';
-    return collection(db, 'schools', npsn, 'peserta_didik');
-  },
-
-  // ====== PESERTA DIDIK - FIRESTORE ======
-  async getPesertaDidik(){
+  async getAll(namaKoleksi){
     if(!this.isEnabled()){
-      const md = window.ServiceMenu ? ServiceMenu.getMasterData() : { peserta_didik: [] };
-      return md.peserta_didik || [];
+      const md = ServiceMenu.getMasterData();
+      return md[namaKoleksi] || [];
     }
-    try {
-      const q = query(this.getPesertaDidikCollection(), orderBy('kelas'), orderBy('nama'));
-      const snapshot = await getDocs(q);
-      const list = snapshot.docs.map(d => ({ firestore_id: d.id, id: d.id, ...d.data() }));
-      // Sync ke localStorage
-      if(window.ServiceMenu){
+    try{
+      const snap = await getDocs(this.getCollection(namaKoleksi));
+      const list = snap.docs.map(d=>({ firestore_id:d.id, id:d.id, ...d.data() }));
+      // Auto sync ke localStorage biar offline tetap jalan
+      if(list.length && window.ServiceMenu){
         const md = ServiceMenu.getMasterData();
-        if(list.length) {
-          md.peserta_didik = list;
-          ServiceMenu.saveMasterData(md);
-        }
+        md[namaKoleksi] = list;
+        ServiceMenu.saveMasterData(md);
       }
-      console.log(`✅ Load ${list.length} siswa dari Firestore`);
+      console.log(`✅ Load ${list.length} dari Firestore: ${namaKoleksi}`);
       return list;
-    } catch(e){
-      console.error("Gagal get peserta didik:", e);
-      // Fallback ke localStorage
-      if(window.ServiceMenu){
-        return ServiceMenu.getMasterData().peserta_didik || [];
-      }
-      return [];
+    }catch(e){
+      console.error(`Firestore getAll ${namaKoleksi} error:`, e);
+      const md = ServiceMenu.getMasterData();
+      return md[namaKoleksi] || [];
     }
   },
 
-  async addPesertaDidik(data){
-    const withOwner = window.ServiceMenu ? ServiceMenu.addOwner(data) : { ...data, created_at: new Date().toISOString() };
-    
+  async getById(namaKoleksi, firestoreId){
+    try{
+      const snap = await getDoc(doc(this.getCollection(namaKoleksi), firestoreId));
+      return snap.exists() ? { firestore_id:snap.id, id:snap.id, ...snap.data() } : null;
+    }catch(e){ console.error(e); return null; }
+  },
+
+  async add(namaKoleksi, data){
+    const withOwner = ServiceMenu.addOwner({...data, updated_at:new Date().toISOString()});
     // Simpan local dulu (offline first)
-    if(window.ServiceMenu){
-      let md = ServiceMenu.getMasterData();
-      md.peserta_didik.push({ ...withOwner, id: withOwner.id || Date.now() });
-      ServiceMenu.saveMasterData(md);
-    }
-    
+    let md = ServiceMenu.getMasterData();
+    if(!md[namaKoleksi]) md[namaKoleksi] = [];
+    md[namaKoleksi].push({...withOwner, id:Date.now()});
+    ServiceMenu.saveMasterData(md);
+
     if(!this.isEnabled()) return withOwner;
-    
-    try {
-      const docRef = await addDoc(this.getPesertaDidikCollection(), withOwner);
-      console.log("✅ Peserta didik tersimpan di Firestore:", docRef.id);
-      return { ...withOwner, firestore_id: docRef.id, id: docRef.id };
-    } catch(e){
-      console.error("❌ Gagal simpan ke Firestore:", e);
+    try{
+      const ref = await addDoc(this.getCollection(namaKoleksi), withOwner);
+      console.log(`✅ Simpan ${namaKoleksi} ke Firestore:`, ref.id);
+      return {...withOwner, firestore_id:ref.id};
+    }catch(e){
+      console.error(`❌ Gagal simpan ${namaKoleksi}:`, e);
+      alert(`Gagal ke Firestore (${namaKoleksi}): ${e.message}\nCek Firestore Rules harus allow read,write if true`);
       return withOwner;
     }
   },
 
-  async addBatchPesertaDidik(listData){
-    if(!listData.length) return [];
-    const withOwners = listData.map(d => window.ServiceMenu ? ServiceMenu.addOwner({ id: Date.now()+Math.random(), ...d }) : d);
-    
-    // Local
-    if(window.ServiceMenu){
-      let md = ServiceMenu.getMasterData();
-      md.peserta_didik = md.peserta_didik.concat(withOwners);
-      ServiceMenu.saveMasterData(md);
-    }
+  async addBatch(namaKoleksi, listData){
+    const withOwners = listData.map(d=>ServiceMenu.addOwner({id:Date.now()+Math.random(), ...d, updated_at:new Date().toISOString()}));
+    let md = ServiceMenu.getMasterData();
+    if(!md[namaKoleksi]) md[namaKoleksi]=[];
+    md[namaKoleksi] = md[namaKoleksi].concat(withOwners);
+    ServiceMenu.saveMasterData(md);
 
     if(!this.isEnabled()) return withOwners;
-
-    try {
+    try{
       const batch = writeBatch(db);
-      withOwners.forEach(data => {
-        const docRef = doc(this.getPesertaDidikCollection());
-        batch.set(docRef, data);
+      withOwners.forEach(d=>{
+        const ref = doc(this.getCollection(namaKoleksi));
+        batch.set(ref, d);
       });
       await batch.commit();
-      console.log(`✅ Batch ${withOwners.length} siswa tersimpan di Firestore`);
+      console.log(`✅ Batch ${withOwners.length} ke Firestore: ${namaKoleksi}`);
       return withOwners;
-    } catch(e){
-      console.error("❌ Batch import gagal:", e);
-      return withOwners;
-    }
+    }catch(e){ console.error(`Batch ${namaKoleksi} error:`, e); return withOwners; }
   },
 
-  async updatePesertaDidik(firestoreId, data){
+  async update(namaKoleksi, firestoreId, data){
     if(!this.isEnabled()) return;
-    try {
-      const docRef = doc(this.getPesertaDidikCollection(), firestoreId);
-      await updateDoc(docRef, { ...data, updated_at: new Date().toISOString() });
-      console.log("✅ Update Firestore:", firestoreId);
-    } catch(e){ console.error(e); }
+    try{
+      await updateDoc(doc(this.getCollection(namaKoleksi), firestoreId), {...data, updated_at:new Date().toISOString()});
+      console.log(`✅ Update ${namaKoleksi}:`, firestoreId);
+    }catch(e){ console.error(e); }
   },
 
-  async deletePesertaDidik(firestoreId, localId){
-    // Hapus local
-    if(window.ServiceMenu){
-      let md = ServiceMenu.getMasterData();
-      md.peserta_didik = md.peserta_didik.filter(s=>s.id!=localId && s.firestore_id!=firestoreId && s.id!=firestoreId);
-      ServiceMenu.saveMasterData(md);
-    }
-
-    if(!this.isEnabled()) return;
-    try {
-      const docRef = doc(this.getPesertaDidikCollection(), firestoreId);
-      await deleteDoc(docRef);
-      console.log("✅ Hapus dari Firestore:", firestoreId);
-    } catch(e){ console.error(e); }
-  },
-
-  // ====== KOP ADMINISTRASI ======
-  async saveKop(kopData){
-    if(window.ServiceMenu){
-      let md = ServiceMenu.getMasterData();
-      md.kop = kopData;
+  async delete(namaKoleksi, firestoreId, localId){
+    let md = ServiceMenu.getMasterData();
+    if(md[namaKoleksi]){
+      md[namaKoleksi] = md[namaKoleksi].filter(s=>s.id!=localId && s.firestore_id!=firestoreId && s.id!=firestoreId);
       ServiceMenu.saveMasterData(md);
     }
     if(!this.isEnabled()) return;
-    try {
-      const npsn = (window.ServiceMenu ? ServiceMenu.getSchoolInfo().npsn : '40312947') || '40312947';
-      await setDoc(doc(db, 'schools', npsn, 'kop', 'current'), kopData);
-      await setDoc(doc(db, 'schools', npsn), { kop: kopData, updated_at: new Date().toISOString() }, { merge: true });
-      console.log("✅ Kop tersimpan di Firestore");
-    } catch(e){ console.error(e); }
+    try{ await deleteDoc(doc(this.getCollection(namaKoleksi), firestoreId)); console.log(`✅ Hapus ${namaKoleksi}:`, firestoreId); }catch(e){ console.error(e); }
   },
 
-  // ====== REALTIME LISTENER ======
-  listenPesertaDidik(callback){
-    if(!this.isEnabled()) return () => {};
-    const q = query(this.getPesertaDidikCollection(), orderBy('kelas'));
-    return onSnapshot(q, snapshot => {
-      const list = snapshot.docs.map(doc => ({ firestore_id: doc.id, id: doc.id, ...doc.data() }));
-      if(window.ServiceMenu){
-        const md = ServiceMenu.getMasterData();
-        md.peserta_didik = list;
-        ServiceMenu.saveMasterData(md);
+  listen(namaKoleksi, callback){
+    if(!this.isEnabled()) return ()=>{};
+    return onSnapshot(this.getCollection(namaKoleksi), snap=>{
+      const list = snap.docs.map(d=>({firestore_id:d.id, id:d.id, ...d.data()}));
+      // Sort untuk peserta_didik
+      if(namaKoleksi==='peserta_didik'){
+        list.sort((a,b)=> (a.kelas||'').localeCompare(b.kelas||'') || (a.nama||'').localeCompare(b.nama||''));
       }
+      const md = ServiceMenu.getMasterData();
+      md[namaKoleksi]=list;
+      ServiceMenu.saveMasterData(md);
       if(callback) callback(list);
-      console.log(`🔄 Realtime update: ${list.length} siswa`);
-    }, err => console.error("Realtime error:", err));
-  }
+      console.log(`🔄 Realtime ${namaKoleksi}: ${list.length}`);
+    });
+  },
+
+  // ===== WRAPPER KHUSUS - TAPI TETAP PAKAI GENERIC DI DALAM (1 file multi fungsi) =====
+  // Peserta Didik
+  getPesertaDidik(){ return this.getAll('peserta_didik'); },
+  addPesertaDidik(data){ return this.add('peserta_didik', data); },
+  addBatchPesertaDidik(list){ return this.addBatch('peserta_didik', list); },
+  updatePesertaDidik(fid, data){ return this.update('peserta_didik', fid, data); },
+  deletePesertaDidik(fid, localId){ return this.delete('peserta_didik', fid, localId); },
+  listenPesertaDidik(cb){ return this.listen('peserta_didik', cb); },
+
+  // Kop Administrasi (simpan di schools/40312947/kop/current - 1 doc saja)
+  async getKop(){
+    if(!this.isEnabled()){
+      return ServiceMenu.getMasterData().kop || null;
+    }
+    try{
+      const snap = await getDoc(doc(db, 'schools', NPSN, 'kop', 'current'));
+      if(snap.exists()){
+        const data = snap.data();
+        const md = ServiceMenu.getMasterData();
+        md.kop = data;
+        ServiceMenu.saveMasterData(md);
+        return data;
+      }
+      return ServiceMenu.getMasterData().kop;
+    }catch(e){ console.error(e); return ServiceMenu.getMasterData().kop; }
+  },
+  async saveKop(kopData){
+    let md = ServiceMenu.getMasterData();
+    md.kop = kopData;
+    ServiceMenu.saveMasterData(md);
+    if(!this.isEnabled()) return;
+    try{
+      await setDoc(doc(db, 'schools', NPSN, 'kop', 'current'), {...kopData, updated_at:new Date().toISOString()});
+      await setDoc(doc(db, 'schools', NPSN), { kop:kopData, updated_at:new Date().toISOString() }, {merge:true});
+      console.log('✅ Kop simpan Firestore');
+    }catch(e){ console.error(e); }
+  },
+  listenKop(cb){
+    if(!this.isEnabled()) return ()=>{};
+    return onSnapshot(doc(db, 'schools', NPSN, 'kop', 'current'), snap=>{
+      if(snap.exists()){
+        const data = snap.data();
+        const md = ServiceMenu.getMasterData();
+        md.kop = data;
+        ServiceMenu.saveMasterData(md);
+        if(cb) cb(data);
+      }
+    });
+  },
+
+  // Sarana, TP, CP, ATP, Mapel - pakai generic langsung
+  getSarana(){ return this.getAll('sarana'); },
+  addSarana(data){ return this.add('sarana', data); },
+  getTP(){ return this.getAll('tp'); },
+  addTP(data){ return this.add('tp', data); },
+  getCP(){ return this.getAll('cp'); },
+  getATP(){ return this.getAll('atp'); },
+  getMapel(){ return this.getAll('mapel'); }
 };
 
 window.FirebaseService = FirebaseService;
