@@ -32,7 +32,7 @@
 <script src="/sd134kalumpang/js/admin-elegant.js"></script>
 <script src="/sd134kalumpang/modules/master-data/main.js"></script>
 <script type="module">
-  import { db } from '/sd134kalumpang/js/config/firebase-config.js';
+  import { db } from '/sd134kalumpang/js/firebase-config.js';
   setTimeout(()=>{
     const el=document.getElementById('firestoreStatus');
     if(el){ el.textContent = db ? '🔥 Firestore: Connected (sdn134kalumpang)' : '⚠️ Offline (local only)'; }
