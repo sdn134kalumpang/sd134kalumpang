@@ -403,7 +403,7 @@ window.init_data_peserta_didik = window.init_data_peserta_didik || function(cont
     document.getElementById('btnSimpanSiswa').textContent = '💾 Update Siswa';
   };
 
-  document.getElementById('btnSimpanSiswa').onclick = function(){
+  document.getElementById('btnSimpanSiswa').onclick = async function(){
     const nama = document.getElementById('f_nama').value.trim();
     if(!nama){ alert('Nama wajib!'); return; }
     const obj = {
@@ -421,31 +421,51 @@ window.init_data_peserta_didik = window.init_data_peserta_didik || function(cont
     let md = ServiceMenu.getMasterData();
     const editId = document.getElementById('f_nama').dataset.editId;
     if(editId){
-      const idx = md.peserta_didik.findIndex(s=>s.id==editId);
-      if(idx>=0) md.peserta_didik[idx] = { ...md.peserta_didik[idx], ...obj };
+      const idx = md.peserta_didik.findIndex(s=>s.id==editId || s.firestore_id==editId);
+      if(idx>=0) md.peserta_didik[idx] = { ...md.peserta_didik[idx], ...obj, updated_at: new Date().toISOString() };
       delete document.getElementById('f_nama').dataset.editId;
       document.getElementById('btnSimpanSiswa').textContent = '💾 Simpan (addOwner otomatis)';
-    } else {
-      md.peserta_didik.push(ServiceMenu.addOwner({ id: Date.now(), ...obj }));
-    }
-    ServiceMenu.saveMasterData(md);
-    siswaList = md.peserta_didik;
-    renderTable(ServiceMenu.isAdmin() ? siswaList : ServiceMenu.filterOwnerOnly(siswaList));
-
-  // Jika Firestore aktif, coba load terbaru dari Firestore
-  if(window.FirebaseService && FirebaseService.isEnabled()){
-    FirebaseService.getPesertaDidik().then(list=>{
-      if(list && list.length){
-        siswaList = list;
-        renderTable(ServiceMenu.isAdmin() ? siswaList : ServiceMenu.filterOwnerOnly(siswaList));
+      ServiceMenu.saveMasterData(md);
+      siswaList = md.peserta_didik;
+      renderTable(ServiceMenu.isAdmin() ? siswaList : ServiceMenu.filterOwnerOnly(siswaList));
+      if(window.FirebaseService && FirebaseService.isEnabled()){
+        try{
+          await FirebaseService.updatePesertaDidik(editId, obj);
+          const list = await FirebaseService.getPesertaDidik();
+          if(list && list.length){
+            siswaList = list;
+            renderTable(ServiceMenu.isAdmin() ? siswaList : ServiceMenu.filterOwnerOnly(siswaList));
+          }
+          const infoEl = document.getElementById('firestoreInfo');
+          if(infoEl){ infoEl.textContent = '✅ Update Firestore: '+obj.nama; infoEl.style.background='#dcfce7'; }
+        }catch(e){
+          console.error('Firestore update error:', e.code, e.message);
+        }
       }
-    });
-    // Realtime listener
-    FirebaseService.listenPesertaDidik((list)=>{
-      siswaList = list;
-      filterAndRender();
-    });
-  }
+    } else {
+      const withOwner = ServiceMenu.addOwner({ id: Date.now(), ...obj });
+      md.peserta_didik.push(withOwner);
+      ServiceMenu.saveMasterData(md);
+      siswaList = md.peserta_didik;
+      renderTable(ServiceMenu.isAdmin() ? siswaList : ServiceMenu.filterOwnerOnly(siswaList));
+      if(window.FirebaseService && FirebaseService.isEnabled()){
+        try{
+          const saved = await FirebaseService.addPesertaDidik(obj);
+          const list = await FirebaseService.getPesertaDidik();
+          if(list && list.length){
+            siswaList = list;
+            renderTable(ServiceMenu.isAdmin() ? siswaList : ServiceMenu.filterOwnerOnly(siswaList));
+          }
+          const infoEl = document.getElementById('firestoreInfo');
+          if(infoEl){ infoEl.textContent = '✅ Tersimpan Firestore: '+saved.nama; infoEl.style.background='#dcfce7'; }
+          console.log('✅ Berhasil simpan ke Firestore: schools/40312947/peserta_didik/'+saved.firestore_id);
+        }catch(e){
+          console.error('Firestore add error:', e.code, e.message);
+          const infoEl = document.getElementById('firestoreInfo');
+          if(infoEl){ infoEl.textContent = '❌ Gagal Firestore: '+e.code; infoEl.style.background='#fef2f2'; }
+        }
+      }
+    }
     ['f_nis','f_nisn','f_nama','f_ttl','f_alamat','f_ayah','f_ibu'].forEach(id=>document.getElementById(id).value='');
   };
 
