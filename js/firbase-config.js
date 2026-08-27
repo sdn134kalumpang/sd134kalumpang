@@ -38,5 +38,8 @@ window.FirestoreHelpers = { collection, doc, addDoc, setDoc, getDocs, getDoc, up
 
 console.log("✅ Firebase Firestore terkoneksi:", firebaseConfig.projectId, "- NPSN 40312947");
 
+// Signal ready untuk index.html status
+window.dispatchEvent(new CustomEvent('firebase-ready', { detail: { db, projectId: firebaseConfig.projectId } }));
+
 // Juga export compat global untuk file lama yang pakai window.db
 export const firebaseApp = app;
