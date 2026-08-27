@@ -23,7 +23,7 @@
   <!-- SIDEBAR -->
   <div class="sidebar w-64 p-4 fixed left-0 top-0 overflow-y-auto">
     <div class="text-center mb-6">
-      <div class="text-3xl font-bold text-white mb-1">🏫 SDN 134</div>
+      <div class="text-3xl font-bold text-white mb-1"> SDN 134</div>
       <div class="text-yellow-400 text-sm font-semibold">KALUMPANG</div>
       <div class="text-gray-400 text-xs mt-1">NPSN 40312947</div>
     </div>
@@ -77,7 +77,7 @@
           <h1 class="text-xl font-bold text-gray-800 mt-1">Aplikasi Manajemen Sekolah</h1>
         </div>
         <div class="flex items-center gap-3">
-          <div id="firestoreStatus" class="status-badge bg-yellow-100 text-yellow-700">🔥 Connecting...</div>
+          <div id="firestoreStatus" class="status-badge bg-yellow-100 text-yellow-700"> Connecting...</div>
           <div id="firestoreInfo" class="text-xs text-gray-500 hidden md:block">Firebase - 1 File Multi Fungsi</div>
         </div>
       </div>
@@ -91,13 +91,13 @@
     </div>
   </div>
 
-  <!-- SCRIPT TAGS - PATH YANG BENAR SESUAI STRUKTUR REPO -->
+  <!-- ✅ PATH YANG BENAR: ../../js/ (BUKAN ../../js/config/) -->
   
-  <!-- 1. Load Firebase Config (Path: ../../js/config/) -->
+  <!-- 1. Load Firebase Config -->
   <script type="module">
     try {
-      // PENTING: Pastikan file sudah di-rename dari 'firbase-config.js' menjadi 'firebase-config.js'
-      import { db } from '../../js/config/firebase-config.js';
+      // PATH BENAR: File ada di /js/firebase-config.js
+      import { db } from '../../js/firebase-config.js';
       window.db = db;
       
       const statusEl = document.getElementById('firestoreStatus');
@@ -105,12 +105,12 @@
         statusEl.textContent = '✅ Firestore Connected';
         statusEl.className = 'status-badge bg-green-100 text-green-700';
       }
-      console.log('✅ Firebase loaded from: ../../js/config/firebase-config.js');
+      console.log('✅ Firebase loaded: ../../js/firebase-config.js');
     } catch(error) {
-      console.error('❌ Failed to load Firebase config:', error);
+      console.error('❌ Firebase error:', error);
       const statusEl = document.getElementById('firestoreStatus');
       if(statusEl) {
-        statusEl.textContent = '❌ Firebase Error (Cek nama file & path)';
+        statusEl.textContent = ' Firebase Error';
         statusEl.className = 'status-badge bg-red-100 text-red-700';
       }
     }
@@ -131,9 +131,6 @@
         statusEl.textContent = '✅ Firestore Ready';
         statusEl.className = 'status-badge bg-green-100 text-green-700';
       }
-    });
-    window.addEventListener('firebase-service-ready', (e) => {
-      console.log('⚡ FirebaseService ready:', e.detail);
     });
   </script>
 </body>
