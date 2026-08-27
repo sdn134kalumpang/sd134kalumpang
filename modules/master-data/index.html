@@ -34,44 +34,28 @@
     </div>
 
     <nav id="dynamicSidebar">
-      <!-- Master Data Group -->
       <div class="nav-group">
         <button class="nav-item active w-full text-left text-sm font-semibold has-sub">
           <i class="fas fa-database mr-2"></i> Master Data
           <i class="fas fa-chevron-down float-right text-xs mt-1"></i>
         </button>
         <div class="sub-menu pl-4" style="display: block;">
-          <a href="?fitur=kop" class="nav-item text-xs block" id="nav-kop">
-            <i class="fas fa-copy mr-2"></i> Kop Administrasi
-          </a>
-          <a href="?fitur=data-peserta-didik" class="nav-item text-xs block" id="nav-data-peserta-didik">
-            <i class="fas fa-users mr-2"></i> Data Peserta Didik
-          </a>
-          <a href="?fitur=sarana" class="nav-item text-xs block" id="nav-sarana">
-            <i class="fas fa-building mr-2"></i> Sarana Prasarana
-          </a>
+          <a href="?fitur=kop" class="nav-item text-xs block" id="nav-kop"><i class="fas fa-copy mr-2"></i> Kop Administrasi</a>
+          <a href="?fitur=data-peserta-didik" class="nav-item text-xs block" id="nav-data-peserta-didik"><i class="fas fa-users mr-2"></i> Data Peserta Didik</a>
+          <a href="?fitur=sarana" class="nav-item text-xs block" id="nav-sarana"><i class="fas fa-building mr-2"></i> Sarana Prasarana</a>
         </div>
       </div>
 
-      <!-- Kurikulum Group -->
       <div class="nav-group mt-4">
         <button class="nav-item w-full text-left text-sm font-semibold has-sub">
           <i class="fas fa-book mr-2"></i> Kurikulum
           <i class="fas fa-chevron-down float-right text-xs mt-1"></i>
         </button>
         <div class="sub-menu pl-4" style="display: none;">
-          <a href="?fitur=data-tp" class="nav-item text-xs block" id="nav-data-tp">
-            <i class="fas fa-bullseye mr-2"></i> Tujuan Pembelajaran
-          </a>
-          <a href="?fitur=data-cp" class="nav-item text-xs block" id="nav-data-cp">
-            <i class="fas fa-graduation-cap mr-2"></i> Capaian Pembelajaran
-          </a>
-          <a href="?fitur=data-atp" class="nav-item text-xs block" id="nav-data-atp">
-            <i class="fas fa-list-alt mr-2"></i> ATP
-          </a>
-          <a href="?fitur=data-mapel" class="nav-item text-xs block" id="nav-data-mapel">
-            <i class="fas fa-book-open mr-2"></i> Mata Pelajaran
-          </a>
+          <a href="?fitur=data-tp" class="nav-item text-xs block" id="nav-data-tp"><i class="fas fa-bullseye mr-2"></i> Tujuan Pembelajaran</a>
+          <a href="?fitur=data-cp" class="nav-item text-xs block" id="nav-data-cp"><i class="fas fa-graduation-cap mr-2"></i> Capaian Pembelajaran</a>
+          <a href="?fitur=data-atp" class="nav-item text-xs block" id="nav-data-atp"><i class="fas fa-list-alt mr-2"></i> ATP</a>
+          <a href="?fitur=data-mapel" class="nav-item text-xs block" id="nav-data-mapel"><i class="fas fa-book-open mr-2"></i> Mata Pelajaran</a>
         </div>
       </div>
 
@@ -86,7 +70,6 @@
 
   <!-- MAIN CONTENT -->
   <div class="flex-1 ml-64">
-    <!-- HEADER -->
     <div class="bg-white shadow-sm p-4 sticky top-0 z-10">
       <div class="flex justify-between items-center">
         <div>
@@ -94,17 +77,12 @@
           <h1 class="text-xl font-bold text-gray-800 mt-1">Aplikasi Manajemen Sekolah</h1>
         </div>
         <div class="flex items-center gap-3">
-          <div id="firestoreStatus" class="status-badge bg-yellow-100 text-yellow-700">
-            🔥 Connecting...
-          </div>
-          <div id="firestoreInfo" class="text-xs text-gray-500 hidden md:block">
-            Firebase - 1 File Multi Fungsi
-          </div>
+          <div id="firestoreStatus" class="status-badge bg-yellow-100 text-yellow-700">🔥 Connecting...</div>
+          <div id="firestoreInfo" class="text-xs text-gray-500 hidden md:block">Firebase - 1 File Multi Fungsi</div>
         </div>
       </div>
     </div>
 
-    <!-- CONTENT AREA -->
     <div id="mainContent" class="p-6">
       <div class="card p-8 text-center">
         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
@@ -113,57 +91,47 @@
     </div>
   </div>
 
-  <!-- SCRIPT TAGS - PATH YANG BENAR -->
+  <!-- SCRIPT TAGS - PATH YANG BENAR SESUAI STRUKTUR REPO -->
   
-  <!-- 1. Load Firebase Config (2 level ke atas) -->
+  <!-- 1. Load Firebase Config (Path: ../../js/config/) -->
   <script type="module">
     try {
-      // Import dari path yang benar: ../../js/firebase-config.js
-      import { db } from '../../js/firebase-config.js';
-      
-      // Export ke window agar bisa diakses ServiceMenu
+      // PENTING: Pastikan file sudah di-rename dari 'firbase-config.js' menjadi 'firebase-config.js'
+      import { db } from '../../js/config/firebase-config.js';
       window.db = db;
       
-      // Update status UI
       const statusEl = document.getElementById('firestoreStatus');
       if(statusEl) {
         statusEl.textContent = '✅ Firestore Connected';
         statusEl.className = 'status-badge bg-green-100 text-green-700';
       }
-      
-      console.log('✅ Firebase loaded from correct path: ../../js/firebase-config.js');
+      console.log('✅ Firebase loaded from: ../../js/config/firebase-config.js');
     } catch(error) {
-      console.error(' Failed to load Firebase config:', error);
+      console.error('❌ Failed to load Firebase config:', error);
       const statusEl = document.getElementById('firestoreStatus');
       if(statusEl) {
-        statusEl.textContent = '❌ Firebase Error';
+        statusEl.textContent = '❌ Firebase Error (Cek nama file & path)';
         statusEl.className = 'status-badge bg-red-100 text-red-700';
       }
     }
   </script>
 
-  <!-- 2. Load ServiceMenu (script biasa, bukan module) -->
+  <!-- 2. Load ServiceMenu -->
   <script src="../../js/service-menu.js"></script>
 
-  <!-- 3. Load main.js router (module) -->
+  <!-- 3. Load main.js router -->
   <script type="module" src="./main.js"></script>
 
-  <!-- 4. Fallback untuk kompatibilitas -->
+  <!-- 4. Fallback -->
   <script>
-    // Set NPSN global
     window.NPSN = '40312947';
-    
-    // Listen untuk Firebase ready
     window.addEventListener('firebase-ready', (e) => {
-      console.log('🔥 Firebase ready event:', e.detail);
       const statusEl = document.getElementById('firestoreStatus');
       if(statusEl) {
         statusEl.textContent = '✅ Firestore Ready';
         statusEl.className = 'status-badge bg-green-100 text-green-700';
       }
     });
-    
-    // Listen untuk FirebaseService ready
     window.addEventListener('firebase-service-ready', (e) => {
       console.log('⚡ FirebaseService ready:', e.detail);
     });
