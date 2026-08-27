@@ -116,7 +116,7 @@ tbody.innerHTML = '';
 list.forEach(s=>{
 const isOwner = s.owner_email === ServiceMenu.getCurrentUser().email;
 const badgeOwner = isOwner ? `<span style="background:#e0f2fe;color:#0369a1;font-size:9px;padding:2px 6px;border-radius:8px;">Milik Saya</span>` : `<span style="font-size:9px;color:#64748b;">${s.owner_email ? s.owner_email.split('@')[0] : '-'}</span>`;
-// 🔥 PERBAIKAN: Pastikan onclick menerima string ID agar aman untuk firestore_id
+// 🔥 PERBAIKAN: Gunakan String() agar aman untuk mencocokkan id atau firestore_id
 tbody.innerHTML += `<tr style="border-bottom:1px solid #f1f5f9;"> <td style="padding:8px;"><div style="font-weight:600;">${s.nis}</div><div style="font-size:10px;color:#64748b;">${s.nisn||'-'}</div></td> <td style="padding:8px;"><div style="font-weight:600;">${s.nama}</div><div style="font-size:10px;color:#64748b;">${s.ttl||''}</div></td> <td style="padding:8px;"><span style="background:#f1f5f9;padding:2px 8px;border-radius:12px;font-size:11px;">Kelas ${s.kelas}</span></td> <td style="padding:8px;">${s.jk}</td> <td style="padding:8px;"><span style="background:#dcfce7;color:#166534;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:700;">${s.status}</span></td> <td style="padding:8px;">${badgeOwner}</td> <td style="padding:8px;"><div style="display:flex;gap:4px;"><button onclick="editSiswa('${s.id}')" style="font-size:10px;background:#f1f5f9;padding:4px 8px;border-radius:6px;">✏️</button><button onclick="hapusSiswa('${s.id}')" style="font-size:10px;background:#fef2f2;color:#dc2626;padding:4px 8px;border-radius:6px;">🗑️</button></div></td> </tr>`;
 });
 document.getElementById('totalSiswa').textContent = list.length;
@@ -316,7 +316,7 @@ reader.readAsText(file);
 
 window.hapusSiswa = async function(id){
 if(!confirm('Hapus siswa ini?')) return;
-// 🔥 PERBAIKAN: Cari berdasarkan id ATAU firestore_id (menggunakan String comparison agar aman)
+// 🔥 PERBAIKAN: Cari berdasarkan id ATAU firestore_id
 const siswa = siswaList.find(s=> String(s.id)===String(id) || String(s.firestore_id)===String(id));
 if(window.FirebaseService && window.FirebaseService.isEnabled() && siswa && (siswa.firestore_id || siswa.id)){
   await FirebaseService.deletePesertaDidik(siswa.firestore_id || siswa.id, siswa.id);
