@@ -1,137 +1,42 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Master Data - SDN 134 Kalumpang</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8fafc; }
-    .sidebar { background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%); min-height: 100vh; }
-    .nav-item { color: #cbd5e1; padding: 10px 16px; border-radius: 8px; margin: 4px 0; cursor: pointer; transition: all 0.3s; }
-    .nav-item:hover { background: rgba(255,255,255,0.1); color: white; }
-    .nav-item.active { background: #ffcc00; color: #0f172a; font-weight: 700; }
-    .card { background: white; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-    .btn { padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none; transition: all 0.3s; }
-    .btn-accent { background: #ffcc00; color: #0f172a; }
-    .btn-accent:hover { background: #e6b800; }
-    .status-badge { padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Master Data - SDN 134 Kalumpang</title>
+<link rel="stylesheet" href="/sd134kalumpang/css/admin-elegant-final.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600&display=swap" rel="stylesheet">
+<style>
+.sub-menu-long::-webkit-scrollbar{width:4px}
+.sub-menu-long::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.2);border-radius:4px}
+.nav-count{background:#ffcc00;color:#0d3b66;font-size:10px;font-weight:800;padding:2px 7px;border-radius:10px;margin-left:auto;margin-right:6px}
+</style>
 </head>
-<body class="flex">
-  <!-- SIDEBAR -->
-  <div class="sidebar w-64 p-4 fixed left-0 top-0 overflow-y-auto">
-    <div class="text-center mb-6">
-      <div class="text-3xl font-bold text-white mb-1"> SDN 134</div>
-      <div class="text-yellow-400 text-sm font-semibold">KALUMPANG</div>
-      <div class="text-gray-400 text-xs mt-1">NPSN 40312947</div>
-    </div>
-    
-    <div id="userInfo" class="bg-white/10 rounded-lg p-3 mb-4">
-      <div class="text-white text-sm font-semibold" id="sidebarUserName">Memuat...</div>
-      <div class="text-yellow-400 text-xs" id="sidebarUserRole">-</div>
-    </div>
-
-    <nav id="dynamicSidebar">
-      <div class="nav-group">
-        <button class="nav-item active w-full text-left text-sm font-semibold has-sub">
-          <i class="fas fa-database mr-2"></i> Master Data
-          <i class="fas fa-chevron-down float-right text-xs mt-1"></i>
-        </button>
-        <div class="sub-menu pl-4" style="display: block;">
-          <a href="?fitur=kop" class="nav-item text-xs block" id="nav-kop"><i class="fas fa-copy mr-2"></i> Kop Administrasi</a>
-          <a href="?fitur=data-peserta-didik" class="nav-item text-xs block" id="nav-data-peserta-didik"><i class="fas fa-users mr-2"></i> Data Peserta Didik</a>
-          <a href="?fitur=sarana" class="nav-item text-xs block" id="nav-sarana"><i class="fas fa-building mr-2"></i> Sarana Prasarana</a>
-        </div>
-      </div>
-
-      <div class="nav-group mt-4">
-        <button class="nav-item w-full text-left text-sm font-semibold has-sub">
-          <i class="fas fa-book mr-2"></i> Kurikulum
-          <i class="fas fa-chevron-down float-right text-xs mt-1"></i>
-        </button>
-        <div class="sub-menu pl-4" style="display: none;">
-          <a href="?fitur=data-tp" class="nav-item text-xs block" id="nav-data-tp"><i class="fas fa-bullseye mr-2"></i> Tujuan Pembelajaran</a>
-          <a href="?fitur=data-cp" class="nav-item text-xs block" id="nav-data-cp"><i class="fas fa-graduation-cap mr-2"></i> Capaian Pembelajaran</a>
-          <a href="?fitur=data-atp" class="nav-item text-xs block" id="nav-data-atp"><i class="fas fa-list-alt mr-2"></i> ATP</a>
-          <a href="?fitur=data-mapel" class="nav-item text-xs block" id="nav-data-mapel"><i class="fas fa-book-open mr-2"></i> Mata Pelajaran</a>
-        </div>
-      </div>
-
-      <div class="mt-6 pt-6 border-t border-gray-600">
-        <div class="text-xs text-gray-400 mb-2 px-2">Tanggal: <span id="dateBadge">-</span></div>
-        <button id="logoutBtn" class="nav-item w-full text-left text-sm text-red-400 hover:text-red-300">
-          <i class="fas fa-sign-out-alt mr-2"></i> Logout
-        </button>
-      </div>
-    </nav>
-  </div>
-
-  <!-- MAIN CONTENT -->
-  <div class="flex-1 ml-64">
-    <div class="bg-white shadow-sm p-4 sticky top-0 z-10">
-      <div class="flex justify-between items-center">
-        <div>
-          <div class="text-sm text-gray-500">Master Data / <span id="breadcrumbFitur" class="font-semibold text-gray-700">KOP</span></div>
-          <h1 class="text-xl font-bold text-gray-800 mt-1">Aplikasi Manajemen Sekolah</h1>
-        </div>
-        <div class="flex items-center gap-3">
-          <div id="firestoreStatus" class="status-badge bg-yellow-100 text-yellow-700"> Connecting...</div>
-          <div id="firestoreInfo" class="text-xs text-gray-500 hidden md:block">Firebase - 1 File Multi Fungsi</div>
-        </div>
-      </div>
-    </div>
-
-    <div id="mainContent" class="p-6">
-      <div class="card p-8 text-center">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-        <div class="text-gray-600">Memuat modul...</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ✅ PATH YANG BENAR: ../../js/ (BUKAN ../../js/config/) -->
-  
-  <!-- 1. Load Firebase Config -->
-  <script type="module">
-    try {
-      // PATH BENAR: File ada di /js/firebase-config.js
-      import { db } from '../../js/firebase-config.js';
-      window.db = db;
-      
-      const statusEl = document.getElementById('firestoreStatus');
-      if(statusEl) {
-        statusEl.textContent = '✅ Firestore Connected';
-        statusEl.className = 'status-badge bg-green-100 text-green-700';
-      }
-      console.log('✅ Firebase loaded: ../../js/firebase-config.js');
-    } catch(error) {
-      console.error('❌ Firebase error:', error);
-      const statusEl = document.getElementById('firestoreStatus');
-      if(statusEl) {
-        statusEl.textContent = ' Firebase Error';
-        statusEl.className = 'status-badge bg-red-100 text-red-700';
-      }
-    }
-  </script>
-
-  <!-- 2. Load ServiceMenu -->
-  <script src="../../js/service-menu.js"></script>
-
-  <!-- 3. Load main.js router -->
-  <script type="module" src="./main.js"></script>
-
-  <!-- 4. Fallback -->
-  <script>
-    window.NPSN = '40312947';
-    window.addEventListener('firebase-ready', (e) => {
-      const statusEl = document.getElementById('firestoreStatus');
-      if(statusEl) {
-        statusEl.textContent = '✅ Firestore Ready';
-        statusEl.className = 'status-badge bg-green-100 text-green-700';
-      }
-    });
-  </script>
+<body>
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header"><div class="logo"><div class="logo-icon">134</div><div class="logo-text">SDN 134<span>KALUMPANG</span></div></div></div>
+  <div class="profile-card"><div class="profile-avatar"><img src="https://ui-avatars.com/api/?name=Muh+Arfah&background=FFD700&color=1a1a1a" alt="Admin"></div><div class="profile-info"><h4 id="sidebarUserName">Muh Arfah</h4><p id="sidebarUserRole">Super Admin</p></div></div>
+  <nav class="sidebar-nav" id="dynamicSidebar"><div style="padding:20px;color:rgba(255,255,255,0.4);font-size:11px;text-align:center;">Memuat menu...</div></nav>
+  <div class="sidebar-footer"><p>NPSN 40312947<br>Trilino, Bontotiro - Bulukumba</p><p style="font-size:9px;margin-top:6px;opacity:0.5">modules/master-data/ • Firebase Connected</p></div>
+</aside>
+<main class="main">
+  <header class="topbar"><div class="topbar-left"><div class="breadcrumb"><span>Master Data</span> / <strong id="breadcrumbFitur">Kop Administrasi</strong></div></div><div class="topbar-right"><div class="date-badge" id="dateBadge"></div><div id="firestoreStatus" style="font-size:10px;padding:4px 8px;border-radius:12px;background:#dcfce7;color:#166534;margin-left:8px;">🔥 Firestore: Connecting...</div></div></header>
+  <div class="content" id="mainContent"><div style="padding:40px;text-align:center;color:#64748b;">Memuat fitur Master Data...<br><small>Firebase Project: sdn134kalumpang</small></div></div>
+</main>
+<!-- Firebase Modular v10.12.2 - Real Config -->
+<script type="module" src="/sd134kalumpang/js/config/firebase-config.js"></script>
+<script type="module" src="/sd134kalumpang/js/firebase-service.js"></script>
+<!-- Otak Sistem -->
+<script src="/sd134kalumpang/js/config/service-menu.js"></script>
+<script src="/sd134kalumpang/js/admin-elegant.js"></script>
+<script src="/sd134kalumpang/modules/master-data/main.js"></script>
+<script type="module">
+  import { db } from '/sd134kalumpang/js/config/firebase-config.js';
+  setTimeout(()=>{
+    const el=document.getElementById('firestoreStatus');
+    if(el){ el.textContent = db ? '🔥 Firestore: Connected (sdn134kalumpang)' : '⚠️ Offline (local only)'; }
+  },1500);
+</script>
 </body>
 </html>
