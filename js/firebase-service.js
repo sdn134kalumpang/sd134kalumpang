@@ -1,185 +1,213 @@
-// js/config/firebase-service.js - 1 FILE MULTI FUNGSI - SINGLE SOURCE
+// js/config/firebase-service.js - 1 FILE MULTI FUNGSI - FIXED CONNECTING & WRITE
 // Lokasi resmi: /sd134kalumpang/js/config/firebase-service.js
-// Fungsi: Handle semua Master Data (peserta_didik, kop, sarana, tp, cp, atp, mapel) dalam 1 file
-// Project: sdn134kalumpang - NPSN 40312947
-// Tidak ada file firebase lain di repo
 
 import { db } from "./firebase-config.js";
 import { collection, doc, addDoc, setDoc, getDocs, getDoc, updateDoc, deleteDoc, onSnapshot, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const NPSN = '40312947';
 
-const FirebaseService = {
-  isEnabled: () => typeof db !== 'undefined' && db !== null,
+// Fallback if import db is undefined but window.db exists
+function getDb(){
+  return (typeof db !== 'undefined' && db) ? db : (window.db || null);
+}
 
-  // ===== GENERIC - 1 FUNGSI UNTUK SEMUA KOLEKSI =====
+const FirebaseService = {
+  isEnabled: () => {
+    const d = getDb();
+    return !!d;
+  },
   getCollection: (namaKoleksi) => {
-    return collection(db, 'schools', NPSN, namaKoleksi);
+    const d = getDb();
+    if(!d) throw new Error("Firestore DB belum siap - cek firebase-config.js 404");
+    return collection(d, 'schools', NPSN, namaKoleksi);
   },
 
   async getAll(namaKoleksi){
-    if(!this.isEnabled()){
-      const md = ServiceMenu.getMasterData();
+    const d = getDb();
+    if(!d){
+      console.warn("Firestore offline - pakai localStorage", namaKoleksi);
+      const md = window.ServiceMenu ? ServiceMenu.getMasterData() : { peserta_didik: [] };
       return md[namaKoleksi] || [];
     }
     try{
       const snap = await getDocs(this.getCollection(namaKoleksi));
-      const list = snap.docs.map(d=>({ firestore_id:d.id, id:d.id, ...d.data() }));
-      // Auto sync ke localStorage biar offline tetap jalan
-      if(list.length && window.ServiceMenu){
-        const md = ServiceMenu.getMasterData();
-        md[namaKoleksi] = list;
-        ServiceMenu.saveMasterData(md);
+      const list = snap.docs.map(doc=>({ firestore_id:doc.id, id:doc.id, ...doc.data() }));
+      if(namaKoleksi==='peserta_didik'){
+        list.sort((a,b)=> (a.kelas||'').localeCompare(b.kelas||'') || (a.nama||'').localeCompare(b.nama||''));
       }
-      console.log(`✅ Load ${list.length} dari Firestore: ${namaKoleksi}`);
+      if(window.ServiceMenu){
+        const md = ServiceMenu.getMasterData();
+        if(list.length>0){
+          md[namaKoleksi]=list;
+          ServiceMenu.saveMasterData(md);
+        }
+      }
+      console.log(`✅ Load ${list.length} dari Firestore: schools/${NPSN}/${namaKoleksi}`);
       return list;
     }catch(e){
-      console.error(`Firestore getAll ${namaKoleksi} error:`, e);
-      const md = ServiceMenu.getMasterData();
+      console.error(`❌ Firestore getAll ${namaKoleksi} error:`, e.code, e.message);
+      if(e.message.includes('Missing or insufficient permissions')){
+        console.error("RULES ERROR: Ganti Firestore Rules ke allow read, write: if true;");
+      }
+      const md = window.ServiceMenu ? ServiceMenu.getMasterData() : {};
       return md[namaKoleksi] || [];
     }
   },
 
-  async getById(namaKoleksi, firestoreId){
-    try{
-      const snap = await getDoc(doc(this.getCollection(namaKoleksi), firestoreId));
-      return snap.exists() ? { firestore_id:snap.id, id:snap.id, ...snap.data() } : null;
-    }catch(e){ console.error(e); return null; }
-  },
-
   async add(namaKoleksi, data){
-    const withOwner = ServiceMenu.addOwner({...data, updated_at:new Date().toISOString()});
-    // Simpan local dulu (offline first)
-    let md = ServiceMenu.getMasterData();
-    if(!md[namaKoleksi]) md[namaKoleksi] = [];
-    md[namaKoleksi].push({...withOwner, id:Date.now()});
-    ServiceMenu.saveMasterData(md);
+    // Buat owner info
+    let ownerData = data;
+    if(window.ServiceMenu && ServiceMenu.addOwner){
+      ownerData = ServiceMenu.addOwner({...data, updated_at:new Date().toISOString()});
+    } else {
+      ownerData = {...data, owner_email: localStorage.getItem('userEmail')||'hedisuriadi35@gmail.com', owner_nama: localStorage.getItem('nama')||'Admin', created_at:new Date().toISOString(), updated_at:new Date().toISOString()};
+    }
 
-    if(!this.isEnabled()) return withOwner;
+    // Simpan local dulu
+    if(window.ServiceMenu){
+      let md = ServiceMenu.getMasterData();
+      if(!md[namaKoleksi]) md[namaKoleksi]=[];
+      md[namaKoleksi].push({...ownerData, id:Date.now()});
+      ServiceMenu.saveMasterData(md);
+    }
+
+    const d = getDb();
+    if(!d){
+      console.warn("Firestore offline - hanya localStorage");
+      return ownerData;
+    }
+
     try{
-      const ref = await addDoc(this.getCollection(namaKoleksi), withOwner);
-      console.log(`✅ Simpan ${namaKoleksi} ke Firestore:`, ref.id);
-      return {...withOwner, firestore_id:ref.id};
+      const ref = await addDoc(this.getCollection(namaKoleksi), ownerData);
+      console.log(`✅ Berhasil simpan ke Firestore: schools/${NPSN}/${namaKoleksi}/${ref.id}`, ownerData);
+      // Update status UI
+      const statusEl = document.getElementById('firestoreStatus') || document.getElementById('firestoreInfo');
+      if(statusEl){
+        statusEl.textContent = `✅ Tersimpan Firestore: ${ownerData.nama||ownerData.nis||ref.id}`;
+        statusEl.style.background = '#dcfce7';
+      }
+      return {...ownerData, firestore_id:ref.id, id:ref.id};
     }catch(e){
-      console.error(`❌ Gagal simpan ${namaKoleksi}:`, e);
-      alert(`Gagal ke Firestore (${namaKoleksi}): ${e.message}\nCek Firestore Rules harus allow read,write if true`);
-      return withOwner;
+      console.error(`❌ Gagal simpan ${namaKoleksi} ke Firestore:`, e.code, e.message, e);
+      alert(`Gagal simpan ke Firestore (${namaKoleksi}):\n${e.code}\n${e.message}\n\nSolusi:\n1. Buka Firebase Console > Firestore > Rules\n2. Ganti jadi: allow read, write: if true;\n3. Publish`);
+      return ownerData;
     }
   },
 
   async addBatch(namaKoleksi, listData){
-    const withOwners = listData.map(d=>ServiceMenu.addOwner({id:Date.now()+Math.random(), ...d, updated_at:new Date().toISOString()}));
-    let md = ServiceMenu.getMasterData();
-    if(!md[namaKoleksi]) md[namaKoleksi]=[];
-    md[namaKoleksi] = md[namaKoleksi].concat(withOwners);
-    ServiceMenu.saveMasterData(md);
+    const withOwners = listData.map(d=>{
+      if(window.ServiceMenu && ServiceMenu.addOwner) return ServiceMenu.addOwner({id:Date.now()+Math.random(), ...d, updated_at:new Date().toISOString()});
+      return {...d, id:Date.now()+Math.random(), owner_email:localStorage.getItem('userEmail')||'admin', created_at:new Date().toISOString()};
+    });
 
-    if(!this.isEnabled()) return withOwners;
+    if(window.ServiceMenu){
+      let md = ServiceMenu.getMasterData();
+      if(!md[namaKoleksi]) md[namaKoleksi]=[];
+      md[namaKoleksi]=md[namaKoleksi].concat(withOwners);
+      ServiceMenu.saveMasterData(md);
+    }
+
+    const d = getDb();
+    if(!d) return withOwners;
+
     try{
-      const batch = writeBatch(db);
-      withOwners.forEach(d=>{
+      const batch = writeBatch(d);
+      withOwners.forEach(data=>{
         const ref = doc(this.getCollection(namaKoleksi));
-        batch.set(ref, d);
+        batch.set(ref, data);
       });
       await batch.commit();
       console.log(`✅ Batch ${withOwners.length} ke Firestore: ${namaKoleksi}`);
       return withOwners;
-    }catch(e){ console.error(`Batch ${namaKoleksi} error:`, e); return withOwners; }
+    }catch(e){
+      console.error(`Batch ${namaKoleksi} error:`, e);
+      return withOwners;
+    }
   },
 
-  async update(namaKoleksi, firestoreId, data){
-    if(!this.isEnabled()) return;
+  async update(namaKoleksi, fid, data){
+    const d = getDb();
+    if(!d) return;
     try{
-      await updateDoc(doc(this.getCollection(namaKoleksi), firestoreId), {...data, updated_at:new Date().toISOString()});
-      console.log(`✅ Update ${namaKoleksi}:`, firestoreId);
+      await updateDoc(doc(this.getCollection(namaKoleksi), fid), {...data, updated_at:new Date().toISOString()});
+      console.log(`✅ Update Firestore ${namaKoleksi}/${fid}`);
     }catch(e){ console.error(e); }
   },
 
-  async delete(namaKoleksi, firestoreId, localId){
-    let md = ServiceMenu.getMasterData();
-    if(md[namaKoleksi]){
-      md[namaKoleksi] = md[namaKoleksi].filter(s=>s.id!=localId && s.firestore_id!=firestoreId && s.id!=firestoreId);
-      ServiceMenu.saveMasterData(md);
+  async delete(namaKoleksi, fid, localId){
+    if(window.ServiceMenu){
+      let md = ServiceMenu.getMasterData();
+      if(md[namaKoleksi]){
+        md[namaKoleksi]=md[namaKoleksi].filter(s=>s.id!=localId && s.firestore_id!=fid && s.id!=fid);
+        ServiceMenu.saveMasterData(md);
+      }
     }
-    if(!this.isEnabled()) return;
-    try{ await deleteDoc(doc(this.getCollection(namaKoleksi), firestoreId)); console.log(`✅ Hapus ${namaKoleksi}:`, firestoreId); }catch(e){ console.error(e); }
+    const d = getDb();
+    if(!d) return;
+    try{
+      await deleteDoc(doc(this.getCollection(namaKoleksi), fid));
+      console.log(`✅ Hapus Firestore ${namaKoleksi}/${fid}`);
+    }catch(e){ console.error(e); }
   },
 
-  listen(namaKoleksi, callback){
-    if(!this.isEnabled()) return ()=>{};
+  listen(namaKoleksi, cb){
+    const d = getDb();
+    if(!d) return ()=>{};
     return onSnapshot(this.getCollection(namaKoleksi), snap=>{
-      const list = snap.docs.map(d=>({firestore_id:d.id, id:d.id, ...d.data()}));
-      // Sort untuk peserta_didik
+      const list = snap.docs.map(doc=>({ firestore_id:doc.id, id:doc.id, ...doc.data() }));
       if(namaKoleksi==='peserta_didik'){
         list.sort((a,b)=> (a.kelas||'').localeCompare(b.kelas||'') || (a.nama||'').localeCompare(b.nama||''));
       }
-      const md = ServiceMenu.getMasterData();
-      md[namaKoleksi]=list;
-      ServiceMenu.saveMasterData(md);
-      if(callback) callback(list);
-      console.log(`🔄 Realtime ${namaKoleksi}: ${list.length}`);
+      if(window.ServiceMenu){
+        const md = ServiceMenu.getMasterData();
+        md[namaKoleksi]=list;
+        ServiceMenu.saveMasterData(md);
+      }
+      if(cb) cb(list);
+    }, err=>{
+      console.error(`Realtime ${namaKoleksi} error:`, err);
     });
   },
 
-  // ===== WRAPPER KHUSUS - TAPI TETAP PAKAI GENERIC DI DALAM (1 file multi fungsi) =====
-  // Peserta Didik
+  // Wrapper multi fungsi
   getPesertaDidik(){ return this.getAll('peserta_didik'); },
   addPesertaDidik(data){ return this.add('peserta_didik', data); },
   addBatchPesertaDidik(list){ return this.addBatch('peserta_didik', list); },
   updatePesertaDidik(fid, data){ return this.update('peserta_didik', fid, data); },
-  deletePesertaDidik(fid, localId){ return this.delete('peserta_didik', fid, localId); },
+  deletePesertaDidik(fid, lid){ return this.delete('peserta_didik', fid, lid); },
   listenPesertaDidik(cb){ return this.listen('peserta_didik', cb); },
 
-  // Kop Administrasi (simpan di schools/40312947/kop/current - 1 doc saja)
   async getKop(){
-    if(!this.isEnabled()){
-      return ServiceMenu.getMasterData().kop || null;
-    }
+    const d = getDb();
+    if(!d) return ServiceMenu.getMasterData().kop;
     try{
-      const snap = await getDoc(doc(db, 'schools', NPSN, 'kop', 'current'));
+      const snap = await getDoc(doc(d, 'schools', NPSN, 'kop', 'current'));
       if(snap.exists()){
         const data = snap.data();
         const md = ServiceMenu.getMasterData();
-        md.kop = data;
+        md.kop=data;
         ServiceMenu.saveMasterData(md);
         return data;
       }
       return ServiceMenu.getMasterData().kop;
-    }catch(e){ console.error(e); return ServiceMenu.getMasterData().kop; }
+    }catch(e){ return ServiceMenu.getMasterData().kop; }
   },
   async saveKop(kopData){
-    let md = ServiceMenu.getMasterData();
-    md.kop = kopData;
+    const md = ServiceMenu.getMasterData();
+    md.kop=kopData;
     ServiceMenu.saveMasterData(md);
-    if(!this.isEnabled()) return;
+    const d = getDb();
+    if(!d) return;
     try{
-      await setDoc(doc(db, 'schools', NPSN, 'kop', 'current'), {...kopData, updated_at:new Date().toISOString()});
-      await setDoc(doc(db, 'schools', NPSN), { kop:kopData, updated_at:new Date().toISOString() }, {merge:true});
+      await setDoc(doc(d, 'schools', NPSN, 'kop', 'current'), {...kopData, updated_at:new Date().toISOString()});
       console.log('✅ Kop simpan Firestore');
     }catch(e){ console.error(e); }
-  },
-  listenKop(cb){
-    if(!this.isEnabled()) return ()=>{};
-    return onSnapshot(doc(db, 'schools', NPSN, 'kop', 'current'), snap=>{
-      if(snap.exists()){
-        const data = snap.data();
-        const md = ServiceMenu.getMasterData();
-        md.kop = data;
-        ServiceMenu.saveMasterData(md);
-        if(cb) cb(data);
-      }
-    });
-  },
-
-  // Sarana, TP, CP, ATP, Mapel - pakai generic langsung
-  getSarana(){ return this.getAll('sarana'); },
-  addSarana(data){ return this.add('sarana', data); },
-  getTP(){ return this.getAll('tp'); },
-  addTP(data){ return this.add('tp', data); },
-  getCP(){ return this.getAll('cp'); },
-  getATP(){ return this.getAll('atp'); },
-  getMapel(){ return this.getAll('mapel'); }
+  }
 };
 
 window.FirebaseService = FirebaseService;
 export default FirebaseService;
+
+// Signal ready
+window.dispatchEvent(new CustomEvent('firebase-service-ready', { detail: { service: FirebaseService } }));
+console.log("✅ FirebaseService ready - 1 file multi fungsi");
