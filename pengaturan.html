@@ -69,7 +69,11 @@
       </div>
 
       <div id="panelAkunSaya" class="hidden space-y-6">
-        <div class="card max-w-[500px]"><h3 class="font-bold mb-4">Pengaturan Akun Saya</h3><div class="space-y-3"><div><label class="text-[11px] font-semibold">Nama</label><input id="akunNama" class="input-field" disabled></div><div><label class="text-[11px] font-semibold">Email Login</label><input id="akunEmail" class="input-field" disabled></div><div><label class="text-[11px] font-semibold">Role</label><input id="akunRole" class="input-field" disabled></div></div></div>
+        <div class="card max-w-[600px]"><h3 class="font-bold mb-4">Pengaturan Akun Saya - Sinkron Firestore profil</h3>
+          <div class="space-y-3 mb-4 p-3 bg-[#f7f9fc] rounded-xl border"><div><label class="text-[11px] font-semibold">Nama</label><input id="akunNama" class="input-field" disabled></div><div><label class="text-[11px] font-semibold">Email Login</label><input id="akunEmail" class="input-field" disabled></div><div><label class="text-[11px] font-semibold">Role</label><input id="akunRole" class="input-field" disabled></div></div>
+          <div id="akunSayaFormDinamis" class="space-y-3 p-4 bg-white rounded-xl border border-[#e8eef6]">Memuat profil dari Firestore schools/40312947/users_db...</div>
+          <div class="text-[10px] text-black/40 mt-2">Jika guru: asal sekolah, NIP guru, nama kepsek, NIP kepsek, no HP + Edit + Simpan. Jika siswa: nama ibu, nama bapak, no HP. Jika ortu: nama anak, kelas, no HP. Tersimpan di field profil.guru / profil.siswa / profil.ortu agar jelas dan anti maintenance berulang.</div>
+        </div>
       </div>
     </main>
   </div>
