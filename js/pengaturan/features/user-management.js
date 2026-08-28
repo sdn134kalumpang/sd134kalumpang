@@ -2,8 +2,6 @@
 
 window.UserManagementFeature = {
   
-  _usersCache: [],
-  
   renderPermissionCheckboxes(containerId, selected=[]){
     const container = document.getElementById(containerId);
     if(!container) return;
@@ -11,10 +9,10 @@ window.UserManagementFeature = {
     
     const features = ServiceMenu.getFeatures ? ServiceMenu.getFeatures() : (window.ALL_FEATURES || []);
     const iconMap = {
-      'Kisi-kisi Soal':'','Pembuat Soal':'🛠️','Bank Soal':'🏦','RPM':'','Bank RPM':'🏦','LCKH':'📘','LKPD':'📗','Analisis KKTP':'📊','Refleksi':'🪞','Jurnal':'📓','Penilaian':'⭐','Absensi':'🕒','Generate CP-TP-ATP':'️','Prosem':'🗓️','Prota':'📅','Rumus 8-3-3-4':'🧮','Kalender Pendidikan':'','Jadwal Pembelajaran':'🕘',
+      'Kisi-kisi Soal':'','Pembuat Soal':'🛠️','Bank Soal':'🏦','RPM':'','Bank RPM':'🏦','LCKH':'📘','LKPD':'📗','Analisis KKTP':'📊','Refleksi':'🪞','Jurnal':'📓','Penilaian':'⭐','Absensi':'🕒','Generate CP-TP-ATP':'⚙️','Prosem':'🗓️','Prota':'📅','Rumus 8-3-3-4':'🧮','Kalender Pendidikan':'','Jadwal Pembelajaran':'🕘',
       'Arsip':'📁','Upload File':'📤','Laporan':'📋','DLL':'📦',
-      'Kop Administrasi':'📄','Data Peserta Didik':'','Sarana':'🏫','Data TP':'','Data CP':'📘','Data ATP':'📗','Data Mapel':'📚','Coming Soon':'🚧',
-      'Statistik GTK':'👩‍','Monitoring':'','Bantuan AI':'🤖','Demografi Sekolah':'🏫','Statistik Peserta Didik':'🎓'
+      'Kop Administrasi':'📄','Data Peserta Didik':'🎓','Sarana':'🏫','Data TP':'','Data CP':'📘','Data ATP':'📗','Data Mapel':'📚','Coming Soon':'🚧',
+      'Statistik GTK':'👩‍🏫','Monitoring':'📈','Bantuan AI':'🤖','Demografi Sekolah':'🏫','Statistik Peserta Didik':'🎓'
     };
     
     let html = '';
@@ -38,54 +36,41 @@ window.UserManagementFeature = {
     container.innerHTML = html;
   },
   
-  async load(){
+  load(){
+    const users = ServiceMenu.getUsers();
     const tbody = document.getElementById('userTableBody');
     if(!tbody) return;
+    tbody.innerHTML='';
     
-    if(!window.FirebaseService || !FirebaseService.isEnabled()){
-      tbody.innerHTML = '<tr><td colspan="4" class="py-4 text-center text-[12px] text-red-500">Firebase tidak aktif</td></tr>';
+    if(!users || users.length === 0){
+      tbody.innerHTML = '<tr><td colspan="4" class="py-4 text-center text-[12px] text-black/50">Belum ada data user</td></tr>';
       return;
     }
     
-    try{
-      tbody.innerHTML = '<tr><td colspan="4" class="py-4 text-center text-[12px] text-black/50">Memuat data...</td></tr>';
+    users.forEach((u, index)=>{
+      if(!u.id) u.id = 'user_' + Date.now() + '_' + index;
       
-      const users = await FirebaseService.get('schools/40312947/users_db');
-      this._usersCache = users || [];
+      const permCount = u.permissions ? u.permissions.length : 0;
+      const permPreview = u.permissions ? u.permissions.slice(0,3).map(p=> p.includes(':') ? p.split(':')[1] : p).join(', ') + (permCount>3 ? ' +'+(permCount-3) : '') : '-';
       
-      if(!users || users.length === 0){
-        tbody.innerHTML = '<tr><td colspan="4" class="py-4 text-center text-[12px] text-black/50">Belum ada data user</td></tr>';
-        return;
-      }
-      
-      tbody.innerHTML='';
-      users.forEach((u)=>{
-        if(!u.id){
-          u.id = FirebaseService.generateId();
-        }
-        
-        const permCount = u.permissions ? u.permissions.length : 0;
-        const permPreview = u.permissions ? u.permissions.slice(0,3).map(p=> p.includes(':') ? p.split(':')[1] : p).join(', ') + (permCount>3 ? ' +'+(permCount-3) : '') : '-';
-        
-        tbody.innerHTML+=`<tr class="border-b border-[#f1f5f9] hover:bg-[#f8fafc] transition">
-          <td class="py-3"><div class="flex items-center gap-2"><div class="w-8 h-8 rounded-full bg-[#0d3b66] text-white flex items-center justify-center text-[11px] font-bold shrink-0">${u.inisial||u.nama.charAt(0)}</div><div><div class="font-semibold text-[13px]">${u.nama}</div><div class="text-[11px] text-black/50">${u.email}</div><div class="text-[10px] text-black/40">${u.jabatan||''} • Pass: ${u.password?'***': 'hedisuriadi'}</div></div></div></td>
-          <td class="py-3 text-[12px]"><span class="capitalize">${u.role}</span><br><span class="text-[10px] bg-[#f1f5f9] px-1.5 py-0.5 rounded" title="${(u.permissions||[]).join(', ')}">${permCount} sub fitur</span><div class="text-[9px] text-black/40 mt-1 truncate max-w-[150px]">${permPreview}</div></td>
-          <td class="py-3"><span class="px-2 py-1 rounded-full text-[11px] font-bold ${u.status==='Hadir'?'bg-green-100 text-green-700':u.status==='Izin'?'bg-yellow-100 text-yellow-700':'bg-blue-100 text-blue-700'}">${u.status||'Online'}</span></td>
-          <td class="py-3"><div class="flex gap-2"><button onclick="UserManagementFeature.bukaEditUser('${u.id}')" class="text-[11px] text-blue-600 hover:text-blue-800 hover:underline font-semibold">Edit</button><button onclick="UserManagementFeature.hapus('${u.id}')" class="text-[11px] text-red-500 hover:text-red-700 hover:underline font-semibold">Hapus</button></div></td>
-        </tr>`;
-      });
-    }catch(err){
-      console.error('Gagal load users dari Firestore:', err);
-      tbody.innerHTML = '<tr><td colspan="4" class="py-4 text-center text-[12px] text-red-500">Gagal memuat data: '+err.message+'</td></tr>';
-    }
+      tbody.innerHTML+=`<tr class="border-b border-[#f1f5f9] hover:bg-[#f8fafc] transition">
+        <td class="py-3"><div class="flex items-center gap-2"><div class="w-8 h-8 rounded-full bg-[#0d3b66] text-white flex items-center justify-center text-[11px] font-bold shrink-0">${u.inisial||u.nama.charAt(0)}</div><div><div class="font-semibold text-[13px]">${u.nama}</div><div class="text-[11px] text-black/50">${u.email}</div><div class="text-[10px] text-black/40">${u.jabatan||''} • Pass: ${u.password?'***': 'hedisuriadi'}</div></div></div></td>
+        <td class="py-3 text-[12px]"><span class="capitalize">${u.role}</span><br><span class="text-[10px] bg-[#f1f5f9] px-1.5 py-0.5 rounded" title="${(u.permissions||[]).join(', ')}">${permCount} sub fitur</span><div class="text-[9px] text-black/40 mt-1 truncate max-w-[150px]">${permPreview}</div></td>
+        <td class="py-3"><span class="px-2 py-1 rounded-full text-[11px] font-bold ${u.status==='Hadir'?'bg-green-100 text-green-700':u.status==='Izin'?'bg-yellow-100 text-yellow-700':'bg-blue-100 text-blue-700'}">${u.status||'Online'}</span></td>
+        <td class="py-3"><div class="flex gap-2"><button onclick="UserManagementFeature.bukaEditUser('${u.id}')" class="text-[11px] text-blue-600 hover:text-blue-800 hover:underline font-semibold">Edit</button><button onclick="UserManagementFeature.hapus('${u.id}')" class="text-[11px] text-red-500 hover:text-red-700 hover:underline font-semibold">Hapus</button></div></td>
+      </tr>`;
+    });
   },
   
   async hapus(id){
     if(confirm('Hapus user ini? Data akan dihapus permanen dari Firestore')){
       try{
-        await FirebaseService.delete('schools/40312947/users_db', id);
-        await this.load();
-        alert('✅ User berhasil dihapus dari Firestore');
+        ServiceMenu.deleteUser(id);
+        this.load();
+        if(window.FirebaseService && FirebaseService.isEnabled()){
+          await FirebaseService.delete('schools/40312947/users_db', id);
+        }
+        alert('✅ User berhasil dihapus');
       }catch(err){
         console.error('Gagal hapus dari Firestore:', err);
         alert('❌ Gagal hapus user: '+err.message);
@@ -94,18 +79,11 @@ window.UserManagementFeature = {
   },
 
   bukaEditUser(id){
-    if(!id){
-      console.error('ID user kosong!');
-      return alert('Error: ID user tidak valid');
-    }
+    if(!id) return alert('Error: ID user tidak valid');
+    const users = ServiceMenu.getUsers();
+    const user = users.find(u => u.id === id) || users.find(u => u.email === id);
     
-    const user = this._usersCache.find(u => u.id === id);
-    
-    if(!user){
-      console.error('User tidak ditemukan dengan ID:', id, 'Cache:', this._usersCache);
-      return alert('User tidak ditemukan. Silakan refresh halaman.');
-    }
-    
+    if(!user) return alert('User tidak ditemukan. Silakan refresh halaman.');
     this._fillEditForm(user);
   },
 
@@ -114,7 +92,6 @@ window.UserManagementFeature = {
     document.getElementById('newEmail').value = user.email || '';
     document.getElementById('newRole').value = user.role || 'guru';
     document.getElementById('newJabatan').value = user.jabatan || '';
-    
     this.renderPermissionCheckboxes('permCheckboxes', user.permissions || []);
     
     const form = document.getElementById('formTambahUser');
@@ -122,7 +99,6 @@ window.UserManagementFeature = {
     submitBtn.textContent = '💾 Simpan Perubahan User';
     submitBtn.className = 'w-full h-[44px] rounded-xl bg-[#0d3b66] text-white font-bold text-[12px]';
     form.dataset.editId = user.id;
-    
     form.scrollIntoView({ behavior: 'smooth', block: 'center' });
   },
 
@@ -158,46 +134,38 @@ window.UserManagementFeature = {
 
       try{
         if(editId){
-          const userDoc = this._usersCache.find(u => u.id === editId);
-          if(!userDoc) throw new Error('User tidak ditemukan');
-          
-          const updatedUser = { 
-            ...userDoc, 
-            nama, 
-            email, 
-            role, 
-            jabatan, 
-            permissions, 
-            updated_at: new Date().toISOString(),
-            updated_by: ServiceMenu.getCurrentUser ? ServiceMenu.getCurrentUser().email : 'admin'
-          };
-          
-          await FirebaseService.set('schools/40312947/users_db', editId, updatedUser);
+          const users = ServiceMenu.getUsers();
+          const idx = users.findIndex(u => u.id === editId);
+          if(idx > -1){
+            users[idx] = { 
+              ...users[idx], nama, email, role, jabatan, permissions, 
+              updated_at: new Date().toISOString(),
+              updated_by: ServiceMenu.getCurrentUser ? ServiceMenu.getCurrentUser().email : 'admin'
+            };
+            if(window.FirebaseService && FirebaseService.isEnabled()){
+              await FirebaseService.set('schools/40312947/users_db', editId, users[idx]);
+            }
+          }
           this.batalEdit();
-          await this.load();
+          this.load();
           alert('✅ Data user '+nama+' berhasil diupdate di Firestore!');
-          
         } else {
           const newUserId = crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).substr(2);
           const newUser = { 
-            id: newUserId, 
-            nama, 
-            email, 
-            role, 
-            jabatan, 
-            permissions, 
-            password: defaultPassword, 
-            password_plain: defaultPassword,
-            status: 'Online',
-            created_at: new Date().toISOString(),
+            id: newUserId, nama, email, role, jabatan, permissions, 
+            password: defaultPassword, password_plain: defaultPassword,
+            status: 'Online', created_at: new Date().toISOString(),
             created_by: ServiceMenu.getCurrentUser ? ServiceMenu.getCurrentUser().email : 'admin'
           };
           
-          await FirebaseService.set('schools/40312947/users_db', newUserId, newUser);
+          ServiceMenu.addUser(newUser);
+          if(window.FirebaseService && FirebaseService.isEnabled()){
+            await FirebaseService.set('schools/40312947/users_db', newUserId, newUser);
+          }
           
           e.target.reset();
           this.renderPermissionCheckboxes('permCheckboxes');
-          await this.load();
+          this.load();
           alert('✅ User '+nama+' berhasil dibuat di Firestore!\n\nEmail: '+email+'\nPassword default: '+defaultPassword+'\nHak akses: '+permissions.length+' sub fitur');
         }
       }catch(err){
