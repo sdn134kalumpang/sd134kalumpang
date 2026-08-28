@@ -169,6 +169,30 @@ const FirebaseService = {
     });
   },
 
+
+  // Helper query dengan indexes - anti error requires an index
+  async getByRole(role){
+    const { query, where, orderBy, getDocs } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
+    const d = this.getDb(); if(!d) return [];
+    const q = query(this.getCollection('users_db'), where('role','==',role), orderBy('nama'));
+    const snap = await getDocs(q);
+    return snap.docs.map(doc=>({ firestore_id:doc.id, id:doc.id, ...doc.data() }));
+  },
+  async getPesertaDidikByOwner(email){
+    const { query, where, orderBy, getDocs } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
+    const d = this.getDb(); if(!d) return [];
+    const q = query(this.getCollection('peserta_didik'), where('owner_email','==',email), orderBy('kelas'), orderBy('nama'));
+    const snap = await getDocs(q);
+    return snap.docs.map(doc=>({ firestore_id:doc.id, id:doc.id, ...doc.data() }));
+  },
+  async getBankSoalByMapelKelas(mapel, kelas){
+    const { query, where, orderBy, getDocs } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
+    const d = this.getDb(); if(!d) return [];
+    const q = query(this.getCollection('bank_soal'), where('mapel','==',mapel), where('kelas','==',kelas), orderBy('created_at'));
+    const snap = await getDocs(q);
+    return snap.docs.map(doc=>({ firestore_id:doc.id, id:doc.id, ...doc.data() }));
+  },
+
   // Wrapper multi fungsi
   getPesertaDidik(){ return this.getAll('peserta_didik'); },
   addPesertaDidik(data){ return this.add('peserta_didik', data); },
