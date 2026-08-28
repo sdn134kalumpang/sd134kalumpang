@@ -1,5 +1,4 @@
 // js/pengaturan/main.js - ROUTER MANDIRI - Control Center Pecah - Taat v3
-// Tidak kurangi logic, hanya pecah tepat sasaran
 
 document.addEventListener('DOMContentLoaded', () => {
   if(typeof ServiceMenu==='undefined'){ console.error('ServiceMenu not found'); return; }
@@ -7,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const user=ServiceMenu.getCurrentUser();
   const elName=document.getElementById('sidebarUserName');
   if(elName) elName.textContent=user.nama;
+  
   const isAdmin=ServiceMenu.isAdmin();
   const tabControl=document.getElementById('tabControlCenter');
   const tabAkun=document.getElementById('tabAkunSaya');
@@ -28,7 +28,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if(panelControl) panelControl.classList.remove('hidden');
       if(panelAkun) panelAkun.classList.add('hidden');
       
-      // Load semua fitur mandiri
       if(window.PengumumanFeature){ PengumumanFeature.load(); PengumumanFeature.initForm(); }
       if(window.UserManagementFeature){ UserManagementFeature.load(); UserManagementFeature.initForm(); }
       if(window.InfoSekolahFeature){ InfoSekolahFeature.load(); InfoSekolahFeature.initForm(); }
@@ -48,7 +47,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnLogout=document.getElementById('btnLogout');
   if(btnLogout) btnLogout.onclick=()=>ServiceMenu.logout();
 
-  // Firebase realtime untuk pengumuman & users (sinkron)
   if(window.FirebaseService && FirebaseService.isEnabled()){
     FirebaseService.listen('pengumuman', (list)=>{
       if(list.length){
@@ -58,16 +56,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if(window.PengumumanFeature) PengumumanFeature.load();
       }
     });
-    FirebaseService.listen('users_db', (list)=>{
-      if(list.length){
-        localStorage.setItem('users_db_v2', JSON.stringify(list));
+    
+    FirebaseService.listen('schools/40312947/users_db', (list)=>{
+      if(list && list.length){
         if(window.UserManagementFeature) UserManagementFeature.load();
       }
     });
   }
 });
 
-// Legacy global untuk onclick di HTML (tetap support)
 window.hapusPeng = (id)=>{ if(window.PengumumanFeature) PengumumanFeature.hapus(id); };
 window.togglePeng = (id)=>{ if(window.PengumumanFeature) PengumumanFeature.toggle(id); };
 window.hapusUser = (id)=>{ if(window.UserManagementFeature) UserManagementFeature.hapus(id); };
+window.editUser = (id)=>{ if(window.UserManagementFeature) UserManagementFeature.bukaEditUser(id); };
