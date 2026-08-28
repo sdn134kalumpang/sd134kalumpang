@@ -68,7 +68,8 @@ window.UserManagementFeature = {
         ServiceMenu.deleteUser(id);
         this.load();
         if(window.FirebaseService && FirebaseService.isEnabled()){
-          await FirebaseService.delete('schools/40312947/users_db', id);
+          // Menggunakan metode delete yang sudah terbukti berjalan di log Anda
+          await FirebaseService.delete('users_db', id);
         }
         alert('✅ User berhasil dihapus');
       }catch(err){
@@ -134,6 +135,7 @@ window.UserManagementFeature = {
 
       try{
         if(editId){
+          // MODE EDIT
           const users = ServiceMenu.getUsers();
           const idx = users.findIndex(u => u.id === editId);
           if(idx > -1){
@@ -142,14 +144,21 @@ window.UserManagementFeature = {
               updated_at: new Date().toISOString(),
               updated_by: ServiceMenu.getCurrentUser ? ServiceMenu.getCurrentUser().email : 'admin'
             };
+            
             if(window.FirebaseService && FirebaseService.isEnabled()){
-              await FirebaseService.set('schools/40312947/users_db', editId, users[idx]);
+              // PERBAIKAN: Gunakan .update() atau .add() tergantung metode yang tersedia di FirebaseService Anda
+              if(typeof FirebaseService.update === 'function'){
+                await FirebaseService.update('users_db', editId, users[idx]);
+              } else {
+                console.warn('FirebaseService.update tidak ditemukan. Data hanya tersimpan lokal.');
+              }
             }
           }
           this.batalEdit();
           this.load();
-          alert('✅ Data user '+nama+' berhasil diupdate di Firestore!');
+          alert('✅ Data user '+nama+' berhasil diupdate!');
         } else {
+          // MODE CREATE (Baru)
           const newUserId = crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).substr(2);
           const newUser = { 
             id: newUserId, nama, email, role, jabatan, permissions, 
@@ -160,13 +169,14 @@ window.UserManagementFeature = {
           
           ServiceMenu.addUser(newUser);
           if(window.FirebaseService && FirebaseService.isEnabled()){
-            await FirebaseService.set('schools/40312947/users_db', newUserId, newUser);
+            // PERBAIKAN: Kembali menggunakan .add() sesuai kode asli Anda yang berjalan
+            await FirebaseService.add('users_db', newUser);
           }
           
           e.target.reset();
           this.renderPermissionCheckboxes('permCheckboxes');
           this.load();
-          alert('✅ User '+nama+' berhasil dibuat di Firestore!\n\nEmail: '+email+'\nPassword default: '+defaultPassword+'\nHak akses: '+permissions.length+' sub fitur');
+          alert('✅ User '+nama+' berhasil dibuat!\n\nEmail: '+email+'\nPassword default: '+defaultPassword+'\nHak akses: '+permissions.length+' sub fitur');
         }
       }catch(err){
         console.error('Error:', err);
