@@ -9,10 +9,10 @@ window.UserManagementFeature = {
     
     const features = ServiceMenu.getFeatures ? ServiceMenu.getFeatures() : (window.ALL_FEATURES || []);
     const iconMap = {
-      'Kisi-kisi Soal':'','Pembuat Soal':'🛠️','Bank Soal':'🏦','RPM':'','Bank RPM':'🏦','LCKH':'📘','LKPD':'📗','Analisis KKTP':'📊','Refleksi':'🪞','Jurnal':'📓','Penilaian':'⭐','Absensi':'🕒','Generate CP-TP-ATP':'⚙️','Prosem':'🗓️','Prota':'📅','Rumus 8-3-3-4':'🧮','Kalender Pendidikan':'','Jadwal Pembelajaran':'🕘',
+      'Kisi-kisi Soal':'','Pembuat Soal':'🛠️','Bank Soal':'🏦','RPM':'','Bank RPM':'🏦','LCKH':'📘','LKPD':'📗','Analisis KKTP':'📊','Refleksi':'🪞','Jurnal':'📓','Penilaian':'⭐','Absensi':'🕒','Generate CP-TP-ATP':'️','Prosem':'🗓️','Prota':'📅','Rumus 8-3-3-4':'🧮','Kalender Pendidikan':'','Jadwal Pembelajaran':'🕘',
       'Arsip':'📁','Upload File':'📤','Laporan':'📋','DLL':'📦',
-      'Kop Administrasi':'📄','Data Peserta Didik':'🎓','Sarana':'🏫','Data TP':'','Data CP':'📘','Data ATP':'📗','Data Mapel':'📚','Coming Soon':'🚧',
-      'Statistik GTK':'👩‍🏫','Monitoring':'📈','Bantuan AI':'🤖','Demografi Sekolah':'🏫','Statistik Peserta Didik':'🎓'
+      'Kop Administrasi':'📄','Data Peserta Didik':'','Sarana':'🏫','Data TP':'','Data CP':'📘','Data ATP':'📗','Data Mapel':'📚','Coming Soon':'🚧',
+      'Statistik GTK':'👩‍','Monitoring':'📈','Bantuan AI':'🤖','Demografi Sekolah':'🏫','Statistik Peserta Didik':'🎓'
     };
     
     let html = '';
@@ -41,9 +41,20 @@ window.UserManagementFeature = {
     const tbody = document.getElementById('userTableBody');
     if(!tbody) return;
     tbody.innerHTML='';
-    users.forEach(u=>{
+    
+    if(!users || users.length === 0){
+      tbody.innerHTML = '<tr><td colspan="4" class="py-4 text-center text-[12px] text-black/50">Belum ada data user</td></tr>';
+      return;
+    }
+    
+    users.forEach((u, index)=>{
+      if(!u.id){
+        u.id = 'user_' + Date.now() + '_' + index;
+      }
+      
       const permCount = u.permissions ? u.permissions.length : 0;
       const permPreview = u.permissions ? u.permissions.slice(0,3).map(p=> p.includes(':') ? p.split(':')[1] : p).join(', ') + (permCount>3 ? ' +'+(permCount-3) : '') : '-';
+      
       tbody.innerHTML+=`<tr class="border-b border-[#f1f5f9] hover:bg-[#f8fafc] transition">
         <td class="py-3"><div class="flex items-center gap-2"><div class="w-8 h-8 rounded-full bg-[#0d3b66] text-white flex items-center justify-center text-[11px] font-bold shrink-0">${u.inisial||u.nama.charAt(0)}</div><div><div class="font-semibold text-[13px]">${u.nama}</div><div class="text-[11px] text-black/50">${u.email}</div><div class="text-[10px] text-black/40">${u.jabatan||''} • Pass: ${u.password?'***': 'hedisuriadi'}</div></div></div></td>
         <td class="py-3 text-[12px]"><span class="capitalize">${u.role}</span><br><span class="text-[10px] bg-[#f1f5f9] px-1.5 py-0.5 rounded" title="${(u.permissions||[]).join(', ')}">${permCount} sub fitur</span><div class="text-[9px] text-black/40 mt-1 truncate max-w-[150px]">${permPreview}</div></td>
@@ -64,10 +75,28 @@ window.UserManagementFeature = {
   },
 
   bukaEditUser(id){
+    if(!id){
+      console.error('ID user kosong!');
+      return alert('Error: ID user tidak valid');
+    }
+    
     const users = ServiceMenu.getUsers();
     const user = users.find(u => u.id === id);
-    if(!user) return alert('User tidak ditemukan');
     
+    if(!user){
+      console.error('User tidak ditemukan dengan ID:', id);
+      const userByEmail = users.find(u => u.email === id);
+      if(userByEmail){
+        this._fillEditForm(userByEmail);
+        return;
+      }
+      return alert('User tidak ditemukan. Data mungkin tidak sinkron. Silakan refresh halaman.');
+    }
+    
+    this._fillEditForm(user);
+  },
+
+  _fillEditForm(user){
     document.getElementById('newNama').value = user.nama || '';
     document.getElementById('newEmail').value = user.email || '';
     document.getElementById('newRole').value = user.role || 'guru';
@@ -79,7 +108,7 @@ window.UserManagementFeature = {
     const submitBtn = form.querySelector('button[type="submit"]');
     submitBtn.textContent = '💾 Simpan Perubahan User';
     submitBtn.className = 'w-full h-[44px] rounded-xl bg-[#0d3b66] text-white font-bold text-[12px]';
-    form.dataset.editId = id;
+    form.dataset.editId = user.id;
     
     form.scrollIntoView({ behavior: 'smooth', block: 'center' });
   },
