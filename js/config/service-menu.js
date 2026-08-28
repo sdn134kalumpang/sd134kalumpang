@@ -1,6 +1,6 @@
-// js/config/service-menu.js - OTAK SISTEM - UPDATE SESUAI REPO ASLI
+// js/config/service-menu.js - OTAK SISTEM - FIX HAK AKSES SUB FITUR LANGSUNG + FIRESTORE ONLY - Taat v3
 // Path disesuaikan dengan repo: css/, js/, modules/{adm-pembelajaran, data-statistik, e-dokumen, master-data}
-// Rujukan: aturan_dan_pola.docx + service-menu_1.js adopsi + Screenshot repo
+// Update dari service-menu_4.js ori + fix isAdmin whitelist + hasAccess sub fitur langsung 43
 
 const PATH_CONFIG = {
   base: '/sd134kalumpang/',
@@ -85,16 +85,8 @@ const controlCenterFitur = {
 const ALL_FEATURES = [
   { id: 'dashboard', label: 'Dashboard', icon: '📊', sub: [] },
   { id: 'e_dokumen', label: 'E-Dokumen', icon: '📁', sub: ['Arsip','Upload File','Laporan','DLL'], links: konfigurasiFitur['dokumen-arsip'] },
-  { 
-    id: 'admin_guru', 
-    label: 'Administrasi Guru', 
-    icon: '👩‍🏫', 
-    sub: [
-      'Kisi-kisi Soal','Pembuat Soal','Bank Soal','RPM','Bank RPM','LCKH','LKPD','Analisis KKTP','Refleksi','Jurnal','Penilaian','Absensi','Generate CP-TP-ATP','Prosem','Prota','Rumus 8-3-3-4','Kalender Pendidikan','Jadwal Pembelajaran'
-    ],
-    links: konfigurasiFitur['admin-pembelajaran']
-  },
-  { id: 'data_statistik', label: 'Data Statistik', icon: '📈', sub: ['Statistik GTK','Monitoring','Bantuan AI'], links: konfigurasiFitur['data-statistik'] },
+  { id: 'admin_guru', label: 'Administrasi Guru', icon: '👩‍🏫', sub: ['Kisi-kisi Soal','Pembuat Soal','Bank Soal','RPM','Bank RPM','LCKH','LKPD','Analisis KKTP','Refleksi','Jurnal','Penilaian','Absensi','Generate CP-TP-ATP','Prosem','Prota','Rumus 8-3-3-4','Kalender Pendidikan','Jadwal Pembelajaran'], links: konfigurasiFitur['admin-pembelajaran'] },
+  { id: 'data_statistik', label: 'Data Statistik', icon: '📈', sub: ['Statistik GTK','Monitoring','Bantuan AI','Demografi Sekolah','Statistik Peserta Didik'], links: konfigurasiFitur['data-statistik'] },
   { id: 'e_portal', label: 'E-Portal', icon: '🌐', sub: ['SIMPKB','SINDARA','SIMACCA','Data Perpustakaan'], links: konfigurasiFitur['layanan-portal'] },
   { id: 'master_data', label: 'Master Data', icon: '🗃️', sub: ['Kop Administrasi','Data Peserta Didik','Sarana','Data TP','Data CP','Data ATP','Data Mapel','Coming Soon'], links: konfigurasiFitur['master-data'] },
   { id: 'pengaturan', label: 'Pengaturan', icon: '⚙️', sub: ['Control Center','Akun Saya','Pengumuman Berjalan'], links: controlCenterFitur['control-center'] },
@@ -102,23 +94,66 @@ const ALL_FEATURES = [
 ];
 
 const ServiceMenu = {
-  getCurrentUser: () => ({
-    nama: localStorage.getItem('nama') || localStorage.getItem('userEmail') || 'Muh Arfah Wahlii P.',
-    nip: localStorage.getItem('nip') || '198012012010011001',
-    email: localStorage.getItem('userEmail') || 'muharfah@sdn134.sch.id',
-    role: localStorage.getItem('role') || 'super_admin',
-    jabatan: localStorage.getItem('jabatan') || 'Super Admin • Operator',
-    permissions: JSON.parse(localStorage.getItem('userPermissions') || '[]'),
-    kepsek_nama: localStorage.getItem('kepsek_nama') || 'Satia, S.Pd',
-    kepsek_nip: localStorage.getItem('kepsek_nip') || '197505102005011002'
-  }),
+  getCurrentUser: function(){
+    const email = (localStorage.getItem('userEmail') || localStorage.getItem('email') || '').toLowerCase();
+    const role = (localStorage.getItem('role') || localStorage.getItem('userRole') || 'guru').toLowerCase();
+    let perms = [];
+    try { perms = JSON.parse(localStorage.getItem('userPermissions') || localStorage.getItem('user_permissions') || '[]'); } catch(e){ perms=[]; }
+    // Jika ada cache Firestore users_db, ambil permissions user ini (Firestore only agar terpadu)
+    try {
+      const cached = JSON.parse(localStorage.getItem('users_db_v2') || '[]');
+      const found = cached.find(u=> (u.email||'').toLowerCase() === email);
+      if(found && found.permissions && found.permissions.length>0) perms = found.permissions;
+    } catch(e){}
+    return {
+      nama: localStorage.getItem('nama') || localStorage.getItem('userName') || email.split('@')[0] || 'User',
+      nip: localStorage.getItem('nip') || '',
+      email: email,
+      role: role,
+      jabatan: localStorage.getItem('jabatan') || role,
+      permissions: perms,
+      kepsek_nama: localStorage.getItem('kepsek_nama') || 'Satia, S.Pd',
+      kepsek_nip: localStorage.getItem('kepsek_nip') || '197505102005011002'
+    };
+  },
   getAutoFillProfile: function(){
     const u = this.getCurrentUser();
     return { nama_guru: u.nama, nip_guru: u.nip, email_guru: u.email, jabatan_guru: u.jabatan, nama_kepsek: u.kepsek_nama, nip_kepsek: u.kepsek_nip, nama_sekolah: this.getSchoolInfo().nama, npsn: this.getSchoolInfo().npsn, alamat_sekolah: this.getSchoolInfo().alamat };
   },
-  isAdmin: () => ['super_admin','admin'].includes(localStorage.getItem('role') || 'super_admin'),
-  checkAccess: () => { if(localStorage.getItem('isLoggedIn') !== 'true'){ window.location.href = '/sd134kalumpang/index.html'; return false; } return true; },
-  hasAccess: function(featureId){ const perms = this.getCurrentUser().permissions; if(this.isAdmin()) return true; if(perms.length===0) return true; return perms.includes(featureId); },
+  // isAdmin hanya untuk email whitelist asli, bukan semua super_admin
+  isAdmin: function(){
+    const email = (localStorage.getItem('userEmail')||'').toLowerCase();
+    const superEmails = ['hedisuriadi35@gmail.com','muharfah@sdn134.sch.id'];
+    if(superEmails.includes(email)) return true;
+    const role = (localStorage.getItem('role')||localStorage.getItem('userRole')||'').toLowerCase();
+    const perms = this.getCurrentUser().permissions || [];
+    // super_admin dengan permissions kosong = full access = admin, tapi super_admin dengan 10 sub fitur saja = bukan admin
+    if(role === 'super_admin' && perms.length===0) return true;
+    return false;
+  },
+  checkAccess: function(){ if(localStorage.getItem('isLoggedIn') !== 'true'){ window.location.href = '/sd134kalumpang/index.html'; return false; } return true; },
+  // FIX: hasAccess cek sub fitur langsung 43
+  hasAccess: function(featureId){
+    if(this.isAdmin()) return true;
+    const perms = this.getCurrentUser().permissions || [];
+    if(perms.length===0) return false;
+    // perms bentuk: admin_guru:rumus_8_3_3_4 atau dashboard
+    return perms.some(p=> {
+      if(p===featureId) return true;
+      if(p.startsWith(featureId+':')) return true;
+      if(p.startsWith(featureId+'_')) return true;
+      // e_portal: data_perpustakaan mengandung e_portal
+      if(p.split(':')[0]===featureId) return true;
+      return false;
+    });
+  },
+  hasSubAccess: function(featureId, subNama){
+    if(this.isAdmin()) return true;
+    const perms = this.getCurrentUser().permissions || [];
+    if(perms.length===0) return false;
+    const slug = featureId + ':' + subNama.toLowerCase().replace(/[^a-z0-9]+/g,'_');
+    return perms.includes(slug) || perms.includes(subNama) || perms.includes(featureId) || perms.some(p=> p.toLowerCase().includes(subNama.toLowerCase()));
+  },
   getLinkForSub: function(featureId, subNama){
     const feat = ALL_FEATURES.find(f=>f.id===featureId);
     if(!feat || !feat.links) return PATH_CONFIG.pages[featureId] || '/sd134kalumpang/dashboard.html';
@@ -136,33 +171,41 @@ const ServiceMenu = {
     const iconMap = {
       'Kisi-kisi Soal':'📝','Pembuat Soal':'🛠️','Bank Soal':'🏦','RPM':'📄','Bank RPM':'🏦','LCKH':'📘','LKPD':'📗','Analisis KKTP':'📊','Refleksi':'🪞','Jurnal':'📓','Penilaian':'⭐','Absensi':'🕒','Generate CP-TP-ATP':'⚙️','Prosem':'🗓️','Prota':'📅','Rumus 8-3-3-4':'🧮','Kalender Pendidikan':'📆','Jadwal Pembelajaran':'🕘','Arsip':'📁','Upload File':'📤','Laporan':'📋','DLL':'📦','Kop Administrasi':'📄','Data Peserta Didik':'🎓','Sarana':'🏫'
     };
+    // Filter dengan hasAccess baru yang sudah cek sub fitur
     ALL_FEATURES.filter(f=> f.id!=='dashboard' && f.id!=='pengaturan' && f.id!=='laporan').forEach(feat=>{
       if(!this.hasAccess(feat.id)) return;
-      if(feat.sub && feat.sub.length){
-        const isLong = feat.sub.length > 6;
-        const subHtml = `<div class="sub-menu ${isLong?'sub-menu-long':''}" style="display:none;${isLong?'max-height:260px;overflow-y:auto;':''}">${feat.sub.map(s=>{
-          const link = this.getLinkForSub(feat.id, s);
-          const ic = iconMap[s] || '📄';
-          const slug = s.toLowerCase().replace(/[^a-z0-9]+/g,'_');
-          return `<a data-sub="${slug}" href="${link}"><span>${ic}</span> ${s}</a>`;
-        }).join('')}</div>`;
-        html += `<div class="nav-group" data-feature="${feat.id}"><button class="nav-link has-sub"><span class="nav-icon">${feat.icon}</span><span class="nav-label">${feat.label}</span><span class="nav-count">${feat.sub.length}</span><span class="nav-arrow">›</span></button>${subHtml}</div>`;
-      } else {
-        html += `<a class="nav-link" href="${PATH_CONFIG.pages[feat.id] || feat.id+'.html'}" data-feature="${feat.id}"><span class="nav-icon">${feat.icon}</span><span class="nav-label">${feat.label}</span></a>`;
+      // Tampilkan hanya sub yang diizinkan
+      let allowedSubs = feat.sub || [];
+      if(!this.isAdmin()){
+        const perms = this.getCurrentUser().permissions || [];
+        allowedSubs = feat.sub.filter(sub=>{
+          const slug = feat.id + ':' + sub.toLowerCase().replace(/[^a-z0-9]+/g,'_');
+          return perms.includes(slug) || perms.includes(sub) || perms.includes(feat.id);
+        });
+        if(allowedSubs.length===0) return;
       }
+      const isLong = allowedSubs.length > 6;
+      const subHtml = `<div class="sub-menu ${isLong?'sub-menu-long':''}" style="display:none;${isLong?'max-height:260px;overflow-y:auto;':''}">${allowedSubs.map(s=>{
+        const link = this.getLinkForSub(feat.id, s);
+        const ic = iconMap[s] || '📄';
+        const slug = s.toLowerCase().replace(/[^a-z0-9]+/g,'_');
+        return `<a data-sub="${slug}" href="${link}"><span>${ic}</span> ${s}</a>`;
+      }).join('')}</div>`;
+      html += `<div class="nav-group" data-feature="${feat.id}"><button class="nav-link has-sub"><span class="nav-icon">${feat.icon}</span><span class="nav-label">${feat.label}</span><span class="nav-count">${allowedSubs.length}</span><span class="nav-arrow">›</span></button>${subHtml}</div>`;
     });
     html += `<div class="nav-divider"></div>`;
     ALL_FEATURES.filter(f=> f.id==='pengaturan' || f.id==='laporan').forEach(feat=>{
       if(!this.hasAccess(feat.id)) return;
-      if(feat.sub && feat.sub.length){
-        const subHtml = `<div class="sub-menu" style="display:none;">${feat.sub.map(s=>{
-          const link = this.getLinkForSub(feat.id, s);
-          return `<a href="${link}">📄 ${s}</a>`;
-        }).join('')}</div>`;
-        html += `<div class="nav-group" data-feature="${feat.id}"><button class="nav-link has-sub"><span class="nav-icon">${feat.icon}</span><span class="nav-label">${feat.label}</span><span class="nav-count">${feat.sub.length}</span><span class="nav-arrow">›</span></button>${subHtml}</div>`;
-      } else {
-        html += `<a class="nav-link" href="${PATH_CONFIG.pages[feat.id] || feat.id+'.html'}" data-feature="${feat.id}"><span class="nav-icon">${feat.icon}</span><span class="nav-label">${feat.label}</span></a>`;
+      let allowedSubs = feat.sub || [];
+      if(!this.isAdmin() && feat.id==='pengaturan'){
+        // pengaturan hanya boleh jika ada hak pengaturan atau control-center
+        if(!this.hasAccess('pengaturan')) return;
       }
+      const subHtml = `<div class="sub-menu" style="display:none;">${allowedSubs.map(s=>{
+        const link = this.getLinkForSub(feat.id, s);
+        return `<a href="${link}">📄 ${s}</a>`;
+      }).join('')}</div>`;
+      html += `<div class="nav-group" data-feature="${feat.id}"><button class="nav-link has-sub"><span class="nav-icon">${feat.icon}</span><span class="nav-label">${feat.label}</span><span class="nav-count">${allowedSubs.length}</span><span class="nav-arrow">›</span></button>${subHtml}</div>`;
     });
     html += `<a class="nav-link logout" id="logoutBtn"><span class="nav-icon">🚪</span><span class="nav-label">Keluar</span></a>`;
     container.innerHTML = html;
@@ -191,7 +234,7 @@ const ServiceMenu = {
   addOwner: function(obj){ obj.owner_email = this.getCurrentUser().email; obj.owner_nama = this.getCurrentUser().nama; obj.created_at = new Date().toISOString(); return obj; },
   getSchoolInfo: () => JSON.parse(localStorage.getItem('school_info') || JSON.stringify({ npsn:'40312947', nama:'SDN 134 Kalumpang', alamat:'Trilino, Bontotiro - Bulukumba', akreditasi:'B', totalSiswa:48, totalGuru:9, kab:'Kab. Bulukumba, Sulsel 92572', tahunAjaran:'2025/2026' })),
   saveSchoolInfo: (info) => localStorage.setItem('school_info', JSON.stringify(info)),
-  logout: () => { localStorage.removeItem('isLoggedIn'); localStorage.removeItem('role'); localStorage.removeItem('userEmail'); localStorage.removeItem('nama'); window.location.href=PATH_CONFIG.pages.login; }
+  logout: function(){ localStorage.removeItem('isLoggedIn'); localStorage.removeItem('role'); localStorage.removeItem('userRole'); localStorage.removeItem('userEmail'); localStorage.removeItem('email'); localStorage.removeItem('nama'); localStorage.removeItem('userName'); localStorage.removeItem('userPermissions'); localStorage.removeItem('user_permissions'); window.location.href=PATH_CONFIG.pages.login; }
 };
 
 if (typeof window !== 'undefined') {
