@@ -197,9 +197,13 @@ const ServiceMenu = {
     ALL_FEATURES.filter(f=> f.id==='pengaturan' || f.id==='laporan').forEach(feat=>{
       if(!this.hasAccess(feat.id)) return;
       let allowedSubs = feat.sub || [];
-      if(!this.isAdmin() && feat.id==='pengaturan'){
-        // pengaturan hanya boleh jika ada hak pengaturan atau control-center
-        if(!this.hasAccess('pengaturan')) return;
+      if(!this.isAdmin()){
+        const perms = this.getCurrentUser().permissions || [];
+        allowedSubs = feat.sub.filter(sub=>{
+          const slug = feat.id + ':' + sub.toLowerCase().replace(/[^a-z0-9]+/g,'_');
+          return perms.includes(slug) || perms.includes(sub) || perms.includes(feat.id) || perms.some(p=> p.toLowerCase()===sub.toLowerCase() || p.toLowerCase().includes(sub.toLowerCase()));
+        });
+        if(allowedSubs.length===0) return;
       }
       const subHtml = `<div class="sub-menu" style="display:none;">${allowedSubs.map(s=>{
         const link = this.getLinkForSub(feat.id, s);
