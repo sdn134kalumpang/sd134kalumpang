@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const panelControl=document.getElementById('panelControlCenter');
   const panelAkun=document.getElementById('panelAkunSaya');
   const adminWarning=document.getElementById('adminWarning');
+  
   if(!isAdmin){
     if(tabControl) tabControl.style.display='none';
     if(panelControl) panelControl.style.display='none';
@@ -26,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if(tabAkun) tabAkun.className='px-5 py-2.5 rounded-full text-[12px] font-bold border tab-inactive';
       if(panelControl) panelControl.classList.remove('hidden');
       if(panelAkun) panelAkun.classList.add('hidden');
+      
       // Load semua fitur mandiri
       if(window.PengumumanFeature){ PengumumanFeature.load(); PengumumanFeature.initForm(); }
       if(window.UserManagementFeature){ UserManagementFeature.load(); UserManagementFeature.initForm(); }
@@ -68,4 +70,4 @@ document.addEventListener('DOMContentLoaded', () => {
 // Legacy global untuk onclick di HTML (tetap support)
 window.hapusPeng = (id)=>{ if(window.PengumumanFeature) PengumumanFeature.hapus(id); };
 window.togglePeng = (id)=>{ if(window.PengumumanFeature) PengumumanFeature.toggle(id); };
-window.hapusUser = (id)=>{ if(win
+window.hapusUser = (id)=>{ if(window.UserManagementFeature) UserManagementFeature.hapus(id); };
