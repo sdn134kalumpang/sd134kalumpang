@@ -13,6 +13,12 @@ const defaultSiswa = [
 { id:2, nis:'0002', nisn:'0012345679', nama:'Siti Aminah', kelas:'1', jk:'P', ttl:'Bulukumba, 5 Feb 2018', alamat:'Tritiro', ayah:'Hasan', ibu:'Fatimah', status:'Aktif', owner_email:'muharfah@sdn134.sch.id' },
 { id:3, nis:'0003', nisn:'0012345680', nama:'Muhammad Rizki', kelas:'2', jk:'L', ttl:'Bulukumba, 20 Mar 2017', alamat:'Kalumpang', ayah:'Jamal', ibu:'Rina', status:'Aktif', owner_email:'operator@sdn134.sch.id' }
 ];
+function escapeCSV(v){
+  if(v==null) return '';
+  const s=String(v);
+  if(s.includes(',')||s.includes('"')||s.includes('\n')) return '"'+s.replace(/"/g,'""')+'"';
+  return s;
+}
 let siswaList = md.peserta_didik && md.peserta_didik.length ? md.peserta_didik : defaultSiswa;
 if(!md.peserta_didik || !md.peserta_didik.length){
 md.peserta_didik = siswaList;
