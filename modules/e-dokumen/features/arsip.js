@@ -1,4 +1,4 @@
-// modules/e-dokumen/features/arsip.js - FIXED: Inline View Base64 via Blob URL - Taat v3
+// modules/e-dokumen/features/arsip.js - FINAL: Smart View & Selective Export - Taat v3
 
 window.init_arsip = function(container){
   var user = ServiceMenu.getCurrentUser();
@@ -50,7 +50,7 @@ window.init_arsip = function(container){
       if(a.file_base64){ 
         fileBtn = '<button onclick="window.viewArsip(\''+fid+'\')" style="background:#dcfce7;color:#166534;border:none;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;">👁️ Lihat Base64</button><div style="font-size:9px;color:#64748b;margin-top:2px;">'+(a.file_name||'')+'</div>'; 
       } else if(a.file_url){ 
-        fileBtn = '<button onclick="window.viewArsip(\''+fid+'\')" style="background:#dbeafe;color:#1e40af;border:none;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;"> Buka Drive</button>'; 
+        fileBtn = '<button onclick="window.viewArsip(\''+fid+'\')" style="background:#dbeafe;color:#1e40af;border:none;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;">🔗 Buka Drive</button>'; 
       } else { 
         fileBtn = '<span style="color:#94a3b8;font-size:11px;">-</span>'; 
       }
@@ -124,39 +124,59 @@ window.init_arsip = function(container){
   document.getElementById('searchArsip').addEventListener('input', applyFilter);
   document.getElementById('filterKategori').addEventListener('change', applyFilter);
 
-  // PERBAIKAN: Menggunakan Blob URL agar file Base64 terbuka inline (bukan terdownload)
+  // SMART VIEWER: Deteksi tipe file dan render sesuai kemampuan browser
   window.viewArsip = function(fid){
     var a = arsipList.find(function(x){ return (x.firestore_id||x.id) == fid; });
     if(!a) return alert('Data tidak ditemukan');
     
     if(a.file_base64){
       try {
-        // Konversi Base64 ke Blob
         var arr = a.file_base64.split(',');
-        var mime = arr[0].match(/:(.*?);/)[1];
+        var mime = (arr[0].match(/:(.*?);/) || [])[1] || 'application/octet-stream';
         var bstr = atob(arr[1]);
         var n = bstr.length;
         var u8arr = new Uint8Array(n);
         while(n--){ u8arr[n] = bstr.charCodeAt(n); }
         var blob = new Blob([u8arr], {type: mime});
-        
-        // Buat Object URL dan buka di tab baru
         var url = URL.createObjectURL(blob);
-        window.open(url, '_blank');
+        
+        var isImage = mime.startsWith('image/');
+        var isPdf = mime === 'application/pdf';
+        
+        var win = window.open('', '_blank');
+        if(!win) return alert('Pop-up diblokir browser. Izinkan pop-up untuk situs ini.');
+        
+        win.document.title = a.judul || 'Lihat Arsip';
+        win.document.body.style.margin = '0';
+        win.document.body.style.fontFamily = 'sans-serif';
+        
+        if(isImage){
+          win.document.write('<img src="'+url+'" style="max-width:100%; height:auto; display:block; margin:0 auto;">');
+        } else if(isPdf){
+          win.document.write('<iframe src="'+url+'" style="width:100vw; height:100vh; border:none;"></iframe>');
+        } else {
+          win.document.write('<div style="padding:40px; text-align:center;">');
+          win.document.write('<h3>Preview tidak tersedia untuk format ini ('+mime+')</h3>');
+          win.document.write('<p>Silakan download untuk membuka di aplikasi Microsoft Word/Excel.</p>');
+          win.document.write('<a href="'+url+'" download="'+(a.file_name||'file')+'" style="background:#0d3b66; color:white; padding:10px 20px; text-decoration:none; border-radius:8px; font-weight:bold;">Download File</a>');
+          win.document.write('</div>');
+        }
+        win.document.close();
       } catch(e) {
         console.error('Gagal membuka file:', e);
-        alert('Gagal menampilkan file. Silakan coba download manual.');
+        alert('Gagal menampilkan file.');
       }
     } else if(a.file_url){
       window.open(a.file_url, '_blank');
     } else {
-      alert('Tidak ada file yang terlampir untuk dokumen ini.');
+      alert('Tidak ada file yang terlampir.');
     }
   };
 
+  // EXPORT TERPILIH: Hanya export baris yang dicentang
   document.getElementById('btnExportArsip').onclick = function(){
     var checks = document.querySelectorAll('.row-export-check:checked');
-    if(checks.length === 0){ alert('⚠️ Centang minimal 1 file pada tabel untuk di-export!'); return; }
+    if(checks.length === 0){ alert('️ Centang minimal 1 file pada tabel untuk di-export!'); return; }
     
     var selectedData = [];
     for(var i=0;i<checks.length;i++){
