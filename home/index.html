@@ -10,7 +10,7 @@
   <!-- Top Bar -->
   <div class="topbar">
     <div class="container">
-      <span id="currentDate">Minggu, 16 Agustus 2026</span>
+      <span id="currentDate">Memuat tanggal...</span>
       <span>info@sdn134-kalumpang.com • (0262) 123-4567</span>
     </div>
   </div>
@@ -36,8 +36,8 @@
 
   <!-- Auth Bar -->
   <div class="authbar">
-    <a href="../index.html" class="auth-login">LOGIN</a>
-    <a href="../index.html" class="auth-daftar">DAFTAR</a>
+    <a href="javascript:void(0)" onclick="openLoginModal()" class="auth-login">LOGIN</a>
+    <a href="javascript:void(0)" onclick="alert('Silakan hubungi admin untuk pendaftaran akun.')" class="auth-daftar">DAFTAR</a>
   </div>
 
   <!-- Hero -->
@@ -46,7 +46,7 @@
     <h1>Coming Soon</h1>
     <p class="hero-title">Tahun Ajaran 2026/2027</p>
     <p class="hero-desc">Pendaftaran peserta didik baru akan segera dibuka. Pantau terus informasi terbaru di website resmi kami.</p>
-    <a href="#ppdb" class="btn-yellow">Selengkapnya →</a>
+    <a href="#layanan" class="btn-yellow">Selengkapnya →</a>
   </section>
 
   <!-- Statistik -->
@@ -97,8 +97,40 @@
         <span>© 2026 SDN 134 Kalumpang. Semua hak dilindungi.</span>
         <span class="bottom-nav">Beranda Layanan Berita Kontak</span>
       </div>
-    </div>
+    </div.>
   </footer>
+
+  <!-- === MODAL LOGIN === -->
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal" onclick="closeLoginModal()">&times;</span>
+      <div class="modal-header">
+        <div class="logo-modal">🎓</div>
+        <h2>Login SDN 134 Kalumpang</h2>
+        <p style="font-size:12px; color:#6b7d73; margin-top:4px;">Masuk ke Dashboard Admin</p>
+      </div>
+      <form id="loginForm" class="login-form">
+        <div class="form-group">
+          <label>ALAMAT EMAIL</label>
+          <input type="email" id="email" placeholder="nama@email.com" required>
+        </div>
+        <div class="form-group">
+          <label>PASSWORD</label>
+          <input type="password" id="password" placeholder="••••••••" required>
+        </div>
+        <div class="form-group">
+          <label>KODE CAPTCHA</label>
+          <div class="captcha-container">
+            <input type="text" id="captchaInput" placeholder="Masukkan kode" required autocomplete="off">
+            <div id="captchaCode" class="captcha-code">XXXX</div>
+            <button type="button" onclick="generateCaptcha()" class="refresh-captcha" title="Ganti Kode">↻</button>
+          </div>
+        </div>
+        <div id="errorMsg" class="error-msg"></div>
+        <button type="submit" class="btn-login">SIGN IN</button>
+      </form>
+    </div>
+  </div>
 
   <script src="js/main.js"></script>
 </body>
