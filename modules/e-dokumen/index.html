@@ -1,44 +1,63 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>E-Dokumen - SDN 134 Kalumpang</title>
-<link rel="stylesheet" href="../../css/admin-elegant-final.css">
-<script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-Dokumen - SDN 134 Kalumpang</title>
+  <link rel="stylesheet" href="../../css/admin-elegant-final.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-<aside class="sidebar" id="sidebar">
-  <div class="sidebar-header"><div class="logo"><div class="logo-icon">134</div><div class="logo-text">SDN 134<span>KALUMPANG</span></div></div></div>
-  <nav class="sidebar-nav" id="dynamicSidebar"></nav>
-  <div class="sidebar-footer"><p>NPSN 40312947<br>E-Dokumen - Base64 - Owner Only</p></div>
-</aside>
-<main class="main">
-  <header class="topbar"><div class="breadcrumb"><span>E-Dokumen</span> / <strong id="breadcrumbFitur">ARSIP</strong></div><div id="firestoreStatus" style="font-size:10px;padding:6px 10px;background:#fef9c3;border-radius:12px;margin-left:10px;">🔥 Connecting...</div></header>
-  <div class="content" id="mainContent">Memuat arsip...</div>
-</main>
-<!-- PATH FIX: pakai relative ../../ sesuai repo image_9518a8.png -->
-<script src="../../js/config/service-menu.js"></script>
-<script src="../../js/admin-elegant.js"></script>
-<script type="module" src="../../js/config/firebase-config.js"></script>
-<script type="module" src="../../js/config/firebase-service.js"></script>
-<script src="./main.js"></script>
-<script type="module">
-  window.addEventListener('firebase-ready', (e)=>{
-    const el=document.getElementById('firestoreStatus');
-    if(el){ el.textContent='Connected: '+e.detail.projectId; el.style.background='#dcfce7'; }
-  });
-  setTimeout(()=>{
-    const el=document.getElementById('firestoreStatus');
-    if(el && window.db && window.FirebaseService && FirebaseService.isEnabled()){
-      el.textContent='Connected + Service Ready - schools/40312947/e_dokumen_arsip';
-      el.style.background='#dcfce7';
-    } else if(el){
-      el.textContent='Cek Rules - schools/40312947 harus allow read,write if true';
-      el.style.background='#fef2f2';
-    }
-  },2500);
-</script>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <div class="logo-icon">134</div>
+        <div class="logo-text">SDN 134<span>KALUMPANG</span></div>
+      </div>
+    </div>
+    <nav class="sidebar-nav" id="dynamicSidebar"></nav>
+    <div class="sidebar-footer">
+      <p>NPSN 40312947<br>E-Dokumen - Base64 - Owner Only</p>
+    </div>
+  </aside>
+  
+  <main class="main">
+    <header class="topbar">
+      <div class="breadcrumb"><span>E-Dokumen</span> / <strong id="breadcrumbFitur">ARSIP</strong></div>
+      <div id="firestoreStatus" style="font-size:10px;padding:6px 10px;background:#fef9c3;border-radius:12px;margin-left:10px;">🔥 Connecting...</div>
+    </header>
+    <div class="content" id="mainContent">Memuat arsip...</div>
+  </main>
+
+  <!-- 1. Service Menu (tetap di js/config/) -->
+  <script src="../../js/config/service-menu.js"></script>
+  
+  <!-- 2. Admin Elegant JS (jika ada) -->
+  <script src="../../js/admin-elegant.js"></script>
+  
+  <!-- 3. PERBAIKAN PATH: Firebase Config & Service sekarang di folder js/ (bukan js/config/) -->
+  <script type="module" src="../../js/firebase-config.js"></script>
+  <script type="module" src="../../js/firebase-service.js"></script>
+  
+  <!-- 4. Main E-Dokumen (bukan module, mengandalkan window.FirebaseService yang sudah global) -->
+  <script src="./main.js"></script>
+  
+  <script type="module">
+    window.addEventListener('firebase-ready', (e)=>{
+      const el=document.getElementById('firestoreStatus');
+      if(el){ el.textContent='Connected: '+e.detail.projectId; el.style.background='#dcfce7'; }
+    });
+    setTimeout(()=>{
+      const el=document.getElementById('firestoreStatus');
+      if(el && window.db && window.FirebaseService && FirebaseService.isEnabled()){
+        el.textContent='Connected + Service Ready - schools/40312947/e_dokumen_arsip';
+        el.style.background='#dcfce7';
+      } else if(el){
+        el.textContent='Cek Rules - schools/40312947 harus allow read,write if true';
+        el.style.background='#fef2f2';
+      }
+    }, 2500);
+  </script>
 </body>
 </html>
