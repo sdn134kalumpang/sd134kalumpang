@@ -1,0 +1,10 @@
+[
+  { "id": "profil", "icon": "🏫", "title": "Profil Sekolah", "desc": "Sejarah, visi misi, dan struktur organisasi sekolah" },
+  { "id": "berita", "icon": "📰", "title": "Berita", "desc": "Informasi terbaru dan kegiatan sekolah" },
+  { "id": "ppdb", "icon": "", "title": "PPDB", "desc": "Penerimaan peserta didik baru tahun ajaran" },
+  { "id": "akademik", "icon": "📚", "title": "Akademik", "desc": "Kurikulum, kalender akademik & prestasi" },
+  { "id": "ekstra", "icon": "", "title": "Ekstrakurikuler", "desc": "Pengembangan bakat dan minat siswa" },
+  { "id": "galeri", "icon": "🖼️", "title": "Galeri", "desc": "Dokumentasi foto dan video kegiatan" },
+  { "id": "agenda", "icon": "", "title": "Agenda", "desc": "Jadwal kegiatan dan acara sekolah" },
+  { "id": "kontak", "icon": "☎️", "title": "Kontak", "desc": "Hubungi kami untuk informasi lebih lanjut" }
+]
