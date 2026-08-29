@@ -4,7 +4,7 @@ window.EPortalModule = {
   links: [
     { id: 'simpkb', name: 'SIMPKB', url: 'https://portal.simpkb.id', icon: '🆔' },
     { id: 'sindara', name: 'SINDARA', url: 'https://sindara.gurudikdas.kemendikdasmen.go.id/pendaftaran/komunitas/login', icon: '📊' },
-    { id: 'simacca', name: 'SIMACCA', url: '#', icon: '🏫', status: 'soon' },
+    { id: 'simacca', name: 'SIMACCA', url: 'https://script.google.com/macros/s/AKfycbzEGn4yvaS19zKiUaU_ymgPsiXeHkxYr4Rxr5HTyAYdwPIrDYQujrnV0t2sEB-wT_3fcw/exec', isExternal: true },
     { id: 'perpus', name: 'Data Perpustakaan', url: 'https://data.perpusnas.go.id/login', icon: '📚' },
     { id: 'siaga', name: 'Siaga', url: 'https://siagapendis.kemenag.go.id/login', icon: '🕌' },
     { id: 'infogtk', name: 'Info GTK', url: 'https://info.gtk.kemendikdasmen.go.id/', icon: '👨🏫' },
