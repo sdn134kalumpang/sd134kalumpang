@@ -1,4 +1,4 @@
-// modules/e-dokumen/features/arsip.js - FIXED: View File & Selective Export - Taat v3
+// modules/e-dokumen/features/arsip.js - FIXED: Inline View Base64 via Blob URL - Taat v3
 
 window.init_arsip = function(container){
   var user = ServiceMenu.getCurrentUser();
@@ -50,7 +50,7 @@ window.init_arsip = function(container){
       if(a.file_base64){ 
         fileBtn = '<button onclick="window.viewArsip(\''+fid+'\')" style="background:#dcfce7;color:#166534;border:none;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;">👁️ Lihat Base64</button><div style="font-size:9px;color:#64748b;margin-top:2px;">'+(a.file_name||'')+'</div>'; 
       } else if(a.file_url){ 
-        fileBtn = '<button onclick="window.viewArsip(\''+fid+'\')" style="background:#dbeafe;color:#1e40af;border:none;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;">🔗 Buka Drive</button>'; 
+        fileBtn = '<button onclick="window.viewArsip(\''+fid+'\')" style="background:#dbeafe;color:#1e40af;border:none;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;"> Buka Drive</button>'; 
       } else { 
         fileBtn = '<span style="color:#94a3b8;font-size:11px;">-</span>'; 
       }
@@ -68,7 +68,6 @@ window.init_arsip = function(container){
     tbody.innerHTML = html;
   }
 
-  // Logic Checkbox Select All
   document.getElementById('checkAllExport').onchange = function(e){
     var checks = document.querySelectorAll('.row-export-check');
     for(var i=0;i<checks.length;i++) checks[i].checked = e.target.checked;
@@ -125,13 +124,29 @@ window.init_arsip = function(container){
   document.getElementById('searchArsip').addEventListener('input', applyFilter);
   document.getElementById('filterKategori').addEventListener('change', applyFilter);
 
-  // FUNGSI VIEW FILE
+  // PERBAIKAN: Menggunakan Blob URL agar file Base64 terbuka inline (bukan terdownload)
   window.viewArsip = function(fid){
     var a = arsipList.find(function(x){ return (x.firestore_id||x.id) == fid; });
     if(!a) return alert('Data tidak ditemukan');
+    
     if(a.file_base64){
-      var win = window.open();
-      win.document.write('<iframe src="'+a.file_base64+'" style="width:100%;height:100%;border:none;"></iframe>');
+      try {
+        // Konversi Base64 ke Blob
+        var arr = a.file_base64.split(',');
+        var mime = arr[0].match(/:(.*?);/)[1];
+        var bstr = atob(arr[1]);
+        var n = bstr.length;
+        var u8arr = new Uint8Array(n);
+        while(n--){ u8arr[n] = bstr.charCodeAt(n); }
+        var blob = new Blob([u8arr], {type: mime});
+        
+        // Buat Object URL dan buka di tab baru
+        var url = URL.createObjectURL(blob);
+        window.open(url, '_blank');
+      } catch(e) {
+        console.error('Gagal membuka file:', e);
+        alert('Gagal menampilkan file. Silakan coba download manual.');
+      }
     } else if(a.file_url){
       window.open(a.file_url, '_blank');
     } else {
@@ -139,7 +154,6 @@ window.init_arsip = function(container){
     }
   };
 
-  // FUNGSI EXPORT TERPILIH
   document.getElementById('btnExportArsip').onclick = function(){
     var checks = document.querySelectorAll('.row-export-check:checked');
     if(checks.length === 0){ alert('⚠️ Centang minimal 1 file pada tabel untuk di-export!'); return; }
@@ -158,10 +172,8 @@ window.init_arsip = function(container){
       var a = selectedData[i]; 
       var linkCell = '';
       if(a.file_url){
-        // Untuk Drive, buat hyperlink yang bisa diklik di Excel
         linkCell = '=HYPERLINK("'+a.file_url+'","Buka Drive")';
       } else if(a.file_base64){
-        // Base64 terlalu panjang untuk Excel cell, beri instruksi
         linkCell = '[File Base64 '+Math.round((a.file_size||0)/1024)+'KB] - Lihat langsung di Web App';
       } else {
         linkCell = '-';
