@@ -6,35 +6,64 @@
 <title>Bel Sekolah Otomatis - SDN 134 Kalumpang</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../../css/admin-elegant-final.css">
 <style>body{font-family:'Inter',system-ui;background:#f8fafc}.font-jakarta{font-family:'Plus Jakarta Sans',system-ui}.card-shadow{box-shadow:0 8px 24px rgba(15,47,30,0.06)}</style>
 </head>
-<body>
-<aside class="sidebar" id="sidebar">
-  <div class="sidebar-header"><div class="logo"><div class="logo-icon">134</div><div class="logo-text">SDN 134<span>KALUMPANG</span></div></div></div>
-  <nav class="sidebar-nav" id="dynamicSidebar"></nav>
-  <div class="sidebar-footer"><p>NPSN 40312947<br>Bel Sekolah - Standalone TTS</p></div>
-</aside>
-<main class="main">
-  <header class="topbar"><div class="breadcrumb"><span>Bel Sekolah</span> / <strong>OTOMATIS TTS</strong></div><div id="firestoreStatus" style="font-size:10px;padding:6px 10px;background:#fef9c3;border-radius:12px;margin-left:10px;">🔥 Connecting...</div></header>
-  <div class="content">
-    <div id="belSekolahContainer">Memuat bel otomatis...</div>
+<body class="bg-[#f8fafc] min-h-screen">
+<!-- HEADER SIMPLE - Tidak pakai sidebar ServiceMenu agar tidak redirect ke dashboard -->
+<header class="bg-white border-b border-slate-200 sticky top-0 z-40">
+  <div class="max-w-[800px] mx-auto px-4 md:px-6 h-[64px] flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <a href="../../index.html" class="w-10 h-10 rounded-xl bg-[#0f2f1e] text-white flex items-center justify-center">🎓</a>
+      <div><div class="font-jakarta font-extrabold text-[14px]">SDN 134 KALUMPANG</div><div class="text-[11px] text-slate-500">Bel Sekolah Otomatis TTS • Standalone</div></div>
+    </div>
+    <div class="flex items-center gap-2">
+      <span id="firestoreStatus" class="text-[10px] px-3 py-1.5 rounded-full bg-[#fef9c3] border">🔥 Connecting...</span>
+      <a href="../../index.html" class="h-9 px-4 rounded-full bg-slate-100 text-[11px] font-bold flex items-center">← Beranda</a>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-[800px] mx-auto px-4 md:px-6 py-8">
+  <div class="mb-6">
+    <div class="text-[11px] font-bold tracking-widest text-slate-400">BEL SEKOLAH / OTOMATIS TTS</div>
+    <h1 class="font-jakarta font-extrabold text-[24px] mt-1">🔔 Sistem Bel Otomatis</h1>
+    <p class="text-[12px] text-slate-500 mt-2">Berdiri mandiri, tidak butuh login dashboard, TTS Bahasa Indonesia, jadwal 07:00 - 14:00. Klik Aktifkan untuk mulai.</p>
+  </div>
+  <div id="belSekolahContainer" class="bg-white rounded-[16px] border p-8 text-center">Memuat bel otomatis... Jika masih memuat, cek console (F12) - pastikan file js/features/bel-sekolah.js ada di /sd134kalumpang/js/features/bel-sekolah.js</div>
+  
+  <div class="mt-8 bg-[#0f2f1e] rounded-[16px] p-5 text-white">
+    <div class="font-bold text-[13px]">Cara Pakai:</div>
+    <ol class="text-[11px] text-white/70 mt-2 list-decimal ml-4 space-y-1">
+      <li>Klik tombol <b>Aktifkan Sistem Bel</b> di atas (browser butuh interaksi user sebelum boleh bersuara)</li>
+      <li>Biarkan tab ini terbuka di laptop operator sekolah</li>
+      <li>Pada jam 07:00, 09:30, 10:00, 12:00, 14:00 akan otomatis bersuara TTS Indonesia</li>
+      <li>Klik <b>Tes Suara</b> untuk uji speaker</li>
+    </ol>
   </div>
 </main>
-<script src="../../js/config/service-menu.js"></script>
-<script type="module" src="../../js/firebase-config.js"></script>
-<script type="module" src="../../js/firebase-service.js"></script>
+
+<!-- FIX: Path absolut untuk GitHub Pages -->
+<script src="../../js/config/firebase-config.js" type="module"></script>
+<script src="../../js/config/firebase-service.js" type="module"></script>
 <script src="../../js/features/bel-sekolah.js"></script>
 <script>
-  document.addEventListener('DOMContentLoaded', ()=>{
-    if(typeof ServiceMenu !== 'undefined'){
-      ServiceMenu.renderSidebar('dynamicSidebar');
-    }
-  });
-  window.addEventListener('firebase-ready', (e)=>{
-    const el=document.getElementById('firestoreStatus');
-    if(el){ el.textContent='Connected: '+e.detail.projectId; el.style.background='#dcfce7'; }
-  });
+// FIX: Inisialisasi bel tanpa tergantung ServiceMenu (yang bikin redirect ke dashboard)
+document.addEventListener('DOMContentLoaded', ()=>{
+  console.log('Bel module loaded - trying init');
+  if(window.BelSekolah){
+    window.BelSekolah.init('belSekolahContainer');
+  } else {
+    // Retry 1 detik jika script belum load
+    setTimeout(()=>{
+      if(window.BelSekolah) window.BelSekolah.init('belSekolahContainer');
+      else document.getElementById('belSekolahContainer').innerHTML = '❌ Gagal load js/features/bel-sekolah.js - cek path /sd134kalumpang/js/features/bel-sekolah.js 404. Pastikan file sudah di-upload ke GitHub.';
+    }, 1000);
+  }
+});
+window.addEventListener('firebase-ready', (e)=>{
+  const el=document.getElementById('firestoreStatus');
+  if(el){ el.textContent='Connected: '+e.detail.projectId; el.className='text-[10px] px-3 py-1.5 rounded-full bg-[#dcfce7] border text-[#0f2f1e]'; }
+});
 </script>
 </body>
-</html>
+</htm
