@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bel Sekolah Otomatis - SDN 134 Kalumpang</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/admin-elegant-final.css">
+<style>body{font-family:'Inter',system-ui;background:#f8fafc}.font-jakarta{font-family:'Plus Jakarta Sans',system-ui}.card-shadow{box-shadow:0 8px 24px rgba(15,47,30,0.06)}</style>
+</head>
+<body>
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header"><div class="logo"><div class="logo-icon">134</div><div class="logo-text">SDN 134<span>KALUMPANG</span></div></div></div>
+  <nav class="sidebar-nav" id="dynamicSidebar"></nav>
+  <div class="sidebar-footer"><p>NPSN 40312947<br>Bel Sekolah - Standalone TTS</p></div>
+</aside>
+<main class="main">
+  <header class="topbar"><div class="breadcrumb"><span>Bel Sekolah</span> / <strong>OTOMATIS TTS</strong></div><div id="firestoreStatus" style="font-size:10px;padding:6px 10px;background:#fef9c3;border-radius:12px;margin-left:10px;">🔥 Connecting...</div></header>
+  <div class="content">
+    <div id="belSekolahContainer">Memuat bel otomatis...</div>
+  </div>
+</main>
+<script src="../../js/config/service-menu.js"></script>
+<script type="module" src="../../js/firebase-config.js"></script>
+<script type="module" src="../../js/firebase-service.js"></script>
+<script src="../../js/features/bel-sekolah.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', ()=>{
+    if(typeof ServiceMenu !== 'undefined'){
+      ServiceMenu.renderSidebar('dynamicSidebar');
+    }
+  });
+  window.addEventListener('firebase-ready', (e)=>{
+    const el=document.getElementById('firestoreStatus');
+    if(el){ el.textContent='Connected: '+e.detail.projectId; el.style.background='#dcfce7'; }
+  });
+</script>
+</body>
+</html>
