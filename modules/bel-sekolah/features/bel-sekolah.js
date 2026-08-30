@@ -105,3 +105,8 @@ document.addEventListener('DOMContentLoaded', ()=>{
     window.BelSekolah.init('belSekolahContainer');
   }
 });
+
+// FIX tambahan: jika DOM sudah ready, init langsung
+if(document.readyState !== 'loading' && document.getElementById('belSekolahContainer')){
+  window.BelSekolah.init('belSekolahContainer');
+}
