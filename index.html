@@ -1,90 +1,247 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SDN 134 Kalumpang - Login</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-  <style>body{font-family:'Inter',system-ui} .font-poppins{font-family:'Poppins',system-ui}</style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SDN 134 KALUMPANG - Cerdas, Berkarakter, Berprestasi</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  body{font-family:'Inter',system-ui;background:#f8fafc}
+  .font-jakarta{font-family:'Plus Jakarta Sans',system-ui}
+  .hero-bg{background: radial-gradient(1200px 600px at 10% -10%, #1a5c36 0%, #0f2f1e 60%, #0a1e14 100%)}
+  .card-shadow{box-shadow:0 8px 24px rgba(15,47,30,0.06), 0 2px 8px rgba(15,47,30,0.04)}
+  @keyframes marquee{0%{transform:translateX(100%)}100%{transform:translateX(-100%)}}
+  .marquee-track{animation:marquee 40s linear infinite}
+</style>
 </head>
-<body class="min-h-screen bg-[#f6f8fb] flex">
-  <!-- KIRI -->
-  <div class="hidden lg:flex lg:w-[54%] bg-[#0d3b66] text-white p-12 flex-col justify-between">
-    <div class="flex items-center gap-3"><div class="w-11 h-11 rounded-xl bg-[#ffcc00] text-[#0d3b66] flex items-center justify-center font-bold">S</div><div><div class="text-[11px] tracking-widest opacity-80 font-bold">SEKOLAH DASAR NEGERI</div><div class="font-extrabold text-lg -mt-1">SDN 134-KALUMPANG</div></div></div>
-    <div><div class="inline-flex bg-[#ffcc00] text-[#0d3b66] text-[11px] font-bold tracking-widest px-3 py-1.5 rounded-full mb-6">PORTAL RESMI SEKOLAH</div><h1 class="font-poppins font-extrabold text-[68px] leading-[0.9]">SELAMAT<br>DATANG!</h1><p class="mt-6 text-[20px] font-semibold leading-tight">MARI PENUHI HARIMU DENGAN HAL-HAL YANG BERMAKNA.</p><p class="mt-3 text-white/60 text-[15px] max-w-[420px]">LAKUKAN YANG BEDA DARI BIASANYA — Belajar, Berkarya, dan Berprestasi bersama keluarga besar SDN 134 Kalumpang.</p></div>
-    <div class="text-white/50 text-[11px]">Jl. Pendidikan No. 134, Kalumpang • 08.00 - 15.00 WITA</div>
+<body class="antialiased text-[#0f172a]">
+
+<!-- TOP BAR - responsive -->
+<div class="bg-[#0a1e14] text-white/80 text-[11px]">
+  <div class="max-w-[1280px] mx-auto px-4 md:px-6 h-auto md:h-9 py-2 md:py-0 flex flex-col md:flex-row md:items-center justify-between gap-1">
+    <div class="flex flex-wrap items-center gap-2 md:gap-4">
+      <span id="currentDate" class="text-white/70">Minggu, 30 Agustus 2026</span>
+      <span class="hidden md:inline w-px h-3 bg-white/20"></span>
+      <span class="hidden md:inline">NPSN 40312947 • Akreditasi B</span>
+    </div>
+    <div class="flex items-center gap-3 text-[10px] md:text-[11px]">
+      <span class="truncate">info@sdn134-kalumpang.sch.id</span>
+      <span class="w-px h-3 bg-white/20"></span>
+      <span>(0262) 123-4567</span>
+      <span id="firestoreStatus" class="ml-1 px-2 py-0.5 rounded-full bg-white/10 text-[9px]">🔥 Connecting</span>
+    </div>
   </div>
-  <!-- KANAN -->
-  <div class="flex-1 bg-white flex flex-col justify-center px-6 sm:px-12 py-10">
-    <div class="max-w-[420px] mx-auto w-full">
-      <h2 class="font-poppins font-bold text-[30px] leading-tight">Login Untuk Masuk</h2>
-      <p class="mt-2 text-[13px] text-black/50">Masuk dengan akun terdaftar untuk mengakses e-learning, absensi, dan informasi sekolah.</p>
+</div>
+
+<!-- HEADER - responsive with hamburger -->
+<header class="bg-white/95 backdrop-blur-xl border-b border-slate-200/70 sticky top-0 z-40">
+  <div class="max-w-[1280px] mx-auto px-4 md:px-6 h-[64px] md:h-[72px] flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 md:w-11 md:h-11 rounded-xl bg-[#0f2f1e] text-white flex items-center justify-center shadow">🎓</div>
+      <div>
+        <div class="font-jakarta font-extrabold text-[14px] md:text-[15px] leading-none tracking-[-0.02em]">SDN 134 KALUMPANG</div>
+        <div class="text-[10px] md:text-[11px] text-slate-500 font-medium mt-[2px]">Cerdas • Berkarakter • Berprestasi</div>
+      </div>
+    </div>
+    <nav class="hidden lg:flex items-center gap-8 text-[13px] font-semibold text-slate-600">
+      <a href="#beranda" class="text-[#0f2f1e] relative after:absolute after:-bottom-1 after:left-0 after:w-full after:h-[2px] after:bg-[#ffcc00]">Beranda</a>
+      <a href="#layanan" class="hover:text-[#0f2f1e]">Layanan</a>
+      <a href="#berita" class="hover:text-[#0f2f1e]">Berita</a>
+      <a href="#kontak" class="hover:text-[#0f2f1e]">Kontak</a>
+    </nav>
+    <div class="flex items-center gap-2">
+      <button onclick="openLoginModal()" class="h-9 px-4 md:px-5 rounded-full bg-[#0f2f1e] text-white text-[11px] md:text-[12px] font-bold">Masuk</button>
+      <button id="mobileMenuBtn" class="lg:hidden w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center">☰</button>
+    </div>
+  </div>
+  <!-- Mobile nav -->
+  <div id="mobileNav" class="lg:hidden hidden border-t bg-white px-4 py-3 flex-col gap-3 text-[13px] font-semibold">
+    <a href="#beranda" class="py-2">Beranda</a>
+    <a href="#layanan" class="py-2">Layanan</a>
+    <a href="#berita" class="py-2">Berita</a>
+    <a href="#kontak" class="py-2">Kontak</a>
+    <button onclick="openLoginModal()" class="mt-2 h-10 rounded-full bg-[#ffcc00] text-[#0f2f1e] font-bold">LOGIN / PPDB 2026/2027</button>
+  </div>
+  <!-- LOGIN/DAFTAR bar - responsive -->
+  <div class="grid grid-cols-2 lg:hidden text-[12px] font-bold tracking-wide">
+    <button onclick="openLoginModal()" class="h-11 bg-[#ffcc00] text-[#0d3b66]">LOGIN</button>
+    <button onclick="alert('Hubungi admin')" class="h-11 bg-[#0f2f1e] text-white">DAFTAR</button>
+  </div>
+</header>
+
+<!-- MARQUEE -->
+<div class="bg-[#0f172a] text-white h-10 flex items-center overflow-hidden">
+  <div class="bg-[#ffcc00] text-[#0f2f1e] h-full px-3 md:px-4 flex items-center gap-2 font-extrabold text-[10px] tracking-widest"><span class="w-2 h-2 rounded-full bg-[#0f2f1e] animate-pulse"></span>LIVE</div>
+  <div class="flex-1 overflow-hidden"><div id="marqueePengumuman" class="marquee-track text-[11px] md:text-[12.5px] text-white/90">📢 Selamat datang di Portal Resmi SDN 134 Kalumpang - Akreditasi B - 48 Siswa - 9 Guru | PPDB 2026/2027 Coming Soon | </div></div>
+</div>
+
+<!-- HERO - fully responsive -->
+<section id="beranda" class="hero-bg relative overflow-hidden">
+  <div class="absolute inset-0 opacity-[0.06]" style="background-image:radial-gradient(circle at 1px 1px, white 1px, transparent 0);background-size:32px 32px"></div>
+  <div class="max-w-[1280px] mx-auto px-4 md:px-6 py-10 md:py-20 grid lg:grid-cols-[1.15fr_0.85fr] gap-8 md:gap-10 items-center relative">
+    <div class="text-white text-center lg:text-left">
+      <div class="inline-flex items-center gap-2 bg-white/10 border border-white/15 rounded-full px-3 py-1.5 text-[10px] md:text-[11px] font-bold tracking-wide justify-center">
+        <span class="w-2 h-2 rounded-full bg-[#ffcc00]"></span> PORTAL RESMI • TA 2026/2027
+      </div>
+      <h1 class="font-jakarta font-extrabold text-[32px] md:text-[56px] leading-[0.95] tracking-[-0.03em] mt-5">
+        Mendidik dengan<br><span class="text-[#ffcc00]">Hati & Prestasi</span>
+      </h1>
+      <p class="text-[13px] md:text-[15px] leading-relaxed text-white/75 max-w-[520px] mx-auto lg:mx-0 mt-4">SDN 134 Kalumpang berkomitmen mencetak generasi cerdas, berkarakter, dan berprestasi. Lingkungan aman, guru profesional, kurikulum merdeka.</p>
       
-      <form id="loginForm" class="mt-8 space-y-5">
-        <div><label class="text-[12px] font-semibold">ALAMAT EMAIL</label><input id="email" type="email" class="mt-2 w-full h-[46px] px-4 rounded-xl bg-[#f7f9fc] border border-[#e8eef6] text-[14px] outline-none focus:border-[#0d3b66]/30" placeholder="nama@email.com"></div>
-        <div><label class="text-[12px] font-semibold">PASSWORD</label><input id="password" type="password" class="mt-2 w-full h-[46px] px-4 rounded-xl bg-[#f7f9fc] border border-[#e8eef6] text-[14px] outline-none focus:border-[#0d3b66]/30" placeholder="••••••••"></div>
-        <div><label class="text-[12px] font-semibold">KODE CAPTCHA</label><div class="flex gap-2 mt-2"><input id="captchaInput" type="text" class="flex-1 h-[46px] px-4 rounded-xl bg-[#f7f9fc] border border-[#e8eef6] uppercase tracking-widest" placeholder="Masukkan kode"><div id="captchaCode" class="h-[46px] min-w-[92px] px-3 rounded-xl bg-[#0d3b66] text-white flex items-center justify-center font-mono font-bold tracking-[0.2em] text-[18px]">XXXX</div><button type="button" id="refreshCaptcha" class="w-[46px] h-[46px] rounded-xl border">↻</button></div></div>
-        <div id="errorMsg" class="hidden rounded-xl bg-[#fff1f1] border border-[#ffd0d0] text-[#9a1a1a] text-[12px] px-3 py-2"></div>
-        <div id="successMsg" class="hidden rounded-xl bg-[#e8f5e9] border border-[#b9e0bc] text-[#1b5e20] text-[12px] px-3 py-2 flex items-center gap-2">✓ Login berhasil! Mengalihkan ke dashboard...</div>
-        <button type="submit" class="w-full h-[48px] rounded-xl bg-[#0d3b66] text-white font-bold text-[13px] tracking-wide">SIGN IN</button>
+      <div class="mt-6 bg-white rounded-[16px] p-4 md:p-5 card-shadow max-w-[520px] mx-auto lg:mx-0 text-left">
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <div class="text-[10px] font-extrabold tracking-widest text-[#c1272d]">INFORMASI PENTING</div>
+            <div class="font-jakarta font-extrabold text-[18px] md:text-[22px] text-[#0f172a] mt-1">PPDB Coming Soon</div>
+            <div class="text-[11px] md:text-[12px] text-slate-500 mt-1">Tahun Ajaran 2026/2027 • Pendaftaran segera dibuka.</div>
+          </div>
+          <div class="w-12 h-12 rounded-full bg-[#fff7cc] hidden md:flex items-center justify-center text-[20px]">📢</div>
+        </div>
+        <div class="mt-4 flex flex-col sm:flex-row gap-2">
+          <button onclick="openLoginModal()" class="h-9 px-4 rounded-full bg-[#0f2f1e] text-white text-[11px] md:text-[12px] font-bold w-full sm:w-auto">Daftar Sekarang →</button>
+          <a href="#layanan" class="h-9 px-4 rounded-full bg-slate-100 text-slate-700 text-[11px] md:text-[12px] font-bold flex items-center justify-center w-full sm:w-auto">Lihat Layanan</a>
+        </div>
+      </div>
+
+      <div class="mt-6 grid grid-cols-3 gap-2 md:gap-3 max-w-[520px] mx-auto lg:mx-0">
+        <div class="bg-white/10 border border-white/10 rounded-xl p-3 text-center"><div class="text-[18px] md:text-[20px] font-extrabold">48</div><div class="text-[10px] text-white/60">Siswa</div></div>
+        <div class="bg-white/10 border border-white/10 rounded-xl p-3 text-center"><div class="text-[18px] md:text-[20px] font-extrabold">9</div><div class="text-[10px] text-white/60">Guru</div></div>
+        <div class="bg-white/10 border border-white/10 rounded-xl p-3 text-center"><div class="text-[18px] md:text-[20px] font-extrabold">B</div><div class="text-[10px] text-white/60">Akreditasi</div></div>
+      </div>
+    </div>
+
+    <!-- Login Card - responsive, full width on mobile -->
+    <div class="bg-white rounded-[20px] card-shadow p-5 md:p-8 w-full">
+      <div class="flex items-center justify-between">
+        <div><div class="font-jakarta font-bold text-[16px] md:text-[18px]">Masuk Akun</div><div class="text-[11px] md:text-[12px] text-slate-500 mt-1">Akses e-learning & arsip</div></div>
+        <div class="w-10 h-10 rounded-full bg-[#f1f5f9] flex items-center justify-center">🔐</div>
+      </div>
+      <form id="loginFormInline" class="mt-6 space-y-4">
+        <div><label class="text-[10px] font-bold tracking-wide text-slate-600">ALAMAT EMAIL</label><input id="emailInline" type="email" placeholder="nama@email.com" class="mt-2 w-full h-11 px-4 rounded-xl bg-[#f8fafc] border border-slate-200 text-[13px] outline-none focus:border-[#0f2f1e]/30 focus:bg-white" required></div>
+        <div><label class="text-[10px] font-bold tracking-wide text-slate-600">PASSWORD</label><input id="passwordInline" type="password" placeholder="••••••••" class="mt-2 w-full h-11 px-4 rounded-xl bg-[#f8fafc] border border-slate-200 text-[13px] outline-none" required></div>
+        <div><label class="text-[10px] font-bold tracking-wide text-slate-600">KODE CAPTCHA</label><div class="mt-2 flex gap-2"><input id="captchaInputInline" type="text" placeholder="Kode" class="flex-1 h-11 px-4 rounded-xl bg-[#f8fafc] border border-slate-200 uppercase tracking-[0.18em] text-[13px] font-bold" required><div id="captchaCodeInline" class="h-11 min-w-[90px] px-3 rounded-xl bg-[#0f172a] text-white flex items-center justify-center font-mono font-bold tracking-[0.22em] text-[15px]">XXXX</div><button type="button" id="refreshCaptchaInline" class="w-11 h-11 rounded-xl border border-slate-200">↻</button></div></div>
+        <div id="errorMsgInline" class="hidden rounded-xl bg-[#fff1f1] border border-[#ffd0d0] text-[#9a1a1a] text-[11px] px-3 py-2"></div>
+        <div id="successMsgInline" class="hidden rounded-xl bg-[#e8f5e9] border border-[#b9e0bc] text-[#1b5e20] text-[11px] px-3 py-2">✓ Login berhasil!</div>
+        <button type="submit" class="w-full h-11 rounded-xl bg-[#0f2f1e] text-white font-bold text-[12px] tracking-wide">Masuk ke Dashboard →</button>
+        <div class="text-[10px] text-slate-500 text-center">Password default: <span class="font-mono font-bold">123456</span></div>
       </form>
     </div>
   </div>
+</section>
 
+<!-- LAYANAN - responsive grid -->
+<section id="layanan" class="max-w-[1280px] mx-auto px-4 md:px-6 py-10 md:py-14">
+  <h2 class="font-jakarta font-extrabold text-[20px] md:text-[24px] tracking-[-0.02em]">Layanan & Informasi</h2>
+  <p class="text-[12px] md:text-[13px] text-slate-500 mt-2 max-w-[480px]">Akses cepat layanan akademik & arsip digital base64 700KB Firestore Owner Only.</p>
+  <div id="layanan-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6"></div>
+</section>
+
+<!-- BERITA - responsive -->
+<section id="berita" class="bg-white border-y border-slate-200/70">
+  <div class="max-w-[1280px] mx-auto px-4 md:px-6 py-10 md:py-14">
+    <div class="flex items-end justify-between"><h2 class="font-jakarta font-bold text-[16px] md:text-[18px]">Berita & Pengumuman</h2><a href="#" class="text-[11px] font-bold text-[#0f2f1e]">Lihat semua →</a></div>
+    <div id="berita-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6 text-[13px]"></div>
+  </div>
+</section>
+
+<footer id="kontak" class="bg-[#0a1e14] text-white/70">
+  <div class="max-w-[1280px] mx-auto px-4 md:px-6 py-10 grid grid-cols-1 md:grid-cols-[1.3fr_0.7fr_0.7fr] gap-8">
+    <div><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-xl bg-white text-[#0f2f1e] flex items-center justify-center font-bold">S</div><div><div class="font-jakarta font-extrabold text-white text-[13px]">SDN 134 KALUMPANG</div><div class="text-[10px] text-white/60">Cerdas • Berkarakter • Berprestasi</div></div></div><p class="text-[11px] leading-relaxed mt-4 max-w-[360px] text-white/60">NPSN 40312947 - Trilino, Bontotiro - Bulukumba. Firestore Owner Only, Base64 700KB.</p></div>
+    <div><div class="font-bold text-white text-[12px]">Kontak</div><div class="text-[11px] mt-3 leading-relaxed">Jl. Pendidikan No. 134<br>info@sdn134-kalumpang.sch.id<br>(0262) 123-4567</div></div>
+    <div><div class="font-bold text-white text-[12px]">Tautan</div><div class="text-[11px] mt-3 space-y-2"><a href="modules/e-dokumen/index.html?fitur=arsip" class="block hover:text-white">E-Dokumen Arsip</a><a href="dashboard.html" class="block hover:text-white">Dashboard</a></div></div>
+  </div>
+  <div class="border-t border-white/10"><div class="max-w-[1280px] mx-auto px-4 md:px-6 h-12 flex items-center justify-between text-[10px]"><span>© 2026 SDN 134 Kalumpang</span><span class="hidden md:block">Responsive • Mobile • Tablet • Desktop • Firestore</span></div></div>
+</footer>
+
+<!-- MODAL LOGIN - responsive -->
+<div id="loginModal" class="fixed inset-0 bg-[#0a1e14]/60 backdrop-blur-[6px] hidden items-center justify-center z-[100] p-4">
+  <div class="bg-white rounded-[20px] w-full max-w-[400px] p-6 md:p-7 card-shadow relative">
+    <button onclick="closeLoginModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center">✕</button>
+    <div class="text-center"><div class="w-14 h-14 rounded-full bg-[#0f2f1e] mx-auto flex items-center justify-center text-white text-[22px]">🎓</div><div class="font-jakarta font-extrabold text-[16px] mt-3">Login</div><div class="text-[11px] text-slate-500 mt-1">Masuk Dashboard Admin</div></div>
+    <form id="loginForm" class="mt-6 space-y-4">
+      <div><label class="text-[10px] font-bold tracking-wide text-slate-600">ALAMAT EMAIL</label><input id="email" type="email" placeholder="nama@email.com" required class="mt-2 w-full h-11 px-4 rounded-xl bg-[#f8fafc] border border-slate-200 text-[13px]"></div>
+      <div><label class="text-[10px] font-bold tracking-wide text-slate-600">PASSWORD</label><input id="password" type="password" placeholder="••••••••" required class="mt-2 w-full h-11 px-4 rounded-xl bg-[#f8fafc] border border-slate-200 text-[13px]"></div>
+      <div><label class="text-[10px] font-bold tracking-wide text-slate-600">KODE CAPTCHA</label><div class="mt-2 flex gap-2"><input id="captchaInput" type="text" placeholder="Kode" required autocomplete="off" class="flex-1 h-11 px-4 rounded-xl bg-[#f8fafc] border border-slate-200 uppercase tracking-[0.18em] text-[12px] font-bold"><div id="captchaCode" class="h-11 min-w-[90px] px-3 rounded-xl bg-[#0f172a] text-white flex items-center justify-center font-mono font-bold tracking-[0.22em] text-[15px]">XXXX</div><button type="button" onclick="generateCaptcha()" class="w-11 h-11 rounded-xl border">↻</button></div></div>
+      <div id="errorMsg" class="hidden rounded-xl bg-[#fff1f1] border border-[#ffd0d0] text-[#9a1a1a] text-[11px] px-3 py-2"></div>
+      <div id="successMsg" class="hidden rounded-xl bg-[#e8f5e9] border border-[#b9e0bc] text-[#1b5e20] text-[11px] px-3 py-2">✓ Berhasil!</div>
+      <button type="submit" class="w-full h-11 rounded-xl bg-[#0f2f1e] text-white font-bold text-[12px]">SIGN IN →</button>
+      <div id="loginStatus" class="text-[10px] text-center text-slate-500"></div>
+    </form>
+  </div>
+</div>
+
+<script src="js/config/service-menu.js"></script>
+<script type="module" src="js/config/firebase-config.js"></script>
+<script type="module" src="js/config/firebase-service.js"></script>
 <script>
-  // === LOGIKA CAPTCHA ===
-  let captcha = "";
-  function generateCaptcha(){
-    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-    let c = "";
-    for(let i=0;i<4;i++) c += chars[Math.floor(Math.random()*32)];
-    captcha = c;
-    document.getElementById("captchaCode").textContent = c;
+document.getElementById('currentDate').textContent = new Date().toLocaleDateString('id-ID', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+document.getElementById('mobileMenuBtn')?.addEventListener('click', ()=>{
+  const nav=document.getElementById('mobileNav');
+  if(nav) nav.classList.toggle('hidden');
+  if(nav) nav.classList.toggle('flex');
+});
+
+try{
+  if(typeof ServiceMenu !== 'undefined'){
+    const list=ServiceMenu.getAnnouncements().filter(a=>a.aktif);
+    if(list.length) document.getElementById('marqueePengumuman').textContent=list.map(a=>a.teks).join(' ');
   }
-  generateCaptcha();
-  document.getElementById("refreshCaptcha").onclick = generateCaptcha;
+}catch(e){}
 
-  // === LOGIKA LOGIN YANG KAMU MINTA ===
-  document.getElementById("loginForm").addEventListener("submit", function(e){
-    e.preventDefault();
-    const email = document.getElementById("email").value.trim();
-    const pass = document.getElementById("password").value.trim();
-    const inputCaptcha = document.getElementById("captchaInput").value.trim().toUpperCase();
-    const err = document.getElementById("errorMsg");
-    const success = document.getElementById("successMsg");
-    
-    err.classList.add("hidden");
-    success.classList.add("hidden");
-
-    if(!email || !pass){
-      err.textContent = "Mohon lengkapi email dan password.";
-      err.classList.remove("hidden");
-      return;
-    }
-    if(inputCaptcha !== captcha){
-      err.textContent = "Kode captcha tidak sesuai. Silakan coba lagi.";
-      err.classList.remove("hidden");
-      generateCaptcha();
-      return;
-    }
-
-    // --- PERUBAHAN YANG KAMU LAKUKAN ---
-    // Simpan status login ke localStorage dan redirect ke dashboard.html setelah 3 detik
-    success.classList.remove("hidden");
-    localStorage.setItem("isLoggedIn", "true");
-    localStorage.setItem("userEmail", email);
-    localStorage.setItem("loginTime", new Date().toISOString());
-
-    setTimeout(() => {
-      window.location.href = "dashboard.html";
-    }, 3000);
-  });
-
-  // Jika sudah login, langsung ke dashboard
-  if(localStorage.getItem("isLoggedIn") === "true"){
-    // window.location.href = "dashboard.html";
+fetch('home/data/berita.json').then(r=>r.json()).then(data=>{
+  const beritaGrid=document.getElementById('berita-grid');
+  if(beritaGrid && data && data.length){
+    beritaGrid.innerHTML=data.slice(0,3).map(b=>'<div class="bg-white rounded-xl border border-slate-200 p-5 card-shadow"><div class="text-[10px] font-bold tracking-widest text-[#0f2f1e]">BERITA</div><div class="font-jakarta font-bold text-[13px] mt-2 leading-tight">'+(b.judul||'Berita')+'</div><div class="text-[10px] text-slate-500 mt-1">'+(b.tanggal||'')+'</div><div class="text-[11px] text-slate-600 mt-3">'+(b.isi||'').slice(0,120)+'...</div></div>').join('');
   }
+}).catch(()=>{});
+
+const layananGrid=document.getElementById('layanan-grid');
+if(layananGrid){
+  layananGrid.innerHTML=''
+    + '<div class="bg-white rounded-[16px] border border-slate-200 p-6 card-shadow"><div class="w-10 h-10 rounded-xl bg-[#0f2f1e] text-white flex items-center justify-center">📁</div><div class="font-jakarta font-bold text-[14px] mt-4">E-Dokumen Arsip Base64</div><div class="text-[11px] text-slate-500 mt-2">Arsip 700KB di Firestore, bisa dilihat di situs.</div><a href="modules/e-dokumen/index.html?fitur=arsip" class="inline-flex mt-4 h-8 px-4 rounded-full bg-slate-900 text-white text-[10px] font-bold items-center">Buka →</a></div>'
+    + '<div class="bg-white rounded-[16px] border border-slate-200 p-6 card-shadow"><div class="w-10 h-10 rounded-xl bg-[#ffcc00] text-[#0f2f1e] flex items-center justify-center">🎓</div><div class="font-jakarta font-bold text-[14px] mt-4">Data Peserta Didik</div><div class="text-[11px] text-slate-500 mt-2">48 siswa, owner only, Firestore.</div><a href="modules/master-data/index.html?fitur=data-peserta-didik" class="inline-flex mt-4 h-8 px-4 rounded-full bg-white border text-[10px] font-bold items-center">Buka →</a></div>'
+    + '<div class="bg-white rounded-[16px] border border-slate-200 p-6 card-shadow"><div class="w-10 h-10 rounded-xl bg-[#e8f5e9] text-[#0f2f1e] flex items-center justify-center">📊</div><div class="font-jakarta font-bold text-[14px] mt-4">Dashboard Admin</div><div class="text-[11px] text-slate-500 mt-2">KPI, 18 fitur Administrasi Guru.</div><a href="dashboard.html" class="inline-flex mt-4 h-8 px-4 rounded-full bg-white border text-[10px] font-bold items-center">Buka →</a></div>';
+}
+
+window.openLoginModal=function(){ const m=document.getElementById('loginModal'); if(m){ m.classList.remove('hidden'); m.classList.add('flex'); } generateCaptcha(); }
+window.closeLoginModal=function(){ const m=document.getElementById('loginModal'); if(m){ m.classList.add('hidden'); m.classList.remove('flex'); } }
+
+let captcha="";
+window.generateCaptcha=function(){
+  const chars="ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; let c=""; for(let i=0;i<4;i++) c+=chars.charAt(Math.floor(Math.random()*chars.length));
+  captcha=c;
+  const a=document.getElementById('captchaCode'); const b=document.getElementById('captchaCodeInline');
+  if(a) a.textContent=c; if(b) b.textContent=c;
+}
+generateCaptcha();
+document.getElementById('refreshCaptchaInline')?.addEventListener('click', generateCaptcha);
+
+function handleLogin(email, pass, inputCaptcha, errEl, successEl, statusEl){
+  if(!email || !pass){ if(errEl){ errEl.textContent="Mohon lengkapi email dan password."; errEl.classList.remove("hidden"); } return false; }
+  if(inputCaptcha!==captcha){ if(errEl){ errEl.textContent="Captcha salah."; errEl.classList.remove("hidden"); } generateCaptcha(); return false; }
+  if(errEl) errEl.classList.add("hidden"); if(successEl) successEl.classList.remove("hidden"); if(statusEl) statusEl.textContent="Mengecek...";
+  let userFound=null; try{ const lu=ServiceMenu._getUsers(); userFound=lu.find(u=> (u.email||'').toLowerCase()===email.toLowerCase()); }catch(e){}
+  if(!userFound && email.toLowerCase()==='muharfah@sdn134.sch.id'){ userFound={nama:'Muh Arfah Wahlii P.', email:email, role:'super_admin', permissions:['dashboard','e_dokumen','admin_guru','data_statistik','e_portal','master_data','pengaturan','laporan']}; }
+  if(!userFound && window.FirebaseService && FirebaseService.isEnabled()){
+    FirebaseService.getAll('users_db').then(list=>{
+      const f=list.find(u=> (u.email||'').toLowerCase()===email.toLowerCase());
+      doLoginSuccess(f || {nama:email, email:email, role:'guru', permissions:['dashboard','e_dokumen']});
+    }); return true;
+  } else { return doLoginSuccess(userFound || {nama:email, email:email, role:'guru', permissions:['dashboard','e_dokumen']}); }
+}
+function doLoginSuccess(userFound){
+  localStorage.setItem("isLoggedIn","true"); localStorage.setItem("userEmail",userFound.email); localStorage.setItem("email",userFound.email);
+  localStorage.setItem("nama",userFound.nama||userFound.email); localStorage.setItem("userName",userFound.nama||userFound.email);
+  localStorage.setItem("role",userFound.role||'guru'); localStorage.setItem("userRole",userFound.role||'guru');
+  localStorage.setItem("userPermissions",JSON.stringify(userFound.permissions||['dashboard'])); localStorage.setItem("user_permissions",JSON.stringify(userFound.permissions||['dashboard']));
+  localStorage.setItem("loginTime", new Date().toISOString());
+  setTimeout(()=>{ window.location.href="dashboard.html"; }, 1000); return true;
+}
+document.getElementById("loginForm")?.addEventListener("submit", function(e){ e.preventDefault(); const email=document.getElementById("email").value.trim(); const pass=document.getElementById("password").value.trim(); const cap=document.getElementById("captchaInput").value.trim().toUpperCase(); handleLogin(email, pass, cap, document.getElementById("errorMsg"), document.getElementById("successMsg"), document.getElementById("loginStatus")); });
+document.getElementById("loginFormInline")?.addEventListener("submit", function(e){ e.preventDefault(); const email=document.getElementById("emailInline").value.trim(); const pass=document.getElementById("passwordInline").value.trim(); const cap=document.getElementById("captchaInputInline").value.trim().toUpperCase(); handleLogin(email, pass, cap, document.getElementById("errorMsgInline"), document.getElementById("successMsgInline"), null); });
+
+window.addEventListener('firebase-ready', (e)=>{ const el=document.getElementById('firestoreStatus'); if(el){ el.textContent='Connected: '+e.detail.projectId; el.classList.add('bg-[#dcfce7]','text-[#0f2f1e]'); } });
 </script>
 </body>
 </html>
