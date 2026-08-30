@@ -51,7 +51,10 @@
       <a href="#kontak" class="hover:text-[#0f2f1e]">Kontak</a>
     </nav>
     <div class="flex items-center gap-2">
-      <button onclick="openLoginModal()" class="h-9 px-4 md:px-5 rounded-full bg-[#0f2f1e] text-white text-[11px] md:text-[12px] font-bold">BEL</button>
+      <div class="flex items-center gap-2">
+      <a href="modules/bel-sekolah/index.html" class="h-9 w-9 rounded-full bg-white border border-slate-200 flex items-center justify-center hover:bg-slate-50" title="Bel Sekolah Otomatis TTS">🔔</a>
+      <button onclick="openLoginModal()" class="h-9 px-4 md:px-5 rounded-full bg-[#0f2f1e] text-white text-[11px] md:text-[12px] font-bold">Masuk</button>
+      </div>
       <button id="mobileMenuBtn" class="lg:hidden w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center">☰</button>
     </div>
   </div>
@@ -243,5 +246,6 @@ document.getElementById("loginFormInline")?.addEventListener("submit", function(
 
 window.addEventListener('firebase-ready', (e)=>{ const el=document.getElementById('firestoreStatus'); if(el){ el.textContent='Connected: '+e.detail.projectId; el.classList.add('bg-[#dcfce7]','text-[#0f2f1e]'); } });
 </script>
+<script src="js/features/bel-sekolah.js"></script>
 </body>
 </html>
