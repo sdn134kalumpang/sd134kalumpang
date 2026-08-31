@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Administrasi Pembelajaran - SDN 134 Kalumpang</title>
+<link rel="stylesheet" href="../../css/admin-elegant-final.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  body { font-family: 'Inter', system-ui; }
+</style>
+</head>
+<body>
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="logo">
+      <div class="logo-icon">134</div>
+      <div class="logo-text">SDN 134<span>KALUMPANG</span></div>
+    </div>
+  </div>
+  <nav class="sidebar-nav" id="dynamicSidebar"></nav>
+  <div class="sidebar-footer">
+    <p>NPSN 40312947<br>Administrasi Pembelajaran</p>
+  </div>
+</aside>
+
+<main class="main">
+  <header class="topbar">
+    <div class="breadcrumb">
+      <span>Administrasi Pembelajaran</span> / <strong id="breadcrumbFitur">LCKH</strong>
+    </div>
+    <div id="firestoreStatus" style="font-size:10px;padding:6px 10px;background:#fef9c3;border-radius:12px;margin-left:10px;">🔥 Connecting...</div>
+  </header>
+  <div class="content" id="mainContent">Memuat modul...</div>
+</main>
+
+<!-- Load dependencies -->
+<script src="../../js/config/service-menu.js"></script>
+<script src="../../js/admin-elegant.js"></script>
+<script type="module" src="../../js/firebase-config.js"></script>
+<script type="module" src="../../js/firebase-service.js"></script>
+
+<!-- Main router -->
+<script src="./main.js"></script>
+
+<!-- Firebase status listener -->
+<script type="module">
+  window.addEventListener('firebase-ready', (e) => {
+    const el = document.getElementById('firestoreStatus');
+    if (el) { el.textContent = 'Connected: ' + e.detail.projectId; el.style.background = '#dcfce7'; }
+  });
+  setTimeout(() => {
+    const el = document.getElementById('firestoreStatus');
+    if (el && window.db && window.FirebaseService && FirebaseService.isEnabled()) {
+      el.textContent = 'Connected + Service Ready - schools/40312947/lckh';
+      el.style.background = '#dcfce7';
+    } else if (el) {
+      el.textContent = 'Cek Rules - schools/40312947 harus allow read,write if true';
+      el.style.background = '#fef2f2';
+    }
+  }, 2500);
+</script>
+</body>
+</html>
