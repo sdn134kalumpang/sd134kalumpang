@@ -1,6 +1,6 @@
 // modules/bel-sekolah/features/bel-sekolah.js
-// Aplikasi Bel Sekolah Standalone - Integrasi dengan Landing Page
-// Fungsi: Bel otomatis, TTS, notifikasi visual, countdown
+// Aplikasi Bel Sekolah Standalone - Tanpa Firebase
+// Menggunakan localStorage untuk konfigurasi
 
 (function() {
   'use strict';
@@ -15,9 +15,9 @@
   let indonesianVoice = null;
   let isBelActive = false;
 
-  // === KONFIGURASI WAKTU BEL (Default) ===
+  // === KONFIGURASI DEFAULT ===
   const DEFAULT_BEL_CONFIG = {
-    mulai: { time: '07:00', text: 'Selamat pagi, ayo masuk kelas dan belajar yang rajin ya!' },
+    mulai: { time: '07:00', text: 'Selamat pagi, ayo masuk kelas dan belajar yang rajin!' },
     istirahat: { time: '09:00', text: 'Waktunya istirahat, silakan pergi ke kantin.' },
     lanjut: { time: '09:30', text: 'Waktunya masuk kelas kembali, ayo lanjut belajar!' },
     pulang: { time: '13:00', text: 'Waktunya pulang, hati-hati di jalan. Sampai jumpa besok!' }
@@ -89,13 +89,6 @@
 
       audioUnlocked = true;
       console.log('✅ Audio unlocked');
-      
-      // Update UI jika ada elemen status
-      const statusEl = document.getElementById('belStatus');
-      if (statusEl) {
-        statusEl.textContent = '✅ Audio: Ter-unlock';
-        statusEl.style.color = '#10b981';
-      }
     } catch (e) {
       console.error('Gagal unlock audio:', e);
     }
@@ -224,13 +217,13 @@
     
     if (lastBelMinute === currentTime) return;
     
-    // Load konfigurasi dari localStorage atau gunakan default
+    // Load konfigurasi dari localStorage
     const belConfig = JSON.parse(localStorage.getItem('bel_config') || JSON.stringify(DEFAULT_BEL_CONFIG));
     
     const belConfigs = [
       { time: belConfig.mulai.time, text: belConfig.mulai.text, title: '🔔 Bel Masuk Kelas' },
       { time: belConfig.istirahat.time, text: belConfig.istirahat.text, title: '☕ Bel Istirahat' },
-      { time: belConfig.lanjut.time, text: belConfig.lanjut.text, title: ' Bel Lanjut' },
+      { time: belConfig.lanjut.time, text: belConfig.lanjut.text, title: '📚 Bel Lanjut' },
       { time: belConfig.pulang.time, text: belConfig.pulang.text, title: '🏠 Bel Pulang' }
     ];
     
@@ -390,7 +383,7 @@
     
     const titles = {
       mulai: '🔔 Bel Masuk Kelas',
-      istirahat: '☕ Bel Istirahat',
+      istirahat: ' Bel Istirahat',
       lanjut: '📚 Bel Lanjut',
       pulang: '🏠 Bel Pulang'
     };
