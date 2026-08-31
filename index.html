@@ -252,6 +252,7 @@ document.getElementById("loginFormInline")?.addEventListener("submit", function(
 window.addEventListener('firebase-ready', (e)=>{ const el=document.getElementById('firestoreStatus'); if(el){ el.textContent='Connected: '+e.detail.projectId; el.classList.add('bg-[#dcfce7]','text-[#0f2f1e]'); } });
 
 // PERBAIKAN 3: Inisialisasi dan Event Listener untuk Bel Sekolah
+// PERBAIKAN 3: Inisialisasi dan Event Listener untuk Bel Sekolah
 document.addEventListener('DOMContentLoaded', function() {
   if (window.BelSekolah) {
     window.BelSekolah.init();
@@ -259,7 +260,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (btnBel) {
       btnBel.addEventListener('click', function(e) {
         e.preventDefault();
-        window.BelSekolah.toggle();
+        // Tampilkan panel kontrol bel (sesuai gambar)
+        window.BelSekolah.showPanel();
       });
     }
   }
