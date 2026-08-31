@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 - Halaman Tidak Ditemukan | SDN 134 Kalumpang</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', system-ui; }
+    .font-jakarta { font-family: 'Plus Jakarta Sans', system-ui; }
+  </style>
+</head>
+<body class="bg-[#f8fafc] min-h-screen flex items-center justify-center p-4">
+
+  <div class="bg-white rounded-[20px] shadow-[0_8px_24px_rgba(15,47,30,0.06)] border border-slate-200 max-w-[480px] w-full p-8 text-center">
+    
+    <!-- Icon & Status -->
+    <div class="w-20 h-20 bg-[#fff1f1] rounded-full flex items-center justify-center mx-auto mb-6">
+      <span class="text-4xl">🔍</span>
+    </div>
+    
+    <h1 class="font-jakarta font-extrabold text-[32px] text-[#0f2f1e] leading-tight mb-2">404</h1>
+    <h2 class="font-jakarta font-bold text-[18px] text-slate-700 mb-4">Halaman atau File Tidak Ditemukan</h2>
+    
+    <!-- Dynamic URL Tracker -->
+    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-6 text-left">
+      <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">URL yang diminta:</p>
+      <code id="debugUrl" class="text-[12px] font-mono text-[#c1272d] break-all">/...</code>
+    </div>
+
+    <!-- Debugging Tips -->
+    <div class="text-left bg-[#fffbeb] border border-[#fde68a] rounded-xl p-4 mb-8">
+      <p class="text-[11px] font-bold text-[#92400e] mb-2">💡 Kemungkinan Penyebab:</p>
+      <ul class="text-[11px] text-[#78350f] space-y-1.5 list-disc list-inside">
+        <li>Nama file/folder salah ketik (perhatikan <strong>huruf besar/kecil</strong>).</li>
+        <li>File belum ter-upload ke repository GitHub.</li>
+        <li>Path relatif salah (misal: kurang <code>../</code> atau kelebihan folder).</li>
+        <li>GitHub Pages belum selesai mendeploy perubahan terakhir (tunggu 1-2 menit).</li>
+      </ul>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex flex-col sm:flex-row gap-3">
+      <a href="/sdn134kalumpang/dashboard.html" class="flex-1 h-11 rounded-xl bg-[#0f2f1e] text-white font-bold text-[13px] flex items-center justify-center hover:bg-[#0a1e14] transition-colors">
+        ← Kembali ke Dashboard
+      </a>
+      <a href="/sdn134kalumpang/" class="flex-1 h-11 rounded-xl bg-slate-100 text-slate-700 font-bold text-[13px] flex items-center justify-center hover:bg-slate-200 transition-colors">
+        🏠 Halaman Utama
+      </a>
+    </div>
+
+  </div>
+
+  <script>
+    // Tampilkan URL yang gagal dimuat untuk memudahkan debugging
+    document.addEventListener('DOMContentLoaded', () => {
+      const currentPath = window.location.pathname + window.location.search;
+      document.getElementById('debugUrl').textContent = currentPath;
+      
+      // Log ke console untuk developer
+      console.warn('⚠️ 404 Not Found: Pengguna mencoba mengakses', currentPath);
+    });
+  </script>
+</body>
+</html>
