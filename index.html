@@ -52,8 +52,9 @@
     </nav>
     <div class="flex items-center gap-2">
       <div class="flex items-center gap-2">
-      <a href="modules/bel-sekolah/index.html" class="h-9 w-9 rounded-full bg-white border border-slate-200 flex items-center justify-center hover:bg-slate-50" title="Bel Sekolah Otomatis TTS">🔔</a>
-      <button onclick="openLoginModal()" class="h-9 px-4 md:px-5 rounded-full bg-[#0f2f1e] text-white text-[11px] md:text-[12px] font-bold">134</button>
+        <!-- PERBAIKAN 1: Diubah dari <a> menjadi <button> dengan ID agar bisa di-trigger JS tanpa pindah halaman -->
+        <button id="btnBelSekolah" type="button" class="h-9 w-9 rounded-full bg-white border border-slate-200 flex items-center justify-center hover:bg-slate-50 transition-colors" title="Aktifkan/Nonaktifkan Bel Sekolah">🔔</button>
+        <button onclick="openLoginModal()" class="h-9 px-4 md:px-5 rounded-full bg-[#0f2f1e] text-white text-[11px] md:text-[12px] font-bold">134</button>
       </div>
       <button id="mobileMenuBtn" class="lg:hidden w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center">☰</button>
     </div>
@@ -177,6 +178,10 @@
 <script src="js/config/service-menu.js"></script>
 <script type="module" src="js/config/firebase-config.js"></script>
 <script type="module" src="js/config/firebase-service.js"></script>
+
+<!-- PERBAIKAN 2: Path disesuaikan dengan lokasi upload file Anda -->
+<script src="modules/bel-sekolah/features/bel-sekolah.js"></script>
+
 <script>
 document.getElementById('currentDate').textContent = new Date().toLocaleDateString('id-ID', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
 document.getElementById('mobileMenuBtn')?.addEventListener('click', ()=>{
@@ -245,7 +250,20 @@ document.getElementById("loginForm")?.addEventListener("submit", function(e){ e.
 document.getElementById("loginFormInline")?.addEventListener("submit", function(e){ e.preventDefault(); const email=document.getElementById("emailInline").value.trim(); const pass=document.getElementById("passwordInline").value.trim(); const cap=document.getElementById("captchaInputInline").value.trim().toUpperCase(); handleLogin(email, pass, cap, document.getElementById("errorMsgInline"), document.getElementById("successMsgInline"), null); });
 
 window.addEventListener('firebase-ready', (e)=>{ const el=document.getElementById('firestoreStatus'); if(el){ el.textContent='Connected: '+e.detail.projectId; el.classList.add('bg-[#dcfce7]','text-[#0f2f1e]'); } });
+
+// PERBAIKAN 3: Inisialisasi dan Event Listener untuk Bel Sekolah
+document.addEventListener('DOMContentLoaded', function() {
+  if (window.BelSekolah) {
+    window.BelSekolah.init();
+    const btnBel = document.getElementById('btnBelSekolah');
+    if (btnBel) {
+      btnBel.addEventListener('click', function(e) {
+        e.preventDefault();
+        window.BelSekolah.toggle();
+      });
+    }
+  }
+});
 </script>
-<script src="js/features/bel-sekolah.js"></script>
 </body>
 </html>
