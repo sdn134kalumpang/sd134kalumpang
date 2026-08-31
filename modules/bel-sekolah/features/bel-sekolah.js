@@ -1,6 +1,6 @@
 // modules/bel-sekolah/features/bel-sekolah.js
-// Aplikasi Bel Sekolah Standalone - Tanpa Firebase
-// Menggunakan localStorage untuk konfigurasi
+// Aplikasi Bel Sekolah Standalone + Panel Kontrol Visual
+// Tanpa Firebase - menggunakan localStorage untuk konfigurasi
 
 (function() {
   'use strict';
@@ -27,14 +27,12 @@
   function initBelSekolah() {
     console.log('🔔 Bel Sekolah Module initialized');
     
-    // Load voice untuk TTS
     if (speechSynth) {
       const loadVoices = () => {
         const voices = speechSynth.getVoices();
         indonesianVoice = voices.find(v => v.lang === 'id-ID') ||
                          voices.find(v => v.lang.includes('id')) ||
                          voices.find(v => v.name.toLowerCase().includes('indonesia'));
-        console.log('🎤 Voices loaded:', voices.length, '| Indonesian voice:', indonesianVoice?.name || 'Not found');
       };
       loadVoices();
       if (speechSynth.onvoiceschanged !== undefined) {
@@ -42,18 +40,6 @@
       }
     }
 
-    // Auto-unlock audio saat user interaction pertama
-    const unlockHandler = () => {
-      unlockAudio();
-      document.removeEventListener('click', unlockHandler);
-      document.removeEventListener('touchstart', unlockHandler);
-      document.removeEventListener('keydown', unlockHandler);
-    };
-    document.addEventListener('click', unlockHandler);
-    document.addEventListener('touchstart', unlockHandler);
-    document.addEventListener('keydown', unlockHandler);
-
-    // Request notification permission
     if ('Notification' in window && Notification.permission === 'default') {
       Notification.requestPermission();
     }
@@ -70,7 +56,6 @@
         audioContext.resume();
       }
       
-      // Play silent tone to unlock
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
       oscillator.connect(gainNode);
@@ -80,7 +65,6 @@
       oscillator.start();
       setTimeout(() => oscillator.stop(), 100);
 
-      // Unlock speech synth
       if (speechSynth) {
         const silentUtterance = new SpeechSynthesisUtterance(' ');
         silentUtterance.volume = 0.01;
@@ -89,6 +73,7 @@
 
       audioUnlocked = true;
       console.log('✅ Audio unlocked');
+      showToast('✅ Audio berhasil diaktifkan!');
     } catch (e) {
       console.error('Gagal unlock audio:', e);
     }
@@ -122,7 +107,6 @@
   function speakText(text) {
     console.log('🗣️ speakText:', text);
     if (!speechSynth) {
-      console.error('❌ TTS tidak tersedia');
       playBeep();
       playBeep();
       playBeep();
@@ -142,236 +126,255 @@
       
       if (indonesianVoice) {
         utterance.voice = indonesianVoice;
-        console.log('🎤 Pakai voice:', indonesianVoice.name);
       }
       
       utterance.pitch = 1.0;
       
-      utterance.onstart = () => console.log('✅ TTS started');
-      utterance.onend = () => console.log('✅ TTS ended');
       utterance.onerror = (e) => {
         console.error('❌ TTS error:', e);
         playBeep();
-        setTimeout(() => playBeep(), 500);
-        setTimeout(() => playBeep(), 1000);
       };
       
       speechSynth.speak(utterance);
     } catch (e) {
       console.error('TTS exception:', e);
       playBeep();
-      playBeep();
     }
   }
 
-  // === NOTIFIKASI VISUAL ===
-  function showBelNotification(title, message) {
-    const notif = document.createElement('div');
-    notif.style.cssText = `
+  // === TOAST NOTIFICATION ===
+  function showToast(msg) {
+    const toast = document.createElement('div');
+    toast.textContent = msg;
+    toast.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #10b981;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 10px;
+      z-index: 100000;
+      font-weight: 600;
+      font-size: 13px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      animation: slideIn 0.3s ease;
+    `;
+    document.body.appendChild(toast);
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transition = 'opacity 0.3s';
+      setTimeout(() => toast.remove(), 300);
+    }, 2500);
+  }
+
+  // === PANEL KONTROL BEL (MODAL) ===
+  function showPanel() {
+    // Hapus panel lama jika ada
+    const oldPanel = document.getElementById('belPanelOverlay');
+    if (oldPanel) oldPanel.remove();
+
+    const belConfig = JSON.parse(localStorage.getItem('bel_config') || JSON.stringify(DEFAULT_BEL_CONFIG));
+
+    const overlay = document.createElement('div');
+    overlay.id = 'belPanelOverlay';
+    overlay.style.cssText = `
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0,0,0,0.5);
-      z-index: 9999;
+      background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+      z-index: 99999;
       display: flex;
       align-items: center;
       justify-content: center;
+      padding: 20px;
+      overflow-y: auto;
     `;
-    
-    notif.innerHTML = `
+
+    overlay.innerHTML = `
+      <style>
+        @keyframes slideIn {
+          from { transform: translateX(100%); opacity: 0; }
+          to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(-20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .bel-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+        .bel-btn:active { transform: translateY(0); }
+      </style>
+      
+      <!-- Tombol Kembali ke Dashboard -->
+      <button id="btnBackDashboard" style="
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        background: white;
+        color: #1e3a8a;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 13px;
+        cursor: pointer;
+        z-index: 100001;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      ">← Kembali ke Dashboard</button>
+
+      <!-- Panel Utama -->
       <div style="
-        background: linear-gradient(135deg, #0f7a4a 0%, #0a4d2e 100%);
-        color: white;
-        padding: 40px 60px;
+        background: #fce7f3;
         border-radius: 20px;
-        box-shadow: 0 20px 60px rgba(15, 122, 74, 0.4);
-        text-align: center;
-        animation: bellPulse 0.5s ease;
-        max-width: 90%;
+        padding: 30px;
+        max-width: 800px;
+        width: 100%;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        animation: fadeIn 0.4s ease;
       ">
-        <div style="font-size: 48px; margin-bottom: 15px;">🔔</div>
-        <div style="font-size: 24px; font-weight: 700; margin-bottom: 10px;">${title}</div>
-        <div style="font-size: 14px; opacity: 0.9;">${message}</div>
-        <div style="margin-top: 15px; font-size: 12px;">Tap untuk tutup</div>
+        <!-- Header Panel -->
+        <div style="
+          background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);
+          color: white;
+          padding: 25px;
+          border-radius: 14px;
+          text-align: center;
+          margin-bottom: 25px;
+        ">
+          <div style="font-size: 28px; margin-bottom: 8px;">️</div>
+          <h2 style="margin: 0 0 8px 0; font-size: 24px; font-weight: 800;">Panel Kontrol Bel Sekolah</h2>
+          <p style="margin: 0; font-size: 13px; opacity: 0.95;">Klik tombol untuk membunyikan bel. Suara beep + voice akan keluar dari speaker.</p>
+        </div>
+
+        <!-- Grid 4 Bel -->
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 20px;">
+          <button class="bel-btn" data-bel="mulai" style="
+            background: white;
+            border: none;
+            border-left: 5px solid #3b82f6;
+            border-radius: 12px;
+            padding: 25px 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+          ">
+            <div style="font-size: 15px; font-weight: 700; color: #1e3a8a; margin-bottom: 6px;">Bel Masuk Kelas</div>
+            <div style="font-size: 12px; color: #64748b;">Siap</div>
+          </button>
+
+          <button class="bel-btn" data-bel="istirahat" style="
+            background: white;
+            border: none;
+            border-left: 5px solid #f59e0b;
+            border-radius: 12px;
+            padding: 25px 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+          ">
+            <div style="font-size: 28px; margin-bottom: 6px;">☕</div>
+            <div style="font-size: 15px; font-weight: 700; color: #1e3a8a; margin-bottom: 6px;">Bel Istirahat</div>
+            <div style="font-size: 12px; color: #64748b;">Siap</div>
+          </button>
+
+          <button class="bel-btn" data-bel="lanjut" style="
+            background: white;
+            border: none;
+            border-left: 5px solid #10b981;
+            border-radius: 12px;
+            padding: 25px 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+          ">
+            <div style="font-size: 15px; font-weight: 700; color: #1e3a8a; margin-bottom: 6px;">Bel Lanjut Belajar</div>
+            <div style="font-size: 12px; color: #64748b;">Siap</div>
+          </button>
+
+          <button class="bel-btn" data-bel="pulang" style="
+            background: white;
+            border: none;
+            border-left: 5px solid #ef4444;
+            border-radius: 12px;
+            padding: 25px 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+          ">
+            <div style="font-size: 15px; font-weight: 700; color: #1e3a8a; margin-bottom: 6px;">Bel Pulang Sekolah</div>
+            <div style="font-size: 12px; color: #64748b;">Siap</div>
+          </button>
+        </div>
+
+        <!-- Tombol Kontrol -->
+        <div style="background: white; border-radius: 14px; padding: 20px;">
+          <button id="btnStopBel" style="
+            width: 100%;
+            background: #6b7280;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-bottom: 12px;
+            transition: background 0.2s;
+          ">⏹️ Stop / Matikan Suara</button>
+
+          <button id="btnUnlockAudio" style="
+            width: 100%;
+            background: #f59e0b;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+          ">🔓 Izinkan Suara (Klik Dulu!)</button>
+        </div>
       </div>
     `;
-    
-    notif.onclick = () => notif.remove();
-    document.body.appendChild(notif);
-    setTimeout(() => notif.remove(), 8000);
+
+    document.body.appendChild(overlay);
+
+    // Event: Kembali ke Dashboard
+    document.getElementById('btnBackDashboard').onclick = function() {
+      overlay.remove();
+    };
+
+    // Event: 4 Tombol Bel
+    const belBtns = overlay.querySelectorAll('.bel-btn');
+    belBtns.forEach(btn => {
+      btn.onclick = function() {
+        const belType = this.getAttribute('data-bel');
+        if (!audioUnlocked) {
+          unlockAudio();
+          setTimeout(() => triggerBel(belType), 300);
+        } else {
+          triggerBel(belType);
+        }
+      };
+    });
+
+    // Event: Stop
+    document.getElementById('btnStopBel').onclick = function() {
+      if (speechSynth) speechSynth.cancel();
+      showToast('⏹️ Suara dihentikan');
+    };
+
+    // Event: Izinkan Suara
+    document.getElementById('btnUnlockAudio').onclick = function() {
+      unlockAudio();
+    };
   }
 
-  // === CHECK WAKTU BEL ===
-  function checkBelTime() {
-    const now = new Date();
-    const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-    
-    updateDisplay();
-    
-    // Cek hanya di detik 00-04 untuk mencegah trigger berulang
-    if (!['00','01','02','03','04'].includes(String(now.getSeconds()).padStart(2, '0'))) {
-      return;
-    }
-    
-    if (lastBelMinute === currentTime) return;
-    
-    // Load konfigurasi dari localStorage
-    const belConfig = JSON.parse(localStorage.getItem('bel_config') || JSON.stringify(DEFAULT_BEL_CONFIG));
-    
-    const belConfigs = [
-      { time: belConfig.mulai.time, text: belConfig.mulai.text, title: '🔔 Bel Masuk Kelas' },
-      { time: belConfig.istirahat.time, text: belConfig.istirahat.text, title: '☕ Bel Istirahat' },
-      { time: belConfig.lanjut.time, text: belConfig.lanjut.text, title: '📚 Bel Lanjut' },
-      { time: belConfig.pulang.time, text: belConfig.pulang.text, title: '🏠 Bel Pulang' }
-    ];
-    
-    const activeBel = belConfigs.find(bel => bel.time === currentTime);
-    
-    if (activeBel && activeBel.text && activeBel.text.trim()) {
-      lastBelMinute = currentTime;
-      console.log(`🔔 BEL AKTIF: ${activeBel.title}`);
-      
-      playBeep();
-      showBelNotification(activeBel.title, activeBel.text);
-      
-      // Browser notification
-      if ('Notification' in window && Notification.permission === 'granted') {
-        new Notification(activeBel.title, { body: activeBel.text });
-      }
-      
-      // Vibrate (mobile)
-      if (navigator.vibrate) {
-        navigator.vibrate([200, 100, 200]);
-      }
-      
-      speakText(activeBel.text);
-    }
-  }
-
-  // === UPDATE DISPLAY (Countdown) ===
-  function updateDisplay() {
-    const now = new Date();
-    const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
-    
-    const timeEl = document.getElementById('belCurrentTime');
-    if (timeEl) {
-      timeEl.textContent = `Waktu sekarang: ${currentTime}`;
-    }
-    
-    const belConfig = JSON.parse(localStorage.getItem('bel_config') || JSON.stringify(DEFAULT_BEL_CONFIG));
-    
-    const belTimes = [
-      { time: belConfig.mulai.time, name: 'Mulai' },
-      { time: belConfig.istirahat.time, name: 'Istirahat' },
-      { time: belConfig.lanjut.time, name: 'Lanjut' },
-      { time: belConfig.pulang.time, name: 'Pulang' }
-    ];
-    
-    const currentMinutes = now.getHours() * 60 + now.getMinutes();
-    let nextBel = null;
-    
-    for (const bel of belTimes) {
-      const [h, m] = bel.time.split(':').map(Number);
-      if ((h * 60 + m) > currentMinutes) {
-        nextBel = { ...bel, minutes: (h * 60 + m) };
-        break;
-      }
-    }
-    
-    const countdownEl = document.getElementById('countdownDisplay');
-    if (countdownEl) {
-      if (nextBel) {
-        const diff = nextBel.minutes - currentMinutes;
-        countdownEl.textContent = `${String(Math.floor(diff / 60)).padStart(2, '0')}:${String(diff % 60).padStart(2, '0')}:${String(60 - now.getSeconds()).padStart(2, '0')}`;
-      } else {
-        countdownEl.textContent = '00:00:00';
-      }
-    }
-    
-    const nextEl = document.getElementById('belNextTime');
-    if (nextEl) {
-      nextEl.textContent = `Bel berikutnya: ${nextBel ? nextBel.name + ' (' + nextBel.time + ')' : '-'}`;
-    }
-  }
-
-  // === START BEL OTOMATIS ===
-  function startBelOtomatis() {
-    console.log('🚀 startBelOtomatis');
-    
-    if (!audioUnlocked) {
-      alert('⚠️ Klik tombol bel terlebih dahulu untuk mengaktifkan suara!');
-      return;
-    }
-    
-    if (belInterval) clearInterval(belInterval);
-    lastBelMinute = '';
-    updateDisplay();
-    belInterval = setInterval(checkBelTime, 500);
-    
-    // Keep alive interval untuk mencegah audio context suspended
-    startKeepAlive();
-    
-    speakText("Bel otomatis telah diaktifkan");
-    isBelActive = true;
-    
-    const statusEl = document.getElementById('belStatus');
-    if (statusEl) {
-      statusEl.textContent = '✅ Aktif - Memantau waktu bel';
-      statusEl.style.color = '#10b981';
-    }
-    
-    console.log('🔔 Bel otomatis aktif');
-  }
-
-  // === STOP BEL OTOMATIS ===
-  function stopBelOtomatis() {
-    if (belInterval) {
-      clearInterval(belInterval);
-      belInterval = null;
-    }
-    if (keepAliveInterval) {
-      clearInterval(keepAliveInterval);
-      keepAliveInterval = null;
-    }
-    isBelActive = false;
-    
-    const statusEl = document.getElementById('belStatus');
-    if (statusEl) {
-      statusEl.textContent = '⏸️ Non-aktif';
-      statusEl.style.color = '#be185d';
-    }
-    
-    console.log('⏸️ Bel otomatis berhenti');
-  }
-
-  // === KEEP ALIVE ===
-  function startKeepAlive() {
-    if (keepAliveInterval) clearInterval(keepAliveInterval);
-    keepAliveInterval = setInterval(() => {
-      if (audioContext && audioContext.state === 'suspended') {
-        audioContext.resume();
-      }
-      if (audioContext && audioUnlocked) {
-        try {
-          const oscillator = audioContext.createOscillator();
-          const gainNode = audioContext.createGain();
-          oscillator.connect(gainNode);
-          gainNode.connect(audioContext.destination);
-          gainNode.gain.value = 0.001;
-          oscillator.frequency.value = 1;
-          oscillator.start();
-          setTimeout(() => oscillator.stop(), 50);
-        } catch (e) {}
-      }
-    }, 30000);
-  }
-
-  // === TEST BEL MANUAL ===
-  function testBelManual(belType) {
-    if (!audioUnlocked) unlockAudio();
-    
+  // === TRIGGER BEL MANUAL ===
+  function triggerBel(belType) {
     const belConfig = JSON.parse(localStorage.getItem('bel_config') || JSON.stringify(DEFAULT_BEL_CONFIG));
     
     const texts = {
@@ -383,39 +386,54 @@
     
     const titles = {
       mulai: '🔔 Bel Masuk Kelas',
-      istirahat: ' Bel Istirahat',
-      lanjut: '📚 Bel Lanjut',
-      pulang: '🏠 Bel Pulang'
+      istirahat: '☕ Bel Istirahat',
+      lanjut: '📚 Bel Lanjut Belajar',
+      pulang: '🏠 Bel Pulang Sekolah'
     };
     
     const text = texts[belType];
     const title = titles[belType];
     
     if (!text) {
-      alert('⚠️ Teks bel kosong!');
+      alert('️ Teks bel kosong!');
       return;
     }
     
     playBeep();
     speakText(text);
     showBelNotification(title, text);
-    console.log(`🧪 Test ${title}`);
+    console.log(`🧪 Trigger ${title}`);
   }
 
-  // === TOGGLE BEL (untuk tombol di header) ===
-  function toggleBel() {
-    if (!audioUnlocked) {
-      unlockAudio();
-      setTimeout(() => {
-        startBelOtomatis();
-      }, 500);
-    } else {
-      if (isBelActive) {
-        stopBelOtomatis();
-      } else {
-        startBelOtomatis();
-      }
-    }
+  // === NOTIFIKASI VISUAL ===
+  function showBelNotification(title, message) {
+    const notif = document.createElement('div');
+    notif.style.cssText = `
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);
+      color: white;
+      padding: 40px 60px;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(236, 72, 153, 0.4);
+      z-index: 100002;
+      text-align: center;
+      animation: fadeIn 0.5s ease;
+      max-width: 90%;
+    `;
+    
+    notif.innerHTML = `
+      <div style="font-size: 48px; margin-bottom: 15px;">🔔</div>
+      <div style="font-size: 24px; font-weight: 700; margin-bottom: 10px;">${title}</div>
+      <div style="font-size: 14px; opacity: 0.9;">${message}</div>
+      <div style="margin-top: 15px; font-size: 12px;">Tap untuk tutup</div>
+    `;
+    
+    notif.onclick = () => notif.remove();
+    document.body.appendChild(notif);
+    setTimeout(() => notif.remove(), 8000);
   }
 
   // === EXPORT KE WINDOW ===
@@ -425,14 +443,12 @@
     playBeep: playBeep,
     speakText: speakText,
     showNotification: showBelNotification,
-    start: startBelOtomatis,
-    stop: stopBelOtomatis,
-    toggle: toggleBel,
-    test: testBelManual,
+    showPanel: showPanel,
+    trigger: triggerBel,
     isActive: () => isBelActive
   };
 
-  // Auto-init saat DOM ready
+  // Auto-init
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initBelSekolah);
   } else {
